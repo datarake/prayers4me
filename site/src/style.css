@@ -62,7 +62,7 @@ p { margin: 0 0 1em; }
 
 /* Hero */
 .hero { position: relative; color: #fff; background: #0F3D3A; overflow: hidden; }
-.hero::before { content: ""; position: absolute; inset: 0; background: url("/assets/welcome-hero.jpg") center/cover no-repeat; opacity: 0.55; }
+.hero::before { content: ""; position: absolute; inset: 0; background: url("/assets/welcome-hero.jpg") 72% 64%/cover no-repeat; opacity: 0.6; }
 .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,28,26,0.55), rgba(10,36,34,0.85) 70%, rgba(10,36,34,0.96)); }
 .hero .wrap { position: relative; z-index: 1; }
 .hero .site-header .brand, .hero .site-header nav a { color: #fff; }
