@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="language" type="com.datarake.prayers4me.models.LanguageModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imgUncheck"
+                android:layout_centerInParent="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/ic_uncheck" />
+            <ImageView
+                android:id="@+id/imgCheck"
+                android:layout_centerInParent="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/ic_check" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{language.name}"/>
+
+    </LinearLayout>
+
+</layout>

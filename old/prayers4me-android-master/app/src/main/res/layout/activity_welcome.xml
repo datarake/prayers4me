@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="btnLanguage" type="String"/>
+        <variable name="btnForMe" type="String"/>
+        <variable name="btnForOthers" type="String"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        tools:context=".activities.WelcomeActivity">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp">
+
+            <com.datarake.prayers4me.helpers.SquareImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/main"
+                android:layout_height="0dp" />
+            
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="10dp"
+                android:text="@{btnLanguage}"
+                android:background="@drawable/btn"
+                android:textColor="@color/whiteColor"
+                style="?android:attr/borderlessButtonStyle"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnForOthers"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="10dp"
+                android:text="@{btnForOthers}"
+                android:background="@drawable/btn"
+                android:textColor="@color/whiteColor"
+                style="?android:attr/borderlessButtonStyle"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnForMe"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@{btnForMe}"
+                android:background="@drawable/btn"
+                android:textColor="@color/whiteColor"
+                style="?android:attr/borderlessButtonStyle"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

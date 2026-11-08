@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Prayers4me</string>
+    <string name="btnLanguage">Rugăciuni în română</string>
+    <string name="btnForOthers">pentru alții</string>
+    <string name="btnForMe">pentru mine</string>
+    <string name="lblAboutTitle">Info</string>
+    <string name="txtAbout">Ajungi uneori într-un moment poate mai dificil când se întâmplă ca recursul la rugăciune să îți pară mai firesc ca oricând. Poți trimite un mesaj tuturor celor care au instalată aplicația și unii dintre ei se vor ruga pentru tine. S-ar putea să fie o mie, s-ar putea să fie o sută, s-ar putea să fie o singură persoană care se roagă pentru tine. Nu știi cine s-a rugat pentru tine, dar vei ști numărul celor ce au făcut-o și chiar numai știind că undeva în lume cineva s-a gândit la tine și s-a rugat pentru tine te va ajuta probabil să te întărești mai repede.\\n\\nIar dacă pentru tine rugăciunea este un act firesc de zi cu zi și simți că prin rugăciunea ta cei care sunt în nevoie ar putea fi ajutați, atunci roagă-te pentru ei. Și chiar dacă rugăciunea nu va avea efect vizibil imediat, ei vor ști că tu te-ai gândit la ei și acest lucru îi va întări mai repede și le va da ceva mai multă speranță.</string>
+    <string name="lblLanguagesTitle">Limba</string>
+    <string name="lblForOthersTitle">Rugăciuni pentru alții</string>
+    <string name="lblForMeTitle">Rugăciunile pentru mine</string>
+    <string name="lblPrayersNone">Nu s-a rugat încă nimeni</string>
+    <string name="lblPrayersOne">S-a rugat cineva</string>
+    <string name="lblPrayersMultiple">S-au rugat %d persoane</string>
+    <string name="lblMyName">Numele meu</string>
+    <string name="lblAddTitle">Roagă-te pentru mine</string>
+    <string name="lblContact">Vreau să pot fi contactat</string>
+    <string name="lblPhone">Telefon</string>
+    <string name="lblEmail">E-mail</string>
+    <string name="lblMessage">Mesaj</string>
+    <string name="btnSend">TRIMIT</string>
+    <string name="lblError">Eroare</string>
+    <string name="msgServerError">Eroare de conectare la server!</string>
+    <string name="lblWarning">Avertizare</string>
+    <string name="msgNameWarning">Introdu numele tau</string>
+    <string name="msgContactWarning">Introdu informații de contact</string>
+</resources>

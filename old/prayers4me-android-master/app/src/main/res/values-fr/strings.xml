@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Prayers4me</string>
+    <string name="btnLanguage">Prières en français</string>
+    <string name="btnForOthers">pour les autres</string>
+    <string name="btnForMe">pour moi</string>
+    <string name="lblAboutTitle">Information</string>
+    <string name="txtAbout">Parfois, vous avez un mauvais moment où le recours à la prière semble plus naturel que jamais. Vous pouvez envoyer un message à tous ceux qui ont l\'application et certains d\'eux vont prier pour vous. Il peut y avoir un millier, peut-être une centaine, peut-être une seule personne qui prie pour vous. Vous ne savez pas qui a prié pour vous, mais vous savez le nombre de ceux qui l\'ont fait. En sachant tout simplement que, quelque part dans le monde, quelqu\'un a pensé à vous et a prié pour vous, vous aidera peut-être à regagnier la bonne humeur plus rapidement.\\n\\nEt si votre prière est un acte quotidien naturel et vous sentez que grâce à vos prières ceux qui sont dans le besoin peuvent être aidés, alors prier pour eux. Et si la prière ne semble pas donner de resultat immédiatement visible, ils sauront que vous avez pensé à eux, et cela leur donnera un peu plus d\'espoir.</string>
+    <string name="lblLanguagesTitle">Langage</string>
+    <string name="lblForOthersTitle">Prières pour les autres</string>
+    <string name="lblForMeTitle">Prières pour moi</string>
+    <string name="lblPrayersNone">Personne n\'a encore prié</string>
+    <string name="lblPrayersOne">Quelqu\'un a prié</string>
+    <string name="lblPrayersMultiple">%d personnes ont été priées</string>
+    <string name="lblAddTitle">Priez pour moi</string>
+    <string name="lblMyName">Mon nom</string>
+    <string name="lblContact">Je veux être contacté</string>
+    <string name="lblPhone">Téléphone</string>
+    <string name="lblEmail">Email</string>
+    <string name="lblMessage">Message</string>
+    <string name="btnSend">ENVOYER</string>
+    <string name="lblError">Erreur</string>
+    <string name="msgServerError">Erreur de connexion au serveur!</string>
+    <string name="lblWarning">Attention</string>
+    <string name="msgNameWarning">Entrez votre nom</string>
+    <string name="msgContactWarning">Entrez vos coordonnées</string>
+</resources>
