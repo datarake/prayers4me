@@ -69,7 +69,7 @@ async function call(
   headers: Record<string, string>,
 ) {
   const res = await app.request(path, { headers });
-  return { status: res.status, json: await res.json().catch(() => null) };
+  return { status: res.status, json: (await res.json().catch(() => null)) as any };
 }
 
 describe("Firebase sign-in tokens", () => {
