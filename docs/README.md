@@ -1,6 +1,6 @@
-# Prayers4me documentation
+# Stillflame documentation
 
-Prayers4me is a quiet place to ask for prayer and to pray for others. Someone in a hard moment can share a few words; others can respond with a prayer — counted anonymously, like a like. Even one prayer can be enough.
+Stillflame is a quiet place to ask for prayer and to pray for others. Someone in a hard moment can share a few words; others can respond with a prayer — counted anonymously, like a like. Even one prayer can be enough.
 
 | Document | Contents |
 |----------|----------|
@@ -8,4 +8,4 @@ Prayers4me is a quiet place to ask for prayer and to pray for others. Someone in
 | [Architecture](./architecture.md) | System design, data model, API, GCP hosting |
 | [Development](./development.md) | Local setup, scripts, auth for development |
 
-**Brand:** Prayers4me · **Domain:** [prayers4me.app](https://prayers4me.app)
+**Brand:** Stillflame · **Domain:** [stillflame.app](https://stillflame.app)

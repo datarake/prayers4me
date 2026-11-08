@@ -1,4 +1,4 @@
--- Prayers4me core schema
+-- Stillflame core schema
 -- Moderation is first-class: status, reports, bans, rate buckets.
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";

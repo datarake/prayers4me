@@ -6,7 +6,7 @@
 **Contact:** [support email]
 **Last updated:** [date]
 
-## What Prayers4me is
+## What Stillflame is
 
 A place to ask for prayer and to pray for others, anonymously. People who pray see your request. You see how many people prayed, never who.
 

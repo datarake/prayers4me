@@ -96,7 +96,7 @@ describe("malformed input is a 4xx, never a 500", () => {
   it("sends security headers and no server details", async () => {
     const res = await app.request("/health");
     expect(res.headers.get("x-content-type-options")).toBe("nosniff");
-    expect(await res.json()).toEqual({ ok: true, service: "Prayers4me", db: "up" });
+    expect(await res.json()).toEqual({ ok: true, service: "Stillflame", db: "up" });
   });
 });
 

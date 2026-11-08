@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Prayers4me",
-    "slug": "prayers4me",
+    "name": "Stillflame",
+    "slug": "stillflame",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "prayers4me",
+    "scheme": "stillflame",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,

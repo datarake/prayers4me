@@ -49,8 +49,8 @@ Web (Next.js)  ──┘                                         │
 
 **Suggested production hosts**
 
-- `https://prayers4me.app` — web  
-- `https://api.prayers4me.app` — API  
+- `https://stillflame.app` — web  
+- `https://api.stillflame.app` — API  
 
 ## Data model (core)
 

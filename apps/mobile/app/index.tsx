@@ -96,7 +96,7 @@ function WelcomeScreen() {
             accessibilityLabel={APP_NAME}
             maxFontSizeMultiplier={1.2}
           >
-            Prayers<Text style={styles.brandFour}>4</Text>me
+            Still<Text style={styles.brandFlame}>flame</Text>
           </Text>
         </View>
 
@@ -194,7 +194,7 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
       color: "#FFFFFF",
       letterSpacing: -0.6,
     },
-    brandFour: {
+    brandFlame: {
       color: colors.candle,
     },
     bottom: {

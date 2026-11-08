@@ -6,7 +6,7 @@ const production = {
   NODE_ENV: "production",
   DATABASE_URL: "postgres://x",
   AUTH_MODE: "firebase",
-  CORS_ORIGIN: "https://prayers4me.app",
+  CORS_ORIGIN: "https://stillflame.app",
   IP_HASH_SECRET: "a-random-secret-of-sufficient-length-1234",
 };
 

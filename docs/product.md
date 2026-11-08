@@ -61,4 +61,4 @@ Calm, direct, hopeful. Avoid performance spirituality and avoid sounding like a 
 
 ## Why moderation is part of the product story
 
-An earlier version of this idea attracted organic use, then collapsed when one person flooded every language channel with long religious texts and there was no ban/report path. Prayers4me treats that as a product requirement: rate limits, report reasons (including scripture dumps), auto-hide after enough reports, and admin tools — from day one.
+An earlier version of this idea attracted organic use, then collapsed when one person flooded every language channel with long religious texts and there was no ban/report path. Stillflame treats that as a product requirement: rate limits, report reasons (including scripture dumps), auto-hide after enough reports, and admin tools — from day one.

@@ -1,6 +1,6 @@
 /** Product brand */
-export const APP_NAME = "Prayers4me";
-export const APP_DOMAIN = "prayers4me.app";
+export const APP_NAME = "Stillflame";
+export const APP_DOMAIN = "stillflame.app";
 export const APP_TAGLINE = "Someone prayed for you.";
 
 /** Content limits */

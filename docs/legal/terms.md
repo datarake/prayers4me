@@ -4,7 +4,7 @@
 
 **Operator:** [legal name and address] **Contact:** [support email]
 
-## Using Prayers4me
+## Using Stillflame
 
 1. You can use the app if you are at least [age].
 2. You are responsible for what you write. Share your own story in your own words and follow the community guidelines shown in the app (Settings): no ads, links or long copied texts, no hate or harassment, and never other people's private details.
