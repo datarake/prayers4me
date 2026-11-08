@@ -1,4 +1,5 @@
 import { LANGUAGES } from "@prayers4me/shared";
+import * as Haptics from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
 import { useLayoutEffect } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
@@ -26,7 +27,10 @@ export default function LanguagesScreen() {
           const selected = item.code === language;
           return (
             <Pressable
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
               onPress={async () => {
+                Haptics.selectionAsync().catch(() => undefined);
                 await setLanguage(item.code);
                 router.back();
               }}
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
     height: 10,
   },
   row: {
-    minHeight: 56,
+    minHeight: 60,
     borderRadius: 16,
     paddingHorizontal: 16,
     backgroundColor: colors.white,

@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect } from "react";
+import { setStatusBarStyle } from "expo-status-bar";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { APP_NAME } from "@prayers4me/shared";
@@ -13,6 +14,14 @@ export default function WelcomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { copy, ready } = useLanguage();
+
+  // Light icons over the dark hero; the other screens are light-themed.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarStyle("light");
+      return () => setStatusBarStyle("dark");
+    }, []),
+  );
 
   useEffect(() => {
     if (!ready) return;
@@ -50,7 +59,9 @@ export default function WelcomeScreen() {
         ]}
       >
         <View style={styles.hero}>
-          <Text style={styles.brand}>{APP_NAME}</Text>
+          <Text style={styles.brand} accessibilityRole="header" maxFontSizeMultiplier={1.2}>
+            {APP_NAME}
+          </Text>
           <Text style={styles.tagline}>{copy.tagline}</Text>
           <Text style={styles.about}>{copy.about}</Text>
         </View>
@@ -70,6 +81,7 @@ export default function WelcomeScreen() {
           />
           <Pressable
             accessibilityRole="button"
+            accessibilityHint={copy.languagesTitle}
             onPress={() => router.push("/languages")}
             hitSlop={12}
             style={({ pressed }) => [
@@ -77,7 +89,7 @@ export default function WelcomeScreen() {
               pressed && { opacity: 0.7 },
             ]}
           >
-            <Text style={styles.languageText}>{copy.languageButton}</Text>
+            <Text style={styles.languageText}>🌐  {copy.languageButton}</Text>
           </Pressable>
         </View>
       </View>
@@ -147,8 +159,9 @@ const styles = StyleSheet.create({
   },
   languageLink: {
     alignSelf: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 8,
+    minHeight: 44,
+    justifyContent: "center",
+    paddingHorizontal: 12,
   },
   languageText: {
     fontFamily: fonts.bodyMedium,

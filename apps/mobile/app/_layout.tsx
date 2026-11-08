@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { LanguageProvider } from "@/src/LanguageContext";
+import { ToastProvider } from "@/src/components/Toast";
 import { colors } from "@/src/theme";
 
 export { ErrorBoundary } from "expo-router";
@@ -41,12 +42,14 @@ export default function RootLayout() {
 
   return (
     <LanguageProvider>
-      <StatusBar style="light" />
+      <ToastProvider>
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: colors.mist },
           headerTintColor: colors.sea,
           headerShadowVisible: false,
+          headerBackButtonDisplayMode: "minimal",
           headerTitleStyle: {
             fontFamily: "Fraunces_600SemiBold",
             fontSize: 20,
@@ -64,6 +67,7 @@ export default function RootLayout() {
           options={{ title: "Ask for prayer", presentation: "modal" }}
         />
       </Stack>
+      </ToastProvider>
     </LanguageProvider>
   );
 }

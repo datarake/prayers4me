@@ -1,4 +1,5 @@
 import type { LanguageCode } from "@prayers4me/shared";
+import { extraDictionaries } from "./i18n.extra";
 
 type Dictionary = {
   languageButton: string;
@@ -49,7 +50,7 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
     languagesTitle: "Language",
     forOthersTitle: "Pray for someone",
     forOthersIntro:
-      "Each story is a person asking for prayer. Tap Pray when you have held them in your thoughts. They will see the count — not your name.",
+      "Each story is a person asking for prayer. Tap “I prayed” when you have held them in your thoughts. They will see the count — not your name.",
     forMeTitle: "Prayers for me",
     forMeIntro:
       "Your requests stay here. When someone prays, the number grows. Even one can steady you.",
@@ -285,8 +286,17 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
   },
 };
 
-export function t(language: LanguageCode): Dictionary {
-  return dictionaries[language];
+export type Copy = Dictionary & (typeof extraDictionaries)["en"];
+
+const merged = Object.fromEntries(
+  (Object.keys(dictionaries) as LanguageCode[]).map((code) => [
+    code,
+    { ...dictionaries[code], ...extraDictionaries[code] },
+  ]),
+) as Record<LanguageCode, Copy>;
+
+export function t(language: LanguageCode): Copy {
+  return merged[language];
 }
 
 export function prayersLabel(language: LanguageCode, count: number): string {

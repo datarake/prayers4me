@@ -16,6 +16,21 @@ function apiBaseUrl(): string {
   );
 }
 
+/** Error with a message that came from the server (safe to show). */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
+/** Server message when we have one, otherwise a friendly network message. */
+export function errorMessage(err: unknown, fallback: string): string {
+  return err instanceof ApiError ? err.message : fallback;
+}
+
 async function authHeaders(): Promise<HeadersInit> {
   const deviceId = await getDeviceId();
   return {
@@ -45,7 +60,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
         typeof body?.error?.message === "string"
           ? body.error.message
           : `Request failed (${res.status})`;
-      throw new Error(message);
+      throw new ApiError(message, res.status);
     }
     return body as T;
   } catch (err) {

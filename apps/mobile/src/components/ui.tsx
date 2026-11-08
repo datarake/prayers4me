@@ -33,17 +33,21 @@ export function PrimaryButton({
   label,
   onPress,
   disabled,
+  loading,
   variant = "solid",
 }: {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean;
   variant?: "solid" | "soft" | "ghost" | "onDark" | "candle";
 }) {
   return (
     <Pressable
       accessibilityRole="button"
-      disabled={disabled}
+      disabled={disabled || loading}
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
@@ -55,9 +59,15 @@ export function PrimaryButton({
         (pressed || disabled) && { opacity: 0.72 },
       ]}
     >
+      {loading ? (
+        <ActivityIndicator
+          color={variant === "solid" || variant === "onDark" ? colors.white : colors.sea}
+        />
+      ) : null}
       <Text
         style={[
           styles.buttonLabel,
+          loading && { marginLeft: 10 },
           variant === "ghost" && { color: colors.sea },
           variant === "soft" && { color: colors.sea },
           variant === "onDark" && { color: colors.white },
@@ -112,6 +122,7 @@ const styles = StyleSheet.create({
   button: {
     minHeight: 52,
     borderRadius: 16,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 18,

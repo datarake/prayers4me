@@ -1,14 +1,19 @@
 import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { colors, fonts } from "../theme";
-import { Body } from "./ui";
+import { Body, PrimaryButton } from "./ui";
 
+/** Empty or error state. Always offers a way forward (an action) when one exists. */
 export function EmptyState({
   title,
   body,
+  actionLabel,
+  onAction,
 }: {
   title: string;
   body: string;
+  actionLabel?: string;
+  onAction?: () => void;
 }) {
   return (
     <View style={styles.wrap}>
@@ -16,16 +21,23 @@ export function EmptyState({
         colors={[colors.mistDeep, "rgba(201,228,222,0.35)"]}
         style={styles.orb}
       />
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title} accessibilityRole="header">
+        {title}
+      </Text>
       <Body style={styles.body}>{body}</Body>
+      {actionLabel && onAction ? (
+        <View style={styles.action}>
+          <PrimaryButton label={actionLabel} onPress={onAction} />
+        </View>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: {
-    paddingTop: 56,
-    paddingHorizontal: 8,
+    paddingTop: 48,
+    paddingHorizontal: 4,
     alignItems: "flex-start",
   },
   orb: {
@@ -42,6 +54,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   body: {
-    maxWidth: 320,
+    maxWidth: 340,
+  },
+  action: {
+    alignSelf: "stretch",
+    marginTop: 24,
   },
 });

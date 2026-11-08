@@ -1,110 +1,148 @@
-import * as Haptics from "expo-haptics";
 import { useNavigation } from "expo-router";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import {
-  Alert,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  ActivityIndicator,
   FlatList,
+  LayoutAnimation,
   RefreshControl,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import type { PrayerRequestPublic } from "@prayers4me/shared";
+import type { PrayerRequestPublic, ReportReason } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
-import { api } from "@/src/api";
+import { api, errorMessage } from "@/src/api";
 import { EmptyState } from "@/src/components/EmptyState";
+import { ReportSheet } from "@/src/components/ReportSheet";
 import { RequestCard } from "@/src/components/RequestCard";
-import { LoadingState, Screen } from "@/src/components/ui";
+import { SkeletonList } from "@/src/components/Skeleton";
+import { useToast } from "@/src/components/Toast";
+import { Screen } from "@/src/components/ui";
 import { colors, fonts } from "@/src/theme";
 
 export default function ForOthersScreen() {
   const navigation = useNavigation();
+  const toast = useToast();
   const { language, copy } = useLanguage();
+
   const [items, setItems] = useState<PrayerRequestPublic[]>([]);
+  const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [reportId, setReportId] = useState<string | null>(null);
+
+  // Ignore responses that arrive after the language changed or a newer load started.
+  const generation = useRef(0);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: copy.forOthersTitle });
   }, [navigation, copy.forOthersTitle]);
 
-  const load = useCallback(async () => {
-    setError(null);
-    try {
-      const page = await api.feed(language);
-      setItems(page.items);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : copy.errorGeneric);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [language, copy.errorGeneric]);
+  const load = useCallback(
+    async (mode: "initial" | "refresh") => {
+      const current = ++generation.current;
+      setFailed(false);
+      try {
+        const page = await api.feed(language);
+        if (current !== generation.current) return;
+        setItems(page.items);
+        setCursor(page.nextCursor);
+      } catch (err) {
+        if (current !== generation.current) return;
+        if (mode === "refresh") {
+          toast.show(errorMessage(err, copy.errorNetwork), "error");
+        } else {
+          setFailed(true);
+        }
+      } finally {
+        if (current === generation.current) {
+          setLoading(false);
+          setRefreshing(false);
+        }
+      }
+    },
+    [language, copy.errorNetwork, toast],
+  );
 
   useEffect(() => {
     setLoading(true);
-    load();
+    setItems([]);
+    setCursor(null);
+    load("initial");
   }, [load]);
 
-  const onPray = async (id: string) => {
+  const loadMore = useCallback(async () => {
+    if (!cursor || loadingMore || loading || refreshing) return;
+    const current = generation.current;
+    setLoadingMore(true);
     try {
-      const result = await api.pray(id);
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setItems((prev) =>
-        prev.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                prayedByMe: true,
-                prayersCount: result.prayersCount,
-              }
-            : item,
-        ),
-      );
+      const page = await api.feed(language, cursor);
+      if (current !== generation.current) return;
+      setItems((prev) => {
+        const seen = new Set(prev.map((p) => p.id));
+        return [...prev, ...page.items.filter((p) => !seen.has(p.id))];
+      });
+      setCursor(page.nextCursor);
     } catch (err) {
-      Alert.alert(
-        copy.errorGeneric,
-        err instanceof Error ? err.message : undefined,
-      );
+      toast.show(errorMessage(err, copy.errorNetwork), "error");
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [cursor, loadingMore, loading, refreshing, language, copy.errorNetwork, toast]);
+
+  const patch = (id: string, change: Partial<PrayerRequestPublic>) =>
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...change } : item)),
+    );
+
+  /** Optimistic: the UI answers instantly, and rolls back only if the server refuses. */
+  const onPray = async (item: PrayerRequestPublic) => {
+    patch(item.id, {
+      prayedByMe: true,
+      prayersCount: item.prayersCount + 1,
+    });
+    try {
+      const result = await api.pray(item.id);
+      patch(item.id, {
+        prayedByMe: true,
+        prayersCount: result.prayersCount,
+      });
+      if (!result.alreadyPrayed) toast.show(copy.prayerSent);
+    } catch (err) {
+      patch(item.id, {
+        prayedByMe: item.prayedByMe,
+        prayersCount: item.prayersCount,
+      });
+      toast.show(errorMessage(err, copy.errorNetwork), "error");
     }
   };
 
-  const onReport = (id: string) => {
-    Alert.alert(copy.report, undefined, [
-      { text: copy.back, style: "cancel" },
-      {
-        text: "Spam",
-        onPress: async () => {
-          try {
-            await api.report(id, "spam");
-            await load();
-          } catch (err) {
-            Alert.alert(
-              copy.errorGeneric,
-              err instanceof Error ? err.message : undefined,
-            );
-          }
-        },
-      },
-      {
-        text: "Scripture dump",
-        onPress: async () => {
-          try {
-            await api.report(id, "scripture_dump");
-            await load();
-          } catch (err) {
-            Alert.alert(
-              copy.errorGeneric,
-              err instanceof Error ? err.message : undefined,
-            );
-          }
-        },
-      },
-    ]);
+  const onReport = async (reason: ReportReason) => {
+    const id = reportId;
+    setReportId(null);
+    if (!id) return;
+    try {
+      await api.report(id, reason);
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setItems((prev) => prev.filter((item) => item.id !== id));
+      toast.show(copy.reportThanks);
+    } catch (err) {
+      toast.show(errorMessage(err, copy.errorNetwork), "error");
+    }
   };
 
-  if (loading) return <LoadingState label={copy.loading} />;
+  const retry = () => {
+    setLoading(true);
+    load("initial");
+  };
 
   return (
     <Screen>
@@ -112,12 +150,14 @@ export default function ForOthersScreen() {
         data={items}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.6}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => {
               setRefreshing(true);
-              load();
+              load("refresh");
             }}
             tintColor={colors.teal}
           />
@@ -128,23 +168,42 @@ export default function ForOthersScreen() {
           </View>
         }
         ListEmptyComponent={
-          <EmptyState
-            title={error ? copy.errorGeneric : copy.emptyFeedTitle}
-            body={error ?? copy.emptyFeedBody}
-          />
+          loading ? (
+            <SkeletonList />
+          ) : failed ? (
+            <EmptyState
+              title={copy.errorGeneric}
+              body={copy.errorNetwork}
+              actionLabel={copy.retry}
+              onAction={retry}
+            />
+          ) : (
+            <EmptyState title={copy.emptyFeedTitle} body={copy.emptyFeedBody} />
+          )
+        }
+        ListFooterComponent={
+          loadingMore ? (
+            <ActivityIndicator color={colors.teal} style={styles.footer} />
+          ) : items.length > 0 && !cursor ? (
+            <Text style={[styles.footer, styles.end]}>{copy.feedEnd}</Text>
+          ) : undefined
         }
         renderItem={({ item }) => (
           <RequestCard
             item={item}
             language={language}
-            prayLabel={copy.pray}
-            prayedLabel={copy.prayed}
-            reportLabel={copy.report}
-            showActions
-            onPray={() => onPray(item.id)}
-            onReport={() => onReport(item.id)}
+            copy={copy}
+            onPray={() => onPray(item)}
+            onReport={() => setReportId(item.id)}
           />
         )}
+      />
+
+      <ReportSheet
+        visible={reportId !== null}
+        copy={copy}
+        onSelect={onReport}
+        onClose={() => setReportId(null)}
       />
     </Screen>
   );
@@ -153,20 +212,29 @@ export default function ForOthersScreen() {
 const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 22,
-    paddingBottom: 48,
+    paddingBottom: 56,
     flexGrow: 1,
   },
   intro: {
     paddingTop: 8,
-    paddingBottom: 10,
+    paddingBottom: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
-    marginBottom: 4,
   },
   introText: {
     fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 23,
+    color: colors.inkSoft,
+  },
+  footer: {
+    paddingVertical: 28,
+  },
+  end: {
+    textAlign: "center",
+    fontFamily: fonts.displayItalic,
+    fontSize: 16,
+    lineHeight: 24,
     color: colors.inkSoft,
   },
 });
