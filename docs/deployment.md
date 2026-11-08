@@ -33,7 +33,7 @@ It was tested locally: migrations apply, a weak production configuration is refu
 | `AUTH_MODE` | `firebase` |
 | `FIREBASE_PROJECT_ID` | `prayers4me` |
 | `FIREBASE_PROJECT_NUMBER` | `799342684788` |
-| `APP_CHECK` | `enforce` (needs App Check set up for real devices, see `docs/development.md`; use `log` for a first smoke test only, and the API refuses `log` in production unless you change the code, so test with a staging service) |
+| `APP_CHECK` | `enforce`. Production refuses anything else. Real phones can only pass it once App Check is set up with the Apple and Google developer accounts (see `docs/development.md`), so until then a production deploy is reachable but the app cannot use it |
 | `CORS_ORIGIN` | `https://stillflame.app` |
 | `TRUSTED_PROXY_HOPS` | `1` (Cloud Run puts one proxy in front) |
 | `IP_HASH_SECRET` | long random value, from Secret Manager |
