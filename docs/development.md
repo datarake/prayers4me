@@ -190,5 +190,5 @@ These still say `prayers4me` on purpose, because changing them costs more than i
 
 The iOS bundle id and Android package are `app.stillflame.mobile`. Set them before any store listing exists, because they cannot change afterwards.
 
-**Not set yet:** `EXPO_PUBLIC_SHARE_URL`. Point it at `https://stillflame.app` once a landing page is live, so the share message carries a working link.
+**Share link:** the share message ends with `https://stillflame.app` (from `APP_DOMAIN`). `EXPO_PUBLIC_SHARE_URL` overrides it for a build, and an empty value removes the link.
 

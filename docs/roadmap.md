@@ -65,7 +65,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | # | Task | Status |
 |---|------|--------|
 | P2.1 | Launch with one language and one real community, add languages as each community reaches a healthy size | needs you (a launch partner and a decision) |
-| P2.2 | Share the app (never an individual request) | done in the app (Settings). Set `EXPO_PUBLIC_SHARE_URL` once a store listing or landing page exists; until then the message goes out without a link. |
+| P2.2 | Share the app (never an individual request) | done in the app (Settings). The message links to `https://stillflame.app`; a build can override it with `EXPO_PUBLIC_SHARE_URL`. |
 | P2.3 | Funding model, no ads (donations, church partnerships, optional supporter) | needs you (a decision) |
 | P2.4 | Optional account link so a new phone keeps your requests | todo |
 | P2.5 | Decide the audience: faith-neutral or Christian, and write it into the copy and moderation rules | needs you (a decision) |
@@ -116,7 +116,7 @@ The tagline is "Someone prayed for you." Today the author only learns it by open
 |---|---------|-------|
 | 8 | **Prayer mode** | One request at a time, large type, "I prayed" then next. Fits the quiet principle better than a list. |
 | 9 | **Offline cache** | Show the last feed instantly and refresh behind it. |
-| 10 | **Share the app** (done) | Share sheet from Settings. Never shares individual requests. The link comes from `EXPO_PUBLIC_SHARE_URL` (not set yet). |
+| 10 | **Share the app** (done) | Share sheet from Settings. Never shares individual requests. The link is `https://stillflame.app` (overridable with `EXPO_PUBLIC_SHARE_URL`). |
 | 11 | **Requests I prayed for** (done) | Private history opened from Settings (`GET /v1/requests/prayed`, paged, only your own prayers, removed or under review requests drop out). No counts of your own prayers, no streaks. |
 | 12 | **Dark mode** (done) | Light, dark or automatic, chosen in Settings. Colours come from one palette in `src/theme.ts` through `useStyles` and `useTheme`. Following the phone setting needs a rebuilt native app (`userInterfaceStyle` is now `automatic`). Native alerts and the keyboard follow the phone, not the in-app choice. |
 | 13 | **Reduce motion** | Respect the system setting for the spring and skeleton animations. |

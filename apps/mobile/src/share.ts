@@ -1,14 +1,19 @@
+import { APP_DOMAIN } from "@prayers4me/shared";
 import { Share } from "react-native";
 
 /**
- * Where the app can be installed. Set EXPO_PUBLIC_SHARE_URL once the store listing or a landing
- * page exists. Until then the message goes out without a link rather than with a wrong one.
+ * The page people land on from a shared message: the app's own website, which has the
+ * store links. A build can point somewhere else (a staging site) with EXPO_PUBLIC_SHARE_URL,
+ * and an empty value switches the link off.
  */
-const SHARE_URL = process.env.EXPO_PUBLIC_SHARE_URL ?? "";
+export const SHARE_URL = process.env.EXPO_PUBLIC_SHARE_URL ?? `https://${APP_DOMAIN}`;
 
 /** What goes into the share sheet. Never contains a request, only the app. */
-export function shareContent(message: string): { message: string; url?: string } {
-  return SHARE_URL ? { message: `${message}\n${SHARE_URL}` } : { message };
+export function shareContent(
+  message: string,
+  url: string = SHARE_URL,
+): { message: string } {
+  return url ? { message: `${message}\n${url}` } : { message };
 }
 
 /** Opens the system share sheet. Resolves to what the person did. */
