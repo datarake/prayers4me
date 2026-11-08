@@ -1,5 +1,7 @@
 # Website (stillflame.app)
 
+**Status (2026-11-09):** live at `https://stillflame.app` (and `https://www.stillflame.app`, which redirects there) on Firebase Hosting in the project `prayers4me`. DNS at GoDaddy: `A @ 199.36.158.100`, `TXT @ hosting-site=prayers4me`, `CNAME www prayers4me.web.app`. The `api` CNAME (Cloud Run) and the Google verification TXT stay as they are.
+
 A small static site in `site/`: home, community guidelines, privacy policy and terms. There are no scripts, no cookies and no third-party requests (fonts are served from the site), which fits the product's promise. The stores need public privacy and terms URLs, and the app's share link needs somewhere to go.
 
 ## Build and preview
@@ -15,13 +17,13 @@ The privacy policy and terms come from `docs/legal/*.md`. **`build:release` refu
 
 `site/config.json` holds the name, domain, support email and the store links. Fill `stores.ios` and `stores.android` when the listings exist, and the "Coming soon" buttons become real links.
 
-## Publishing (not done yet)
+## Publishing
 
 Firebase Hosting in the existing project is free for this size.
 
 ```bash
 cd site && pnpm build:release
-firebase deploy --only hosting --project prayers4me     # with the burdibox@gmail.com login
+firebase deploy --only hosting --project prayers4me --account burdibox@gmail.com   # needs Node 22 and `firebase login:add` once
 ```
 
 Then connect the domain in the Firebase console (Hosting, Add custom domain) for `stillflame.app` and `www.stillflame.app`. At GoDaddy this means replacing the parked `A @` record with the addresses Firebase shows and pointing `www` at Firebase. Keep the `api` CNAME and the Google verification TXT record untouched.
