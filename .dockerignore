@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+**/dist
+.git
+.github
+apps/mobile
+docs
+infra/docker
+**/.env
+**/.env.*
+!**/.env.example
+**/*.log
+coverage
+**/*.tsbuildinfo

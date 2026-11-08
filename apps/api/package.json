@@ -9,6 +9,7 @@
     "start": "node --env-file=.env dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
     "db:migrate": "tsx --env-file=.env src/db/migrate.ts",
+    "db:maintain": "tsx --env-file=.env src/db/maintain.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
