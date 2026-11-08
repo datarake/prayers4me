@@ -7,7 +7,9 @@ import {
 } from "./auth.js";
 import type { Sql } from "./db/client.js";
 import type { Env } from "./env.js";
+import { z } from "zod";
 import { ApiError, jsonError } from "./errors.js";
+import { EXPO_TOKEN_RE } from "./notifications/push.js";
 import { adminRoutes } from "./routes/admin.js";
 import { requestsRoutes } from "./routes/requests.js";
 
@@ -46,6 +48,22 @@ export function createApp(env: Env, sql: Sql) {
       role: user.role,
       banned: user.banned,
     });
+  });
+
+  // The device registers (or clears, with null) the token used for "someone prayed" pushes.
+  app.put("/v1/session/push-token", async (c) => {
+    const user = c.get("user");
+    const body = z
+      .object({
+        token: z.string().regex(EXPO_TOKEN_RE).max(200).nullable(),
+      })
+      .parse(await c.req.json());
+
+    await sql`
+      UPDATE users SET push_token = ${body.token}, updated_at = now()
+      WHERE id = ${user.id}
+    `;
+    return c.json({ registered: body.token !== null });
   });
 
   app.route("/v1/requests", requestsRoutes);

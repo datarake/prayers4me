@@ -108,6 +108,17 @@ export const api = {
       prayersCount: number;
     }>(`/v1/requests/${id}/pray`, { method: "POST" }),
 
+  registerPushToken: (token: string | null) =>
+    request<{ registered: boolean }>("/v1/session/push-token", {
+      method: "PUT",
+      body: JSON.stringify({ token }),
+    }),
+
+  deleteRequest: (id: string) =>
+    request<{ id: string; deleted: boolean }>(`/v1/requests/${id}`, {
+      method: "DELETE",
+    }),
+
   report: (id: string, reason: ReportReason) =>
     request<{ autoHidden: boolean }>(`/v1/requests/${id}/report`, {
       method: "POST",

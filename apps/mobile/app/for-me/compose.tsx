@@ -4,6 +4,7 @@ import {
   NAME_MAX_LENGTH,
 } from "@prayers4me/shared";
 import * as Haptics from "expo-haptics";
+import * as WebBrowser from "expo-web-browser";
 import { useNavigation, useRouter } from "expo-router";
 import {
   useEffect,
@@ -28,6 +29,7 @@ import {
 import { useLanguage } from "@/src/LanguageContext";
 import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
+import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
 import { PrimaryButton, Screen } from "@/src/components/ui";
 import { colors, type FontSet } from "@/src/theme";
 import { useStyles } from "@/src/useStyles";
@@ -150,6 +152,7 @@ export default function ComposeScreen() {
   };
 
   const remaining = MESSAGE_MAX_LENGTH - message.length;
+  const showSupport = looksLikeCrisis(message);
 
   return (
     <Screen>
@@ -215,6 +218,25 @@ export default function ComposeScreen() {
             </Text>
           </Field>
 
+          {showSupport ? (
+            <View style={styles.supportCard} accessibilityLiveRegion="polite">
+              <Text style={styles.supportTitle}>{copy.crisisTitle}</Text>
+              <Text style={styles.supportBody}>{copy.crisisBody}</Text>
+              <Pressable
+                accessibilityRole="link"
+                onPress={() =>
+                  WebBrowser.openBrowserAsync(HELPLINE_URL).catch(() => undefined)
+                }
+                style={({ pressed }) => [
+                  styles.supportBtn,
+                  pressed && { opacity: 0.8 },
+                ]}
+              >
+                <Text style={styles.supportBtnLabel}>{copy.crisisAction}</Text>
+              </Pressable>
+            </View>
+          ) : null}
+
           <View style={styles.switchCard}>
             <View style={styles.switchRow}>
               <Text style={[styles.label, { flex: 1 }]}>{copy.contactLabel}</Text>
@@ -272,6 +294,14 @@ export default function ComposeScreen() {
               </View>
             ) : null}
           </View>
+
+          <Pressable
+            accessibilityRole="link"
+            onPress={() => router.push("/guidelines")}
+            hitSlop={8}
+          >
+            <Text style={styles.agree}>{copy.guidelinesAgree}</Text>
+          </Pressable>
 
           <PrimaryButton
             label={submitting ? copy.sending : copy.send}
@@ -384,6 +414,47 @@ const createStyles = (fonts: FontSet) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 16,
+    },
+    supportCard: {
+      backgroundColor: "#FFF4DA",
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: "#EBCB86",
+      padding: 16,
+      gap: 8,
+    },
+    supportTitle: {
+      fontFamily: fonts.display,
+      fontSize: 20,
+      lineHeight: 26,
+      color: colors.ink,
+    },
+    supportBody: {
+      fontFamily: fonts.body,
+      fontSize: 15,
+      lineHeight: 22,
+      color: colors.ink,
+    },
+    supportBtn: {
+      minHeight: 48,
+      borderRadius: 14,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.sea,
+      marginTop: 6,
+    },
+    supportBtnLabel: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 16,
+      color: colors.white,
+    },
+    agree: {
+      fontFamily: fonts.body,
+      fontSize: 13,
+      lineHeight: 19,
+      color: colors.inkSoft,
+      textAlign: "center",
+      textDecorationLine: "underline",
     },
     headerBtn: {
       minHeight: 44,

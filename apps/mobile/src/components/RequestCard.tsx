@@ -44,6 +44,7 @@ export function RequestCard({
   copy,
   onPray,
   onReport,
+  onDelete,
 }: {
   item: PrayerRequestPublic;
   language: LanguageCode;
@@ -51,6 +52,8 @@ export function RequestCard({
   /** Present only in the public feed. */
   onPray?: () => void;
   onReport?: () => void;
+  /** Present only where the user can manage their own requests. */
+  onDelete?: () => void;
 }) {
   const styles = useStyles(createStyles);
   const hasPrayers = item.prayersCount > 0;
@@ -86,6 +89,23 @@ export function RequestCard({
           {prayersLabel(language, item.prayersCount)}
         </Text>
       </View>
+
+      {item.isMine && onDelete ? (
+        <View style={styles.actions}>
+          <View />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={copy.delete}
+            onPress={onDelete}
+            hitSlop={8}
+            style={({ pressed }) => [styles.reportBtn, pressed && { opacity: 0.6 }]}
+          >
+            <Text style={[styles.reportLabel, styles.deleteLabel]}>
+              {copy.delete}
+            </Text>
+          </Pressable>
+        </View>
+      ) : null}
 
       {canAct ? (
         <View style={styles.actions}>
@@ -198,6 +218,9 @@ const createStyles = (fonts: FontSet) =>
       minWidth: 44,
       alignItems: "flex-end",
       justifyContent: "center",
+    },
+    deleteLabel: {
+      color: colors.danger,
     },
     reportLabel: {
       fontFamily: fonts.bodyMedium,

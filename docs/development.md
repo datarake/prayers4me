@@ -37,6 +37,22 @@ curl -H "Authorization: Bearer dev:alice" http://localhost:8080/v1/session
 - On a physical device, point that URL at your machine’s LAN IP.
 - Expo Go’s blue gear button is Expo tooling, not an app setting.
 
+## Push notifications
+
+When someone prays, the server notifies the author (see `apps/api/src/notifications/push.ts`).
+
+- `PUSH_MODE=log` (default) prints the notification instead of sending it. Use `PUSH_MODE=expo` to send through Expo's push service.
+- The first prayer on a request is delivered at once. Further prayers are counted and delivered together once three hours have passed.
+- Notifications never name who prayed and never repeat the request text.
+- The app asks only after the person has a request and taps "Turn on" on its own card. Tokens are registered with `PUT /v1/session/push-token`.
+
+To receive real pushes on a device:
+
+1. Link the app to an EAS project once: `npx eas-cli init`. This writes `extra.eas.projectId` into `apps/mobile/app.json`. Without it the app cannot get a push token.
+2. Use a physical device. Simulators cannot receive remote pushes.
+3. On Android, use a development build (`npx expo run:android` or `eas build --profile development`). Expo Go on Android does not support remote push.
+4. Run the API with `PUSH_MODE=expo`.
+
 ## Workspace packages
 
 | Package | Name | Role |
@@ -55,7 +71,7 @@ pnpm --filter @prayers4me/shared build
 
 - Compose file: `infra/docker/docker-compose.yml`
 - Migration: `infra/sql/001_init.sql`
-- Apply: `pnpm db:migrate`
+- Apply: `pnpm db:migrate` (runs every `infra/sql/NNN_*.sql` once, in order, and records it in `schema_migrations`). Add a schema change as a new numbered file, never edit an applied one.
 
 Default local URL:
 

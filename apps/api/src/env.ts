@@ -6,6 +6,8 @@ const envSchema = z.object({
   AUTH_MODE: z.enum(["dev", "firebase"]).default("dev"),
   CORS_ORIGIN: z.string().default("*"),
   FIREBASE_PROJECT_ID: z.string().optional(),
+  /** "log" prints notifications instead of sending them (safe default for development). */
+  PUSH_MODE: z.enum(["log", "expo"]).default("log"),
 });
 
 export type Env = z.infer<typeof envSchema>;

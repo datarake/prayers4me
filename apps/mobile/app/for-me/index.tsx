@@ -1,12 +1,28 @@
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  LayoutAnimation,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import type { PrayerRequestPublic } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
-import { api } from "@/src/api";
+import { api, errorMessage } from "@/src/api";
 import { EmptyState } from "@/src/components/EmptyState";
 import { RequestCard } from "@/src/components/RequestCard";
+import { NotifyPrompt } from "@/src/components/NotifyPrompt";
 import { SkeletonList } from "@/src/components/Skeleton";
+import { useToast } from "@/src/components/Toast";
+import {
+  dismissPrompt,
+  enableNotifications,
+  getPromptState,
+  type PromptState,
+} from "@/src/notifications";
 import { PrimaryButton, Screen } from "@/src/components/ui";
 import { colors, type FontSet } from "@/src/theme";
 import { useStyles } from "@/src/useStyles";
@@ -15,12 +31,15 @@ export default function ForMeScreen() {
   const styles = useStyles(createStyles);
   const router = useRouter();
   const navigation = useNavigation();
+  const toast = useToast();
   const { language, copy } = useLanguage();
   const [items, setItems] = useState<PrayerRequestPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [failed, setFailed] = useState(false);
   const hasLoaded = useRef(false);
+  const [promptState, setPromptState] = useState<PromptState>("dismissed");
+  const [enabling, setEnabling] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: copy.forMeTitle });
@@ -46,8 +65,31 @@ export default function ForMeScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
+      getPromptState().then(setPromptState);
     }, [load]),
   );
+
+  const onEnableNotifications = async () => {
+    setEnabling(true);
+    const result = await enableNotifications();
+    setEnabling(false);
+    if (result === "enabled") {
+      toast.show(copy.notifyOn);
+      setPromptState("enabled");
+    } else if (result === "denied") {
+      toast.show(copy.notifyDenied, "error");
+      setPromptState("dismissed");
+    } else {
+      toast.show(copy.notifyUnavailable, "error");
+      await dismissPrompt();
+      setPromptState("dismissed");
+    }
+  };
+
+  const onLaterNotifications = async () => {
+    await dismissPrompt();
+    setPromptState("dismissed");
+  };
 
   const totalPrayers = useMemo(
     () => items.reduce((sum, item) => sum + item.prayersCount, 0),
@@ -55,6 +97,26 @@ export default function ForMeScreen() {
   );
 
   const compose = () => router.push("/for-me/compose");
+
+  const confirmDelete = (item: PrayerRequestPublic) => {
+    Alert.alert(copy.deleteTitle, copy.deleteBody, [
+      { text: copy.cancel, style: "cancel" },
+      {
+        text: copy.delete,
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await api.deleteRequest(item.id);
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setItems((prev) => prev.filter((i) => i.id !== item.id));
+            toast.show(copy.deleted);
+          } catch (err) {
+            toast.show(errorMessage(err, copy.errorNetwork), "error");
+          }
+        },
+      },
+    ]);
+  };
 
   return (
     <Screen>
@@ -80,6 +142,14 @@ export default function ForMeScreen() {
                 <Text style={styles.summaryLabel}>{copy.prayersReceived}</Text>
               </View>
               <Text style={styles.intro}>{copy.forMeIntro}</Text>
+              {promptState === "unasked" ? (
+                <NotifyPrompt
+                  copy={copy}
+                  busy={enabling}
+                  onEnable={onEnableNotifications}
+                  onLater={onLaterNotifications}
+                />
+              ) : null}
               <PrimaryButton label={copy.composeTitle} onPress={compose} />
             </View>
           ) : undefined
@@ -107,7 +177,12 @@ export default function ForMeScreen() {
           )
         }
         renderItem={({ item }) => (
-          <RequestCard item={item} language={language} copy={copy} />
+          <RequestCard
+            item={item}
+            language={language}
+            copy={copy}
+            onDelete={() => confirmDelete(item)}
+          />
         )}
       />
     </Screen>

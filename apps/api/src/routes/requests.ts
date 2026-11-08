@@ -11,6 +11,7 @@ import { requireNotBanned } from "../auth.js";
 import { ApiError } from "../errors.js";
 import { assertMessageLooksHuman } from "../moderation/heuristics.js";
 import { consumeRateLimit } from "../moderation/rateLimit.js";
+import { notifyPrayerReceived } from "../notifications/push.js";
 
 type RequestRow = {
   id: string;
@@ -201,6 +202,11 @@ requestsRoutes.post("/:id/pray", requireNotBanned(), async (c) => {
     };
   });
 
+  // Fire and forget: the prayer is already saved, a failed push must never fail it.
+  if (!result.alreadyPrayed) {
+    void notifyPrayerReceived(sql, c.get("env"), requestId);
+  }
+
   return c.json({
     requestId,
     prayedByMe: true,
@@ -262,4 +268,29 @@ requestsRoutes.post("/:id/report", requireNotBanned(), async (c) => {
     reason: body.reason,
     autoHidden: result.autoHidden,
   });
+});
+
+requestsRoutes.delete("/:id", requireNotBanned(), async (c) => {
+  const sql = c.get("sql");
+  const user = c.get("user");
+  const requestId = c.req.param("id");
+  if (!/^[0-9a-f-]{36}$/i.test(requestId)) {
+    throw new ApiError(404, "not_found", "Prayer request not found");
+  }
+
+  // Soft delete: the row is kept for moderation audit but disappears everywhere.
+  const rows = await sql<{ id: string }[]>`
+    UPDATE prayer_requests
+    SET status = 'removed', updated_at = now()
+    WHERE id = ${requestId}
+      AND author_id = ${user.id}
+      AND status <> 'removed'
+    RETURNING id
+  `;
+
+  if (rows.length === 0) {
+    throw new ApiError(404, "not_found", "Prayer request not found");
+  }
+
+  return c.json({ id: requestId, deleted: true });
 });

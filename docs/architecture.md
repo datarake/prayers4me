@@ -77,6 +77,8 @@ Feeds only show `active`. Hidden rows stay for audit.
 | POST | `/v1/requests` | Create ask (rate-limited + heuristics) |
 | POST | `/v1/requests/:id/pray` | Pray once (idempotent) |
 | POST | `/v1/requests/:id/report` | Report (may auto-hide) |
+| DELETE | `/v1/requests/:id` | Author removes their own request (soft delete) |
+| PUT | `/v1/session/push-token` | Register or clear the device's Expo push token |
 | GET/POST | `/v1/admin/...` | Reports queue, hide/restore, ban |
 
 ## Moderation controls

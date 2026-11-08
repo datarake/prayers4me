@@ -14,12 +14,14 @@ import {
   Manrope_700Bold,
 } from "@expo-google-fonts/manrope";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import * as Notifications from "expo-notifications";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { LanguageProvider, useLanguage } from "@/src/LanguageContext";
+import { syncPushRegistration } from "@/src/notifications";
 import { ToastProvider } from "@/src/components/Toast";
 import { colors, fontsFor } from "@/src/theme";
 
@@ -63,6 +65,25 @@ export default function RootLayout() {
 function RootStack() {
   const { language } = useLanguage();
   const fonts = fontsFor(language);
+  const router = useRouter();
+
+  // Keep the server's push token in step with the phone (tokens change, permission can be revoked).
+  useEffect(() => {
+    syncPushRegistration();
+  }, []);
+
+  // Tapping "someone prayed for you" opens the person's own requests, including from a cold start.
+  const lastResponse = Notifications.useLastNotificationResponse();
+  useEffect(() => {
+    if (
+      lastResponse &&
+      lastResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER &&
+      lastResponse.notification.request.content.data?.screen === "for-me"
+    ) {
+      router.push("/for-me");
+      Notifications.clearLastNotificationResponseAsync().catch(() => undefined);
+    }
+  }, [lastResponse, router]);
 
   return (
     <>
@@ -83,6 +104,7 @@ function RootStack() {
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="languages" options={{ title: "Language" }} />
+        <Stack.Screen name="guidelines" options={{ title: "Guidelines" }} />
         <Stack.Screen name="for-others" options={{ title: "For others" }} />
         <Stack.Screen name="for-me/index" options={{ title: "For me" }} />
         <Stack.Screen
