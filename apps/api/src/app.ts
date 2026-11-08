@@ -1,5 +1,7 @@
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
+import { secureHeaders } from "hono/secure-headers";
 import { APP_NAME } from "@prayers4me/shared";
 import {
   createAuthMiddleware,
@@ -9,6 +11,7 @@ import type { Sql } from "./db/client.js";
 import type { Env } from "./env.js";
 import { z } from "zod";
 import { ApiError, jsonError } from "./errors.js";
+import { readJson } from "./validation.js";
 import { EXPO_TOKEN_RE } from "./notifications/push.js";
 import { adminRoutes } from "./routes/admin.js";
 import { requestsRoutes } from "./routes/requests.js";
@@ -24,6 +27,22 @@ export function createApp(env: Env, sql: Sql) {
     }),
   );
 
+  app.use("*", secureHeaders());
+
+  // The largest legitimate body is a request of about 2 KB. Anything bigger is refused
+  // before it is read into memory.
+  app.use(
+    "/v1/*",
+    bodyLimit({
+      maxSize: 16 * 1024,
+      onError: (c) =>
+        c.json(
+          { error: { code: "payload_too_large", message: "The request is too large" } },
+          413,
+        ),
+    }),
+  );
+
   app.use("*", async (c, next) => {
     c.set("env", env);
     c.set("sql", sql);
@@ -32,9 +51,18 @@ export function createApp(env: Env, sql: Sql) {
 
   app.onError((err, c) => jsonError(c, err));
 
-  app.get("/health", (c) =>
-    c.json({ ok: true, service: APP_NAME, authMode: env.AUTH_MODE }),
-  );
+  // A health check that cannot see the database would report "ok" while the service is down.
+  app.get("/health", async (c) => {
+    try {
+      await Promise.race([
+        sql`SELECT 1`,
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 2000)),
+      ]);
+      return c.json({ ok: true, service: APP_NAME, db: "up" });
+    } catch {
+      return c.json({ ok: false, service: APP_NAME, db: "down" }, 503);
+    }
+  });
 
   const auth = createAuthMiddleware();
 
@@ -57,7 +85,7 @@ export function createApp(env: Env, sql: Sql) {
       .object({
         token: z.string().regex(EXPO_TOKEN_RE).max(200).nullable(),
       })
-      .parse(await c.req.json());
+      .parse(await readJson(c));
 
     await sql`
       UPDATE users SET push_token = ${body.token}, updated_at = now()

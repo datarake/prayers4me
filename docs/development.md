@@ -27,7 +27,7 @@ pnpm dev:mobile   # Expo
 Useful API checks:
 
 ```bash
-curl http://localhost:8080/health
+curl http://localhost:8080/health   # {"ok":true,"service":"Prayers4me","db":"up"}
 curl -H "Authorization: Bearer dev:alice" http://localhost:8080/v1/session
 ```
 
@@ -36,6 +36,23 @@ curl -H "Authorization: Bearer dev:alice" http://localhost:8080/v1/session
 - Simulator can use `EXPO_PUBLIC_API_URL=http://localhost:8080` (see `apps/mobile/.env`).
 - On a physical device, point that URL at your machine’s LAN IP.
 - Expo Go’s blue gear button is Expo tooling, not an app setting.
+
+## Tests
+
+```bash
+pnpm typecheck   # all packages, including the test files
+pnpm test        # shared, app text and safety, and the API
+```
+
+The API tests (`apps/api/test`) run against a real Postgres, in a throwaway database called `prayers4me_test` that is dropped and rebuilt from the real migrations on every run. They call the app in process, so no server needs to be running, but the Postgres container does (`pnpm dev:db`). The database name must end in `_test`: setup refuses to touch anything else.
+
+What is covered, and why it matters: pagination (no request is ever skipped or repeated), the content checks, edit and delete rules, prayer counting, the per-account and per-network limits, report weighting for auto-hide, account deletion, moderation, the metrics, notification throttling, and the configuration guards. The app tests check that every language has every string, that no text contains a long or short dash, and that crisis wording is recognised in all six languages.
+
+When you fix a bug, add the test that would have caught it first. CI (`.github/workflows/ci.yml`) runs typecheck and tests on every push and pull request.
+
+## Configuration that fails safe
+
+`AUTH_MODE` has no default: the API will not start without it. With `NODE_ENV=production` it also refuses to start with dev auth, the development hash secret, `CORS_ORIGIN=*`, or abuse protection turned off, and lists every problem at once. `/health` checks the database and answers 503 when it cannot reach it.
 
 ## Abuse protection settings
 

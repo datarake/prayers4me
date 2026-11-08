@@ -15,6 +15,8 @@ import { assertMessageLooksHuman } from "../moderation/heuristics.js";
 import { consumeRateLimit } from "../moderation/rateLimit.js";
 import { ipFingerprint } from "../moderation/network.js";
 import { notifyPrayerReceived } from "../notifications/push.js";
+import { decodeCursor, encodeCursor } from "../pagination.js";
+import { readJson, requireUuid } from "../validation.js";
 
 type RequestRow = {
   id: string;
@@ -28,6 +30,8 @@ type RequestRow = {
   prayers_count: number;
   status: PrayerRequestPublic["status"];
   created_at: Date;
+  /** Full-precision timestamp as text, only selected by the feed, for the cursor. */
+  created_at_raw?: string;
   edit_count: number;
   edited_at: Date | null;
   prayed_by_me: boolean;
@@ -85,8 +89,11 @@ requestsRoutes.get("/", async (c) => {
     limit: c.req.query("limit"),
   });
 
-  const afterCursor = query.cursor
-    ? sql`AND r.created_at < ${query.cursor}::timestamptz`
+  const after = query.cursor ? decodeCursor(query.cursor) : null;
+  // The timestamp goes in as text and is parsed by Postgres. Casting the parameter straight
+  // to timestamptz makes the driver build a JavaScript Date first, which drops microseconds.
+  const afterCursor = after
+    ? sql`AND (r.created_at, r.id) < ((${after.t}::text)::timestamptz, ${after.id}::uuid)`
     : sql``;
   // "Needs prayer": still waiting for a first prayer, and not the viewer's own request.
   const onlyWaiting =
@@ -97,6 +104,7 @@ requestsRoutes.get("/", async (c) => {
   const rows = await sql<RequestRow[]>`
     SELECT
       r.*,
+      r.created_at::text AS created_at_raw,
       EXISTS(
         SELECT 1 FROM prayers p
         WHERE p.request_id = r.id AND p.user_id = ${user.id}
@@ -106,14 +114,16 @@ requestsRoutes.get("/", async (c) => {
       AND r.status = 'active'
       ${onlyWaiting}
       ${afterCursor}
-    ORDER BY r.created_at DESC
+    ORDER BY r.created_at DESC, r.id DESC
     LIMIT ${query.limit}
   `;
 
   const items = rows.map((row) => mapRequest(row, user.id));
   const last = rows[rows.length - 1];
   const nextCursor =
-    rows.length === query.limit && last ? last.created_at.toISOString() : null;
+    rows.length === query.limit && last?.created_at_raw
+      ? encodeCursor({ t: last.created_at_raw, id: last.id })
+      : null;
 
   return c.json({ items, nextCursor });
 });
@@ -142,7 +152,7 @@ requestsRoutes.get("/me", async (c) => {
 requestsRoutes.post("/", requireNotBanned(), async (c) => {
   const sql = c.get("sql");
   const user = c.get("user");
-  const body = createRequestSchema.parse(await c.req.json());
+  const body = createRequestSchema.parse(await readJson(c));
 
   assertMessageLooksHuman(body.message);
   await consumeRateLimit(sql, user.id, "create_request", limitOptions(c, user));
@@ -177,7 +187,7 @@ requestsRoutes.post("/", requireNotBanned(), async (c) => {
 requestsRoutes.post("/:id/pray", requireNotBanned(), async (c) => {
   const sql = c.get("sql");
   const user = c.get("user");
-  const requestId = c.req.param("id");
+  const requestId = requireUuid(c.req.param("id"));
 
   await consumeRateLimit(sql, user.id, "pray", limitOptions(c, user));
 
@@ -242,8 +252,8 @@ requestsRoutes.post("/:id/pray", requireNotBanned(), async (c) => {
 requestsRoutes.post("/:id/report", requireNotBanned(), async (c) => {
   const sql = c.get("sql");
   const user = c.get("user");
-  const requestId = c.req.param("id");
-  const body = reportRequestSchema.parse(await c.req.json());
+  const requestId = requireUuid(c.req.param("id"));
+  const body = reportRequestSchema.parse(await readJson(c));
 
   await consumeRateLimit(sql, user.id, "report", limitOptions(c, user));
 
@@ -304,10 +314,7 @@ requestsRoutes.post("/:id/report", requireNotBanned(), async (c) => {
 requestsRoutes.delete("/:id", requireNotBanned(), async (c) => {
   const sql = c.get("sql");
   const user = c.get("user");
-  const requestId = c.req.param("id");
-  if (!/^[0-9a-f-]{36}$/i.test(requestId)) {
-    throw new ApiError(404, "not_found", "Prayer request not found");
-  }
+  const requestId = requireUuid(c.req.param("id"));
 
   // Soft delete: the row is kept for moderation audit but disappears everywhere.
   const rows = await sql<{ id: string }[]>`
@@ -329,12 +336,9 @@ requestsRoutes.delete("/:id", requireNotBanned(), async (c) => {
 requestsRoutes.patch("/:id", requireNotBanned(), async (c) => {
   const sql = c.get("sql");
   const user = c.get("user");
-  const requestId = c.req.param("id");
-  if (!/^[0-9a-f-]{36}$/i.test(requestId)) {
-    throw new ApiError(404, "not_found", "Prayer request not found");
-  }
+  const requestId = requireUuid(c.req.param("id"));
 
-  const body = updateRequestSchema.parse(await c.req.json());
+  const body = updateRequestSchema.parse(await readJson(c));
   // An edit must pass the same checks as a new request, or it would be a way around them.
   assertMessageLooksHuman(body.message);
 

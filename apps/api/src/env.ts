@@ -1,34 +1,64 @@
 import { z } from "zod";
 
-const envSchema = z.object({
-  PORT: z.coerce.number().default(8080),
-  DATABASE_URL: z.string().min(1),
-  AUTH_MODE: z.enum(["dev", "firebase"]).default("dev"),
-  CORS_ORIGIN: z.string().default("*"),
-  FIREBASE_PROJECT_ID: z.string().optional(),
-  /** "log" prints notifications instead of sending them (safe default for development). */
-  /**
-   * How many reverse proxies sit in front of the API. 0 uses the socket address (safe when
-   * the API is reached directly). With N hops, the client is the Nth entry from the right of
-   * X-Forwarded-For, so a header the client supplies can never choose its own address.
-   */
-  TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
-  /** Per-network limits next to the per-account ones. Turn off only for local development. */
-  IP_LIMITS: z.enum(["on", "off"]).default("on"),
-  /** Stricter limits and low-weight reports for accounts under 24 hours old. Off only for local development. */
-  NEW_ACCOUNT_PROBATION: z.enum(["on", "off"]).default("on"),
-  /** Salt for network fingerprints. Set a long random value in production. */
-  IP_HASH_SECRET: z.string().min(8).default("dev-only-change-me"),
-  PUSH_MODE: z.enum(["log", "expo"]).default("log"),
-});
+const DEV_HASH_SECRET = "dev-only-change-me";
+
+const envSchema = z
+  .object({
+    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    PORT: z.coerce.number().default(8080),
+    DATABASE_URL: z.string().min(1),
+    /** Required on purpose: there is no safe default. `dev` accepts `Bearer dev:<any id>`. */
+    AUTH_MODE: z.enum(["dev", "firebase"]),
+    CORS_ORIGIN: z.string().default("*"),
+    FIREBASE_PROJECT_ID: z.string().optional(),
+    /**
+     * How many reverse proxies sit in front of the API. 0 uses the socket address (safe when
+     * the API is reached directly). With N hops, the client is the Nth entry from the right of
+     * X-Forwarded-For, so a header the client supplies can never choose its own address.
+     */
+    TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
+    /** Per-network limits next to the per-account ones. Turn off only for local development. */
+    IP_LIMITS: z.enum(["on", "off"]).default("on"),
+    /** Stricter limits and low-weight reports for accounts under 24 hours old. Off only for local development. */
+    NEW_ACCOUNT_PROBATION: z.enum(["on", "off"]).default("on"),
+    /** Salt for network fingerprints. Set a long random value in production. */
+    IP_HASH_SECRET: z.string().min(8).default(DEV_HASH_SECRET),
+    /** "log" prints notifications instead of sending them (safe default for development). */
+    PUSH_MODE: z.enum(["log", "expo"]).default("log"),
+  })
+  .superRefine((env, ctx) => {
+    if (env.NODE_ENV !== "production") return;
+    // A production deploy that forgets one setting must not start in a weak configuration.
+    const problem = (path: string, message: string) =>
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path], message });
+    if (env.AUTH_MODE === "dev") {
+      problem("AUTH_MODE", "dev auth lets anyone act as any user and cannot run in production");
+    }
+    if (env.IP_HASH_SECRET === DEV_HASH_SECRET || env.IP_HASH_SECRET.length < 24) {
+      problem("IP_HASH_SECRET", "set a random secret of at least 24 characters");
+    }
+    if (env.CORS_ORIGIN === "*") {
+      problem("CORS_ORIGIN", "list the allowed origins instead of *");
+    }
+    if (env.IP_LIMITS === "off" || env.NEW_ACCOUNT_PROBATION === "off") {
+      problem("IP_LIMITS", "abuse protection cannot be turned off in production");
+    }
+  });
 
 export type Env = z.infer<typeof envSchema>;
 
-export function loadEnv(): Env {
-  const parsed = envSchema.safeParse(process.env);
+/** Validates a raw environment. Throws a readable error listing every problem. */
+export function parseEnv(raw: Record<string, string | undefined>): Env {
+  const parsed = envSchema.safeParse(raw);
   if (!parsed.success) {
-    console.error(parsed.error.flatten().fieldErrors);
-    throw new Error("Invalid environment configuration");
+    const lines = parsed.error.issues.map(
+      (i) => `  ${i.path.join(".") || "env"}: ${i.message}`,
+    );
+    throw new Error(`Invalid environment configuration:\n${lines.join("\n")}`);
   }
   return parsed.data;
+}
+
+export function loadEnv(): Env {
+  return parseEnv(process.env);
 }

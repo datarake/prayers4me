@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { AppVariables } from "../auth.js";
 import { requireAdmin } from "../auth.js";
 import { ApiError } from "../errors.js";
+import { readJson, requireUuid } from "../validation.js";
 
 export const adminRoutes = new Hono<{ Variables: AppVariables }>();
 
@@ -118,7 +119,7 @@ adminRoutes.get("/reports", async (c) => {
 
 adminRoutes.post("/requests/:id/hide", async (c) => {
   const sql = c.get("sql");
-  const requestId = c.req.param("id");
+  const requestId = requireUuid(c.req.param("id"));
   const updated = await sql`
     UPDATE prayer_requests
     SET status = 'hidden', updated_at = now()
@@ -131,7 +132,7 @@ adminRoutes.post("/requests/:id/hide", async (c) => {
 
 adminRoutes.post("/requests/:id/restore", async (c) => {
   const sql = c.get("sql");
-  const requestId = c.req.param("id");
+  const requestId = requireUuid(c.req.param("id"));
   const updated = await sql`
     UPDATE prayer_requests
     SET status = 'active', updated_at = now()
@@ -150,8 +151,8 @@ const banSchema = z.object({
 adminRoutes.post("/users/:id/ban", async (c) => {
   const sql = c.get("sql");
   const admin = c.get("user");
-  const userId = c.req.param("id");
-  const body = banSchema.parse(await c.req.json());
+  const userId = requireUuid(c.req.param("id"));
+  const body = banSchema.parse(await readJson(c));
 
   await sql.begin(async (tx) => {
     await tx`

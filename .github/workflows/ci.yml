@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # The API tests run against a real Postgres. They create and drop their own
+    # database (prayers4me_test), so nothing here needs seeding.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: prayers4me
+          POSTGRES_PASSWORD: prayers4me
+          POSTGRES_DB: prayers4me
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U prayers4me"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The apps import the compiled shared package, so it has to exist first.
+      - run: pnpm --filter @prayers4me/shared build
+
+      - run: pnpm typecheck
+
+      - run: pnpm test

@@ -31,6 +31,23 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | **Scheduled clean-up** that erases requests deleted one by one after a fixed number of days | The privacy policy needs a retention period, and "hidden forever" is not one. |
 | **Attestation hook**: refuse API calls without a valid App Check or Play Integrity token when `AUTH_MODE=firebase` | Completes P0.2 once the accounts exist. |
 
+### Engineering foundations (from the developer review)
+
+| # | Task | Status |
+|---|------|--------|
+| E1 | **Feed pagination that never skips a request** (keyset cursor on timestamp and id; the driver was cutting microseconds) | done, with a regression test |
+| E2 | **Safe configuration**: no default auth mode, production refuses weak settings | done |
+| E3 | **Input hardening**: bad JSON and bad ids are 4xx, request size limit, security headers, a health check that sees the database | done |
+| E4 | **Old rate-limit counters pruned** every few hours | done |
+| E5 | **Automated tests** against a real database, and **CI** on every push | done (175 tests) |
+| E6 | **Lint and format** (ESLint, Prettier) with a CI check | todo |
+| E7 | **Localized error messages**: the app maps the API's error codes to its own text instead of showing English server messages | todo |
+| E8 | **Dev flow**: build or watch the shared package automatically, and a seed script instead of hand-made data | todo |
+| E9 | **Route structure**: move rules out of the route handlers into small testable functions | todo |
+| E10 | **One home for app strings** (today split across two files), with the push wording sharing its source | todo |
+| E11 | **Container and deploy files**: Dockerfile, `eas.json`, structured logs with a request id | todo |
+| E12 | Remove unused dependencies after `expo-doctor` (`expo-device`, `expo-symbols`, others may be peers) | todo |
+
 ### P1: retention (first weeks)
 
 | # | Task | Why | Status |

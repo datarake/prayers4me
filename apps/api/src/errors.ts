@@ -32,6 +32,21 @@ export function jsonError(c: Context, err: unknown) {
     );
   }
 
+  // Safety nets for client mistakes that slip past explicit checks, so they never look
+  // like server failures: a body that is not JSON, and a malformed id reaching Postgres.
+  if (err instanceof SyntaxError) {
+    return c.json(
+      { error: { code: "invalid_json", message: "The request body is not valid JSON" } },
+      400,
+    );
+  }
+  if ((err as { code?: string } | null)?.code === "22P02") {
+    return c.json(
+      { error: { code: "invalid_input", message: "A value in the request is not valid" } },
+      400,
+    );
+  }
+
   console.error(err);
   return c.json(
     { error: { code: "internal", message: "Unexpected server error" } },
