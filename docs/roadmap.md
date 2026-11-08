@@ -4,6 +4,64 @@ Ordered by user value against effort, and by what blocks a public launch. Each p
 
 Principles that decide scope: presence without intimacy, quiet by default, low friction in crisis, trust is product (see [Product](./product.md)). Anything that adds a feed, chat or social graph is out.
 
+## Launch plan (from the product review)
+
+The order below is the order to work in. P0 blocks any public beta. P1 decides whether people come back. P2 is growth and sustainability once the loop works.
+
+Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decision or an expert outside this repository).
+
+### P0: before a closed beta
+
+| # | Task | Why | Status |
+|---|------|-----|--------|
+| P0.1 | **Abuse limits that survive free identities**: per-IP limits next to per-user limits, stricter limits for accounts under 24 hours old, and auto-hide that counts only reports from established accounts on distinct IPs | A new install is a new identity, so per-user limits alone allow flooding, brigading and ban evasion. This is the failure that killed v1. | done (the network and account limits are in place and tested) |
+| P0.2 | **Device attestation** (Firebase App Check, Apple DeviceCheck, Play Integrity) and real Firebase auth (`AUTH_MODE=firebase`) | Only real installs of the app should reach the API. | needs you (Firebase project and Apple and Google developer accounts) |
+| P0.3 | **Account and data deletion** in Settings and `DELETE /v1/session` | Required by the app stores and by GDPR. | done (one gap: requests deleted one by one are only hidden, see `docs/operations.md`) |
+| P0.4 | **Privacy policy, terms and consent for sensitive data** (health and religion are special category data in the EU) | Legal requirement. Drafts live in `docs/legal`. | draft written, needs a lawyer |
+| P0.5 | **Support contact** shown in the app and the store listing | Apple requires one for apps with user-generated content. | needs you (an address) |
+| P0.6 | **Moderation tooling and a response rule**: a queue someone can actually use, a named owner, and a target to act on reports within 24 hours | Stores expect action on abusive content within about a day. Today reports exist only as raw API calls. | partly done (rules written in `docs/operations.md`, report weighting done, an admin page is still todo) |
+| P0.7 | **Measurement without tracking people**: server-side metrics from the database (first-prayer rate, time to first prayer, retention proxies). No client analytics, no request text. | You cannot tell if the product works without it, and this keeps the anonymity promise. | done (`GET /v1/admin/metrics`) |
+| P0.8 | **Crash reporting** | Needed before real users, without sending content. | needs you (choose a service) |
+
+### Follow-ups found while building P0
+
+| Task | Why |
+|------|-----|
+| **Admin page** for reports, hide, restore, ban and the metrics | Moderators currently call API routes by hand. |
+| **Scheduled clean-up** that erases requests deleted one by one after a fixed number of days | The privacy policy needs a retention period, and "hidden forever" is not one. |
+| **Attestation hook**: refuse API calls without a valid App Check or Play Integrity token when `AUTH_MODE=firebase` | Completes P0.2 once the accounts exist. |
+
+### P1: retention (first weeks)
+
+| # | Task | Why | Status |
+|---|------|-----|--------|
+| P1.1 | **Warmer "no prayers yet" state** instead of a big 0 | A zero on your own request reads as failure and makes people leave. | in progress |
+| P1.2 | **"While you wait, pray for someone"** after sending a request | A reciprocity loop that raises prayer supply, the metric that makes or breaks the product. | done |
+| P1.3 | **First prayer celebration** for the author | Product principle 2. The moment the promise is kept. | todo |
+| P1.4 | **Gentle daily reminder** | A reason to come back and pray. | todo |
+| P1.5 | **Prayer mode**, one request at a time | Calmer than a list, equal exposure, and slower than tapping through cards. | todo |
+| P1.6 | **One-tap "Anonymous"** and remember the last name | A required name is a barrier in a crisis. | todo |
+| P1.7 | **Block** and the "answered" thank-you note | Store expectation, and closes the loop for people who prayed. | todo |
+
+### P2: growth and sustainability
+
+| # | Task | Status |
+|---|------|--------|
+| P2.1 | Launch with one language and one real community, add languages as each community reaches a healthy size | needs you (a launch partner and a decision) |
+| P2.2 | Share the app (never an individual request) | todo |
+| P2.3 | Funding model, no ads (donations, church partnerships, optional supporter) | needs you (a decision) |
+| P2.4 | Optional account link so a new phone keeps your requests | todo |
+| P2.5 | Decide the audience: faith-neutral or Christian, and write it into the copy and moderation rules | needs you (a decision) |
+
+### To test with people, not decide here
+Whether people will post without a name, how they react to "no prayers yet", whether "Needs prayer" raises first prayers, and whether they would return daily for prayer mode. Five interviews and a small private beta.
+
+---
+
+## History
+
+The sections below record what was built, in order.
+
 ## Phase 1: Safety and control (in progress)
 
 People share hard moments here. They must stay in control, and the app must respond well when someone is in danger.

@@ -31,6 +31,7 @@ import { api, errorMessage } from "@/src/api";
 import { Icon } from "@/src/components/Icon";
 import { useToast } from "@/src/components/Toast";
 import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
+import { markJustSent } from "@/src/session";
 import { PrimaryButton, Screen } from "@/src/components/ui";
 import { colors, type FontSet } from "@/src/theme";
 import { useStyles } from "@/src/useStyles";
@@ -191,6 +192,7 @@ export default function ComposeScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
         () => undefined,
       );
+      await markJustSent();
       toast.show(copy.requestSent);
       router.back();
     } catch (err) {

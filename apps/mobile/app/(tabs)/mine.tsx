@@ -15,6 +15,8 @@ import { api, errorMessage } from "@/src/api";
 import { EmptyState } from "@/src/components/EmptyState";
 import { RequestCard } from "@/src/components/RequestCard";
 import { NotifyPrompt } from "@/src/components/NotifyPrompt";
+import { WaitCard } from "@/src/components/WaitCard";
+import { clearJustSent, hasJustSent } from "@/src/session";
 import { SkeletonList } from "@/src/components/Skeleton";
 import { useToast } from "@/src/components/Toast";
 import {
@@ -39,6 +41,7 @@ export default function ForMeScreen() {
   const [failed, setFailed] = useState(false);
   const hasLoaded = useRef(false);
   const [promptState, setPromptState] = useState<PromptState>("dismissed");
+  const [justSent, setJustSent] = useState(false);
   const [enabling, setEnabling] = useState(false);
 
   useLayoutEffect(() => {
@@ -66,6 +69,7 @@ export default function ForMeScreen() {
     useCallback(() => {
       load();
       getPromptState().then(setPromptState);
+      hasJustSent().then(setJustSent);
     }, [load]),
   );
 
@@ -150,12 +154,37 @@ export default function ForMeScreen() {
         ListHeaderComponent={
           items.length > 0 ? (
             <View style={styles.top}>
-              <View style={styles.summary}>
-                <Text style={styles.summaryNumber}>{totalPrayers}</Text>
-                <Text style={styles.summaryLabel}>{copy.prayersReceived}</Text>
-              </View>
-              <Text style={styles.intro}>{copy.forMeIntro}</Text>
-              {promptState === "unasked" ? (
+              {totalPrayers > 0 ? (
+                <>
+                  <View style={styles.summary}>
+                    <Text style={styles.summaryNumber}>{totalPrayers}</Text>
+                    <Text style={styles.summaryLabel}>{copy.prayersReceived}</Text>
+                  </View>
+                  <Text style={styles.intro}>{copy.forMeIntro}</Text>
+                </>
+              ) : (
+                // A big "0" on your own request reads as failure. Say what is true instead.
+                <View style={styles.waiting}>
+                  <Text style={styles.waitingTitle} accessibilityRole="header">
+                    {copy.mineWaitingTitle}
+                  </Text>
+                  <Text style={styles.intro}>{copy.mineWaitingBody}</Text>
+                </View>
+              )}
+              {justSent ? (
+                <WaitCard
+                  copy={copy}
+                  onPray={async () => {
+                    await clearJustSent();
+                    setJustSent(false);
+                    router.navigate("/pray");
+                  }}
+                  onLater={async () => {
+                    await clearJustSent();
+                    setJustSent(false);
+                  }}
+                />
+              ) : promptState === "unasked" ? (
                 <NotifyPrompt
                   copy={copy}
                   busy={enabling}
@@ -216,6 +245,15 @@ const createStyles = (fonts: FontSet) =>
       gap: 16,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: colors.border,
+    },
+    waiting: {
+      gap: 6,
+    },
+    waitingTitle: {
+      fontFamily: fonts.display,
+      fontSize: 28,
+      lineHeight: 34,
+      color: colors.sea,
     },
     summary: {
       flexDirection: "row",

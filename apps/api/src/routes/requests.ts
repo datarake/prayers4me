@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import {
   MAX_EDITS_PER_REQUEST,
   RATE_LIMITS,
@@ -13,6 +13,7 @@ import { requireNotBanned } from "../auth.js";
 import { ApiError } from "../errors.js";
 import { assertMessageLooksHuman } from "../moderation/heuristics.js";
 import { consumeRateLimit } from "../moderation/rateLimit.js";
+import { ipFingerprint } from "../moderation/network.js";
 import { notifyPrayerReceived } from "../notifications/push.js";
 
 type RequestRow = {
@@ -49,6 +50,26 @@ function mapRequest(row: RequestRow, viewerId: string): PrayerRequestPublic {
     createdAt: row.created_at.toISOString(),
     editedAt: row.edited_at ? row.edited_at.toISOString() : null,
     editsLeft: isMine ? Math.max(0, MAX_EDITS_PER_REQUEST - row.edit_count) : 0,
+  };
+}
+
+/** True while an account is under 24 hours old (unless probation is turned off for development). */
+function isOnProbation(
+  c: Context<{ Variables: AppVariables }>,
+  user: { isNewAccount: boolean },
+): boolean {
+  return c.get("env").NEW_ACCOUNT_PROBATION === "on" && user.isNewAccount;
+}
+
+/** Limit options for this caller: account age, and the network when per-network limits are on. */
+function limitOptions(
+  c: Context<{ Variables: AppVariables }>,
+  user: { isNewAccount: boolean },
+) {
+  const env = c.get("env");
+  return {
+    isNewAccount: isOnProbation(c, user),
+    networkKey: env.IP_LIMITS === "on" ? ipFingerprint(c, env) : null,
   };
 }
 
@@ -124,7 +145,7 @@ requestsRoutes.post("/", requireNotBanned(), async (c) => {
   const body = createRequestSchema.parse(await c.req.json());
 
   assertMessageLooksHuman(body.message);
-  await consumeRateLimit(sql, user.id, "create_request");
+  await consumeRateLimit(sql, user.id, "create_request", limitOptions(c, user));
 
   const rows = await sql<RequestRow[]>`
     INSERT INTO prayer_requests (
@@ -158,7 +179,7 @@ requestsRoutes.post("/:id/pray", requireNotBanned(), async (c) => {
   const user = c.get("user");
   const requestId = c.req.param("id");
 
-  await consumeRateLimit(sql, user.id, "pray");
+  await consumeRateLimit(sql, user.id, "pray", limitOptions(c, user));
 
   const result = await sql.begin(async (tx) => {
     const existing = await tx<
@@ -224,7 +245,7 @@ requestsRoutes.post("/:id/report", requireNotBanned(), async (c) => {
   const requestId = c.req.param("id");
   const body = reportRequestSchema.parse(await c.req.json());
 
-  await consumeRateLimit(sql, user.id, "report");
+  await consumeRateLimit(sql, user.id, "report", limitOptions(c, user));
 
   const result = await sql.begin(async (tx) => {
     const existing = await tx<{ id: string; author_id: string; status: string }[]>`
@@ -238,14 +259,21 @@ requestsRoutes.post("/:id/report", requireNotBanned(), async (c) => {
       throw new ApiError(400, "cannot_report_own", "You cannot report your own request");
     }
 
+    // Reports from brand-new accounts are kept for moderators but do not count toward
+    // auto-hide, and only distinct networks count: throwaway accounts on one phone are one voice.
     await tx`
-      INSERT INTO reports (request_id, reporter_id, reason, note)
-      VALUES (${requestId}, ${user.id}, ${body.reason}, ${body.note ?? null})
+      INSERT INTO reports (request_id, reporter_id, reason, note, ip_hash, counts_toward_hide)
+      VALUES (
+        ${requestId}, ${user.id}, ${body.reason}, ${body.note ?? null},
+        ${ipFingerprint(c, c.get("env"))}, ${!isOnProbation(c, user)}
+      )
       ON CONFLICT (request_id, reporter_id) DO NOTHING
     `;
 
     const counts = await tx<{ count: number }[]>`
-      SELECT COUNT(*)::int AS count FROM reports WHERE request_id = ${requestId}
+      SELECT COUNT(DISTINCT ip_hash)::int AS count
+      FROM reports
+      WHERE request_id = ${requestId} AND counts_toward_hide
     `;
     const reportCount = counts[0]?.count ?? 0;
     let autoHidden = false;

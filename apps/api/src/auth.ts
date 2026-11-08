@@ -10,6 +10,8 @@ export type AuthUser = {
   language: LanguageCode;
   role: "user" | "admin";
   banned: boolean;
+  /** Under 24 hours old: stricter limits and reports that do not count toward auto-hide. */
+  isNewAccount: boolean;
 };
 
 export type AppVariables = {
@@ -25,13 +27,14 @@ async function upsertDevUser(sql: Sql, firebaseUid: string): Promise<AuthUser> {
     language: LanguageCode;
     role: "user" | "admin";
     banned: boolean;
+    is_new: boolean;
   }[]>`
     WITH upserted AS (
       INSERT INTO users (firebase_uid)
       VALUES (${firebaseUid})
       ON CONFLICT (firebase_uid) DO UPDATE
         SET updated_at = now()
-      RETURNING id, firebase_uid, language, role
+      RETURNING id, firebase_uid, language, role, created_at
     )
     SELECT
       u.id,
@@ -39,7 +42,8 @@ async function upsertDevUser(sql: Sql, firebaseUid: string): Promise<AuthUser> {
       u.language,
       u.role,
       EXISTS(SELECT 1 FROM bans b WHERE b.user_id = u.id
-        AND (b.expires_at IS NULL OR b.expires_at > now())) AS banned
+        AND (b.expires_at IS NULL OR b.expires_at > now())) AS banned,
+      (u.created_at > now() - interval '24 hours') AS is_new
     FROM upserted u
   `;
 
@@ -52,6 +56,7 @@ async function upsertDevUser(sql: Sql, firebaseUid: string): Promise<AuthUser> {
     language: row.language,
     role: row.role,
     banned: row.banned,
+    isNewAccount: row.is_new,
   };
 }
 

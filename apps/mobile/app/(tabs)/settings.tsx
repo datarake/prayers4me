@@ -2,11 +2,13 @@ import { LANGUAGES } from "@prayers4me/shared";
 import Constants from "expo-constants";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { useCallback, useLayoutEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { APP_NAME } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
 import { Icon } from "@/src/components/Icon";
+import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
+import { resetLocalData } from "@/src/session";
 import { Screen } from "@/src/components/ui";
 import {
   disableNotifications,
@@ -53,6 +55,28 @@ export default function SettingsScreen() {
       }
     }
     setBusy(false);
+  };
+
+  const confirmDeleteData = () => {
+    Alert.alert(copy.deleteDataTitle, copy.deleteDataBody, [
+      { text: copy.cancel, style: "cancel" },
+      {
+        text: copy.deleteDataConfirm,
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await api.deleteAccount();
+          } catch (err) {
+            toast.show(errorMessage(err, copy.errorNetwork), "error");
+            return;
+          }
+          // The server has forgotten this person, so this phone does too and starts fresh.
+          await resetLocalData();
+          toast.show(copy.deleteDataDone);
+          router.replace("/");
+        },
+      },
+    ]);
   };
 
   const current = LANGUAGES.find((l) => l.code === language);
@@ -110,6 +134,16 @@ export default function SettingsScreen() {
           </Pressable>
         </View>
 
+        <View style={styles.group}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={confirmDeleteData}
+            style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+          >
+            <Text style={[styles.label, styles.danger]}>{copy.deleteDataLabel}</Text>
+          </Pressable>
+        </View>
+
         <Text style={styles.footer}>
           {APP_NAME} {version ? `· ${copy.settingsVersion} ${version}` : ""}
         </Text>
@@ -152,6 +186,9 @@ const createStyles = (fonts: FontSet) =>
       fontFamily: fonts.bodyMedium,
       fontSize: 17,
       color: colors.ink,
+    },
+    danger: {
+      color: colors.danger,
     },
     hint: {
       fontFamily: fonts.body,

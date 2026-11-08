@@ -127,6 +127,8 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
+  deleteAccount: () => request<{ deleted: boolean }>("/v1/session", { method: "DELETE" }),
+
   registerPushToken: (token: string | null) =>
     request<{ registered: boolean }>("/v1/session/push-token", {
       method: "PUT",

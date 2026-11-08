@@ -66,6 +66,31 @@ export function createApp(env: Env, sql: Sql) {
     return c.json({ registered: body.token !== null });
   });
 
+  // Delete everything this account ever did. Required by app stores and by GDPR.
+  app.delete("/v1/session", async (c) => {
+    const user = c.get("user");
+
+    await sql.begin(async (tx) => {
+      // Prayers this person said for others disappear with them, so the counts shown
+      // on those requests go down by one to stay honest.
+      await tx`
+        UPDATE prayer_requests r
+        SET prayers_count = GREATEST(r.prayers_count - 1, 0)
+        FROM prayers p
+        WHERE p.request_id = r.id
+          AND p.user_id = ${user.id}
+          AND r.author_id <> ${user.id}
+      `;
+      // Their own requests go, and with them every prayer, report and earlier version.
+      await tx`DELETE FROM prayer_requests WHERE author_id = ${user.id}`;
+      await tx`DELETE FROM rate_limit_buckets WHERE subject_key = ${`user:${user.id}`}`;
+      // Removes their prayers, reports and any ban record through ON DELETE CASCADE.
+      await tx`DELETE FROM users WHERE id = ${user.id}`;
+    });
+
+    return c.json({ deleted: true });
+  });
+
   app.route("/v1/requests", requestsRoutes);
   app.route("/v1/admin", adminRoutes);
 

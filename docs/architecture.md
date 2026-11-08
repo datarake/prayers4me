@@ -79,18 +79,20 @@ Feeds only show `active`. Hidden rows stay for audit.
 | POST | `/v1/requests/:id/pray` | Pray once (idempotent) |
 | POST | `/v1/requests/:id/report` | Report (may auto-hide) |
 | PATCH | `/v1/requests/:id` | Author edits name, text or contact (max 3 edits, content checks apply, not while under review) |
+| DELETE | `/v1/session` | Delete the whole account: requests, prayers, reports, token (counts on other requests are corrected) |
 | DELETE | `/v1/requests/:id` | Author removes their own request (soft delete) |
 | PUT | `/v1/session/push-token` | Register or clear the device's Expo push token |
-| GET/POST | `/v1/admin/...` | Reports queue, hide/restore, ban |
+| GET/POST | `/v1/admin/...` | Reports queue, hide/restore, ban, `GET /v1/admin/metrics` (first-prayer rate, time to first prayer, supply and demand) |
 
 ## Moderation controls
 
 Configured in `@prayers4me/shared` (`RATE_LIMITS`) and enforced in the API:
 
-- Cap new requests per user per day  
+- Cap new requests per user per day (1 for accounts under 24 hours old)  
+- Per-network caps across all accounts, using a salted fingerprint that changes daily  
 - Cap pray / report actions per day  
 - Reject dump-like messages (too many lines, huge paste, link spam)  
-- Auto-hide after enough distinct reports  
+- Auto-hide after three reports from established accounts on distinct networks. Reports from accounts under 24 hours old are kept for moderators but do not count  
 - Admin ban hides that user’s active content  
 
 ## Auth model

@@ -64,6 +64,15 @@ export type ExtraDictionary = {
   settingsNotifications: string;
   settingsNotificationsHint: string;
   settingsVersion: string;
+  deleteDataLabel: string;
+  deleteDataTitle: string;
+  deleteDataBody: string;
+  deleteDataConfirm: string;
+  deleteDataDone: string;
+  mineWaitingTitle: string;
+  mineWaitingBody: string;
+  waitTitle: string;
+  waitBody: string;
   readLess: string;
   filterNewest: string;
   filterWaiting: string;
@@ -142,6 +151,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Prayer notifications",
     settingsNotificationsHint: "One quiet notification when someone prays for you.",
     settingsVersion: "Version",
+    deleteDataLabel: "Delete my data",
+    deleteDataTitle: "Delete all your data?",
+    deleteDataBody: "Your requests, prayers and settings will be removed for good. This cannot be undone.",
+    deleteDataConfirm: "Delete everything",
+    deleteDataDone: "Your data was deleted",
+    mineWaitingTitle: "Your request is out there",
+    mineWaitingBody: "It can take a little while. Someone will see it soon.",
+    waitTitle: "While you wait",
+    waitBody: "Pray for someone else. Prayers go both ways.",
     readLess: "Show less",
     filterNewest: "Newest",
     filterWaiting: "Needs prayer",
@@ -218,6 +236,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notificaciones de oración",
     settingsNotificationsHint: "Una notificación discreta cuando alguien ore por ti.",
     settingsVersion: "Versión",
+    deleteDataLabel: "Eliminar mis datos",
+    deleteDataTitle: "¿Eliminar todos tus datos?",
+    deleteDataBody: "Tus peticiones, oraciones y ajustes se eliminarán para siempre. No se puede deshacer.",
+    deleteDataConfirm: "Eliminar todo",
+    deleteDataDone: "Tus datos fueron eliminados",
+    mineWaitingTitle: "Tu petición ya está ahí fuera",
+    mineWaitingBody: "Puede tardar un poco. Alguien la verá pronto.",
+    waitTitle: "Mientras esperas",
+    waitBody: "Ora por alguien más. Las oraciones van y vienen.",
     readLess: "Mostrar menos",
     filterNewest: "Recientes",
     filterWaiting: "Esperan oración",
@@ -294,6 +321,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notifications de prière",
     settingsNotificationsHint: "Une notification discrète quand quelqu’un prie pour toi.",
     settingsVersion: "Version",
+    deleteDataLabel: "Supprimer mes données",
+    deleteDataTitle: "Supprimer toutes tes données ?",
+    deleteDataBody: "Tes demandes, tes prières et tes réglages seront supprimés définitivement. Action irréversible.",
+    deleteDataConfirm: "Tout supprimer",
+    deleteDataDone: "Tes données ont été supprimées",
+    mineWaitingTitle: "Ta demande est publiée",
+    mineWaitingBody: "Cela peut prendre un peu de temps. Quelqu’un la verra bientôt.",
+    waitTitle: "En attendant",
+    waitBody: "Prie pour quelqu’un d’autre. Les prières vont dans les deux sens.",
     readLess: "Réduire",
     filterNewest: "Récentes",
     filterWaiting: "Attendent une prière",
@@ -370,6 +406,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notificări de rugăciune",
     settingsNotificationsHint: "O notificare discretă când cineva se roagă pentru tine.",
     settingsVersion: "Versiune",
+    deleteDataLabel: "Șterge datele mele",
+    deleteDataTitle: "Ștergi toate datele tale?",
+    deleteDataBody: "Cererile, rugăciunile și setările tale vor fi șterse definitiv. Nu se poate anula.",
+    deleteDataConfirm: "Șterge tot",
+    deleteDataDone: "Datele tale au fost șterse",
+    mineWaitingTitle: "Cererea ta a ajuns la oameni",
+    mineWaitingBody: "Poate dura puțin. Cineva o va vedea curând.",
+    waitTitle: "Cât aștepți",
+    waitBody: "Roagă-te pentru altcineva. Rugăciunile merg în ambele sensuri.",
     readLess: "Arată mai puțin",
     filterNewest: "Recente",
     filterWaiting: "Așteaptă rugăciune",
@@ -446,6 +491,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Сповіщення про молитву",
     settingsNotificationsHint: "Одне тихе сповіщення, коли хтось помолиться за тебе.",
     settingsVersion: "Версія",
+    deleteDataLabel: "Видалити мої дані",
+    deleteDataTitle: "Видалити всі твої дані?",
+    deleteDataBody: "Твої прохання, молитви й налаштування буде остаточно видалено. Дію не можна скасувати.",
+    deleteDataConfirm: "Видалити все",
+    deleteDataDone: "Твої дані видалено",
+    mineWaitingTitle: "Твоє прохання вже серед людей",
+    mineWaitingBody: "Це може зайняти трохи часу. Скоро хтось його побачить.",
+    waitTitle: "Поки чекаєш",
+    waitBody: "Помолися за когось іншого. Молитви йдуть в обидва боки.",
     readLess: "Згорнути",
     filterNewest: "Нові",
     filterWaiting: "Чекають молитви",
@@ -522,6 +576,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Уведомления о молитве",
     settingsNotificationsHint: "Одно тихое уведомление, когда кто-то помолится за тебя.",
     settingsVersion: "Версия",
+    deleteDataLabel: "Удалить мои данные",
+    deleteDataTitle: "Удалить все твои данные?",
+    deleteDataBody: "Твои просьбы, молитвы и настройки будут удалены навсегда. Действие нельзя отменить.",
+    deleteDataConfirm: "Удалить всё",
+    deleteDataDone: "Твои данные удалены",
+    mineWaitingTitle: "Твоя просьба уже среди людей",
+    mineWaitingBody: "Это может занять немного времени. Скоро кто-то её увидит.",
+    waitTitle: "Пока ждёшь",
+    waitBody: "Помолись за кого-то другого. Молитвы идут в обе стороны.",
     readLess: "Свернуть",
     filterNewest: "Новые",
     filterWaiting: "Ждут молитвы",

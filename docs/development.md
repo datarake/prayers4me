@@ -37,6 +37,17 @@ curl -H "Authorization: Bearer dev:alice" http://localhost:8080/v1/session
 - On a physical device, point that URL at your machine’s LAN IP.
 - Expo Go’s blue gear button is Expo tooling, not an app setting.
 
+## Abuse protection settings
+
+| Variable | Default | Notes |
+|----------|---------|-------|
+| `IP_LIMITS` | `on` | Per-network limits. The local `.env.example` turns it off because everything shares one address. |
+| `NEW_ACCOUNT_PROBATION` | `on` | Stricter limits for accounts under 24 hours old. Off locally so test accounts are not throttled. |
+| `TRUSTED_PROXY_HOPS` | `0` | Set to `1` behind Cloud Run. The client address is the Nth entry from the right of `X-Forwarded-For`, so a client cannot choose its own. |
+| `IP_HASH_SECRET` | dev value | Set a long random value in production. |
+
+To test the protections locally, start a second API instance with them on: `PORT=8091 IP_LIMITS=on NEW_ACCOUNT_PROBATION=on TRUSTED_PROXY_HOPS=1 pnpm --filter @prayers4me/api dev`, then send `X-Forwarded-For: <address>` to simulate different networks.
+
 ## Push notifications
 
 When someone prays, the server notifies the author (see `apps/api/src/notifications/push.ts`).

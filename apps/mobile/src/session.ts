@@ -61,3 +61,50 @@ export async function markWelcomeSeen(): Promise<void> {
     // Not critical: the welcome screen would just show once more.
   }
 }
+
+const JUST_SENT_KEY = "prayers4me.justSent";
+const JUST_SENT_WINDOW_MS = 60 * 60 * 1000;
+
+/** Remembers that a request was just sent, to offer "pray for someone while you wait". */
+export async function markJustSent(): Promise<void> {
+  try {
+    await AsyncStorage.setItem(JUST_SENT_KEY, String(Date.now()));
+  } catch {
+    // Not critical.
+  }
+}
+
+/** True for an hour after sending a request, until the person acts on or dismisses the offer. */
+export async function hasJustSent(): Promise<boolean> {
+  try {
+    const at = Number(await AsyncStorage.getItem(JUST_SENT_KEY));
+    return at > 0 && Date.now() - at < JUST_SENT_WINDOW_MS;
+  } catch {
+    return false;
+  }
+}
+
+export async function clearJustSent(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(JUST_SENT_KEY);
+  } catch {
+    // Not critical.
+  }
+}
+
+/**
+ * After the server has deleted the account, forget this phone too: the next launch starts
+ * as a new person, with a fresh device id and the welcome screen. The language stays.
+ */
+export async function resetLocalData(): Promise<void> {
+  try {
+    await AsyncStorage.multiRemove([
+      DEVICE_KEY,
+      WELCOME_KEY,
+      JUST_SENT_KEY,
+      "prayers4me.notifications",
+    ]);
+  } catch {
+    // Not critical.
+  }
+}
