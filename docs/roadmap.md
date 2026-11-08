@@ -21,7 +21,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | P0.5 | **Support contact** shown in the app and the store listing | Apple requires one for apps with user-generated content. | needs you (an address) |
 | P0.6 | **Moderation tooling and a response rule**: a queue someone can actually use, a named owner, and a target to act on reports within 24 hours | Stores expect action on abusive content within about a day. Today reports exist only as raw API calls. | partly done (rules written in `docs/operations.md`, report weighting done, an admin page is still todo) |
 | P0.7 | **Measurement without tracking people**: server-side metrics from the database (first-prayer rate, time to first prayer, retention proxies). No client analytics, no request text. | You cannot tell if the product works without it, and this keeps the anonymity promise. | done (`GET /v1/admin/metrics`) |
-| P0.8 | **Crash reporting** | Needed before real users, without sending content. | needs you (choose a service) |
+| P0.8 | **Crash reporting and usage statistics** | Needed before real users, without sending content. | built with Firebase (Crashlytics and Analytics), off until a person opts in. Needs the Firebase project and config files, and a first run on a development build to verify. |
 
 ### Follow-ups found while building P0
 

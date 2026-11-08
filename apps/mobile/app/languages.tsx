@@ -4,6 +4,7 @@ import { useNavigation, useRouter } from "expo-router";
 import { useLayoutEffect } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { useLanguage } from "@/src/LanguageContext";
+import { telemetry } from "@/src/telemetry";
 import { Icon } from "@/src/components/Icon";
 import { Screen } from "@/src/components/ui";
 import { colors, fontsFor, type FontSet } from "@/src/theme";
@@ -42,6 +43,7 @@ export default function LanguagesScreen() {
               onPress={async () => {
                 Haptics.selectionAsync().catch(() => undefined);
                 await setLanguage(item.code);
+                telemetry.track("language_changed", { language: item.code });
                 router.back();
               }}
               style={({ pressed }) => [

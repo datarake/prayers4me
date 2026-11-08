@@ -37,6 +37,28 @@ curl -H "Authorization: Bearer dev:alice" http://localhost:8080/v1/session
 - On a physical device, point that URL at your machine’s LAN IP.
 - Expo Go’s blue gear button is Expo tooling, not an app setting.
 
+## Analytics and crash reporting (Firebase)
+
+Firebase Analytics and Crashlytics are in the app, and **off until a person opts in** under Settings, "Help improve the app". The code is in `apps/mobile/src/telemetry`:
+
+- `core.ts`: the rules. Nothing is sent without consent. Events come from a fixed list with fixed values (`EVENTS`), so no free text, name or id can leave the phone. Errors are scrubbed of ids, emails and phone numbers. It has no Firebase dependency and is fully tested.
+- `firebase.ts`: the Firebase adapter. It loads the native modules on demand, so **in Expo Go and on the web it quietly does nothing**.
+- `apps/mobile/firebase.json`: native settings that keep collection off until the app switches it on, and turn off advertising and device identifiers.
+
+**The Firebase project** is `prayers4me` (name Prayers4me, free Spark plan, owner: the Google account that created it). It has an iOS app and an Android app, both with the id `app.prayers4me.mobile`, and its own Google Analytics account called Prayers4me with every optional Google data-sharing setting turned off. Analytics location: Romania (can be changed in Google Analytics settings). To get the config files again: Firebase console, Project settings, General, Your apps, download `GoogleService-Info.plist` and `google-services.json` into `apps/mobile/firebase/`.
+
+To add an event: add it to `EVENTS` with the exact values it may take, then call `telemetry.track("name", { ... })`. A test fails if an event could carry free text or an identifier.
+
+**These are native modules, so they need a development build, not Expo Go.** With the config files in `apps/mobile/firebase/` (`GoogleService-Info.plist`, `google-services.json`, kept out of git):
+
+```bash
+cd apps/mobile
+npx expo run:ios       # or run:android. Builds a development app with Firebase inside
+npx expo start --dev-client
+```
+
+For cloud builds, upload the two files as EAS file secrets and set `GOOGLE_SERVICES_PLIST` and `GOOGLE_SERVICES_JSON` to them (see `app.config.js`). `crashlytics_debug_enabled` is `true` in `firebase.json` so crashes in development builds are reported while the integration is being verified; set it to `false` afterwards.
+
 ## Tests
 
 ```bash

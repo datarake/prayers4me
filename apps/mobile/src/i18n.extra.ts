@@ -64,6 +64,8 @@ export type ExtraDictionary = {
   settingsNotifications: string;
   settingsNotificationsHint: string;
   settingsVersion: string;
+  telemetryLabel: string;
+  telemetryHint: string;
   deleteDataLabel: string;
   deleteDataTitle: string;
   deleteDataBody: string;
@@ -151,6 +153,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Prayer notifications",
     settingsNotificationsHint: "One quiet notification when someone prays for you.",
     settingsVersion: "Version",
+    telemetryLabel: "Help improve the app",
+    telemetryHint: "Share anonymous usage and crash reports. Never your requests, names or anything you write.",
     deleteDataLabel: "Delete my data",
     deleteDataTitle: "Delete all your data?",
     deleteDataBody: "Your requests, prayers and settings will be removed for good. This cannot be undone.",
@@ -236,6 +240,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notificaciones de oración",
     settingsNotificationsHint: "Una notificación discreta cuando alguien ore por ti.",
     settingsVersion: "Versión",
+    telemetryLabel: "Ayuda a mejorar la app",
+    telemetryHint: "Comparte datos de uso anónimos e informes de fallos. Nunca tus peticiones, nombres ni nada de lo que escribes.",
     deleteDataLabel: "Eliminar mis datos",
     deleteDataTitle: "¿Eliminar todos tus datos?",
     deleteDataBody: "Tus peticiones, oraciones y ajustes se eliminarán para siempre. No se puede deshacer.",
@@ -321,6 +327,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notifications de prière",
     settingsNotificationsHint: "Une notification discrète quand quelqu’un prie pour toi.",
     settingsVersion: "Version",
+    telemetryLabel: "Aide à améliorer l’app",
+    telemetryHint: "Partage des statistiques d’usage anonymes et des rapports de plantage. Jamais tes demandes, tes noms ni rien de ce que tu écris.",
     deleteDataLabel: "Supprimer mes données",
     deleteDataTitle: "Supprimer toutes tes données ?",
     deleteDataBody: "Tes demandes, tes prières et tes réglages seront supprimés définitivement. Action irréversible.",
@@ -406,6 +414,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notificări de rugăciune",
     settingsNotificationsHint: "O notificare discretă când cineva se roagă pentru tine.",
     settingsVersion: "Versiune",
+    telemetryLabel: "Ajută la îmbunătățirea aplicației",
+    telemetryHint: "Trimite date anonime de utilizare și rapoarte de erori. Niciodată cererile, numele tale sau ce scrii.",
     deleteDataLabel: "Șterge datele mele",
     deleteDataTitle: "Ștergi toate datele tale?",
     deleteDataBody: "Cererile, rugăciunile și setările tale vor fi șterse definitiv. Nu se poate anula.",
@@ -491,6 +501,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Сповіщення про молитву",
     settingsNotificationsHint: "Одне тихе сповіщення, коли хтось помолиться за тебе.",
     settingsVersion: "Версія",
+    telemetryLabel: "Допоможи покращити застосунок",
+    telemetryHint: "Надсилай анонімну статистику використання та звіти про збої. Ніколи не твої прохання, імена чи те, що ти пишеш.",
     deleteDataLabel: "Видалити мої дані",
     deleteDataTitle: "Видалити всі твої дані?",
     deleteDataBody: "Твої прохання, молитви й налаштування буде остаточно видалено. Дію не можна скасувати.",
@@ -576,6 +588,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Уведомления о молитве",
     settingsNotificationsHint: "Одно тихое уведомление, когда кто-то помолится за тебя.",
     settingsVersion: "Версия",
+    telemetryLabel: "Помоги улучшить приложение",
+    telemetryHint: "Отправляй анонимную статистику использования и отчёты о сбоях. Никогда не твои просьбы, имена или то, что ты пишешь.",
     deleteDataLabel: "Удалить мои данные",
     deleteDataTitle: "Удалить все твои данные?",
     deleteDataBody: "Твои просьбы, молитвы и настройки будут удалены навсегда. Действие нельзя отменить.",

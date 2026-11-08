@@ -8,6 +8,7 @@ import { APP_NAME } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
 import { api } from "@/src/api";
 import { hasSeenWelcome, markWelcomeSeen } from "@/src/session";
+import { telemetry } from "@/src/telemetry";
 import { LanguagePill } from "@/src/components/LanguagePill";
 import { PathButton } from "@/src/components/PathButton";
 import { brandFont, colors, type FontSet } from "@/src/theme";
@@ -114,6 +115,7 @@ function WelcomeScreen() {
               emphasis="primary"
               onPress={async () => {
               await markWelcomeSeen();
+              telemetry.track("welcome_choice", { choice: "ask" });
               router.replace("/mine");
               router.push("/for-me/compose");
             }}
@@ -124,6 +126,7 @@ function WelcomeScreen() {
               emphasis="secondary"
               onPress={async () => {
               await markWelcomeSeen();
+              telemetry.track("welcome_choice", { choice: "pray" });
               router.replace("/pray");
             }}
             />

@@ -9,7 +9,8 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.prayers4me.mobile"
+      "bundleIdentifier": "app.prayers4me.mobile",
+      "googleServicesFile": "./firebase/GoogleService-Info.plist"
     },
     "android": {
       "package": "app.prayers4me.mobile",
@@ -19,7 +20,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "googleServicesFile": "./firebase/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -42,6 +44,17 @@
           "icon": "./assets/images/notification-icon.png",
           "color": "#0F3D3A",
           "defaultChannel": "default"
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/analytics",
+      "@react-native-firebase/crashlytics",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "dynamic"
+          }
         }
       ]
     ],

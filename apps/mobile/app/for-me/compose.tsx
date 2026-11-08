@@ -32,6 +32,7 @@ import { Icon } from "@/src/components/Icon";
 import { useToast } from "@/src/components/Toast";
 import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
 import { markJustSent } from "@/src/session";
+import { telemetry } from "@/src/telemetry";
 import { PrimaryButton, Screen } from "@/src/components/ui";
 import { colors, type FontSet } from "@/src/theme";
 import { useStyles } from "@/src/useStyles";
@@ -144,6 +145,8 @@ export default function ComposeScreen() {
     });
   }, [navigation, dirty, copy]);
 
+  const showSupport = looksLikeCrisis(message);
+
   const onSubmit = async () => {
     setAttempted(true);
     if (!valid) {
@@ -176,6 +179,7 @@ export default function ComposeScreen() {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
           () => undefined,
         );
+        telemetry.track("request_edited");
         toast.show(copy.updated);
         router.back();
         return;
@@ -193,6 +197,12 @@ export default function ComposeScreen() {
         () => undefined,
       );
       await markJustSent();
+      telemetry.track("request_sent", {
+        language,
+        contact: contactable ? "yes" : "no",
+        length: body.length < 100 ? "short" : body.length < 400 ? "medium" : "long",
+        support_card: showSupport ? "yes" : "no",
+      });
       toast.show(copy.requestSent);
       router.back();
     } catch (err) {
@@ -203,7 +213,6 @@ export default function ComposeScreen() {
   };
 
   const remaining = MESSAGE_MAX_LENGTH - message.length;
-  const showSupport = looksLikeCrisis(message);
 
   return (
     <Screen>

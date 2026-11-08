@@ -15,17 +15,24 @@ import {
 } from "@expo-google-fonts/manrope";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
-import { Stack, useRouter } from "expo-router";
+import { ErrorBoundary as DefaultErrorBoundary, Stack, usePathname, useRouter, type ErrorBoundaryProps } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { LanguageProvider, useLanguage } from "@/src/LanguageContext";
 import { syncPushRegistration } from "@/src/notifications";
+import { telemetry } from "@/src/telemetry";
 import { ToastProvider } from "@/src/components/Toast";
 import { colors, fontsFor } from "@/src/theme";
 
-export { ErrorBoundary } from "expo-router";
+/** Shows the default error screen, and reports the crash if the person agreed to crash reports. */
+export function ErrorBoundary(props: ErrorBoundaryProps) {
+  useEffect(() => {
+    telemetry.error(props.error, "error_boundary");
+  }, [props.error]);
+  return <DefaultErrorBoundary {...props} />;
+}
 
 SplashScreen.preventAutoHideAsync();
 
@@ -70,7 +77,18 @@ function RootStack() {
   // Keep the server's push token in step with the phone (tokens change, permission can be revoked).
   useEffect(() => {
     syncPushRegistration();
+    telemetry.init();
   }, []);
+
+  // Which screens people use, by route name only. Never an id, a name or a piece of text.
+  const pathname = usePathname();
+  useEffect(() => {
+    telemetry.screen(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    telemetry.setLanguage(language);
+  }, [language]);
 
   // Tapping "someone prayed for you" opens the person's own requests, including from a cold start.
   const lastResponse = Notifications.useLastNotificationResponse();

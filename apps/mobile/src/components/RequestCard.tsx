@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { LanguageCode, PrayerRequestPublic } from "@prayers4me/shared";
 import { prayersLabel, type Copy } from "../i18n";
+import { telemetry } from "../telemetry";
 import { colors, type FontSet } from "../theme";
 import { useStyles } from "../useStyles";
 import { Icon } from "./Icon";
@@ -108,7 +109,10 @@ export function RequestCard({
         <Pressable
           accessibilityRole="button"
           accessibilityState={{ expanded }}
-          onPress={() => setExpanded((v) => !v)}
+          onPress={() => {
+            if (!expanded) telemetry.track("read_more");
+            setExpanded((v) => !v);
+          }}
           hitSlop={8}
           style={styles.moreBtn}
         >

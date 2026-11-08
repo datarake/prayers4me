@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import type { PrayerRequestPublic } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
+import { telemetry } from "@/src/telemetry";
 import { api, errorMessage } from "@/src/api";
 import { EmptyState } from "@/src/components/EmptyState";
 import { RequestCard } from "@/src/components/RequestCard";
@@ -78,6 +79,7 @@ export default function ForMeScreen() {
     const result = await enableNotifications();
     setEnabling(false);
     if (result === "enabled") {
+      telemetry.track("notifications_changed", { enabled: "yes" });
       toast.show(copy.notifyOn);
       setPromptState("enabled");
     } else if (result === "denied") {
@@ -126,6 +128,7 @@ export default function ForMeScreen() {
             await api.deleteRequest(item.id);
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
             setItems((prev) => prev.filter((i) => i.id !== item.id));
+            telemetry.track("request_deleted");
             toast.show(copy.deleted);
           } catch (err) {
             toast.show(errorMessage(err, copy.errorNetwork), "error");

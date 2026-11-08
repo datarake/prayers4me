@@ -6,6 +6,7 @@ import type {
   ReportReason,
 } from "@prayers4me/shared";
 import { getDeviceId } from "./session";
+import { telemetry } from "./telemetry";
 
 function apiBaseUrl(): string {
   const extra = Constants.expoConfig?.extra as { apiUrl?: string } | undefined;
@@ -60,6 +61,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
         typeof body?.error?.message === "string"
           ? body.error.message
           : `Request failed (${res.status})`;
+      // A 5xx is the server failing, not the person making a mistake: worth knowing about.
+      // The address is reduced to its shape so no id leaves the phone.
+      if (res.status >= 500) {
+        telemetry.error(
+          new Error(`API ${init?.method ?? "GET"} ${path.split("?")[0]} answered ${res.status}`),
+          "api",
+        );
+      }
       throw new ApiError(message, res.status);
     }
     return body as T;

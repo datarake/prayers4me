@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import type { PrayerRequestPublic, ReportReason } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
+import { telemetry } from "@/src/telemetry";
 import { api, errorMessage } from "@/src/api";
 import { EmptyState } from "@/src/components/EmptyState";
 import { FilterPills, type FeedFilter } from "@/src/components/FilterPills";
@@ -130,7 +131,10 @@ export default function ForOthersScreen() {
         prayedByMe: true,
         prayersCount: result.prayersCount,
       });
-      if (!result.alreadyPrayed) toast.show(copy.prayerSent);
+      if (!result.alreadyPrayed) {
+        telemetry.track("prayed", { filter });
+        toast.show(copy.prayerSent);
+      }
       if (filter === "waiting") {
         // Give the confirmation a moment to be seen, then let the request leave this list.
         setTimeout(() => {
@@ -155,6 +159,7 @@ export default function ForOthersScreen() {
       await api.report(id, reason);
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setItems((prev) => prev.filter((item) => item.id !== id));
+      telemetry.track("report_sent", { reason });
       toast.show(copy.reportThanks);
     } catch (err) {
       toast.show(errorMessage(err, copy.errorNetwork), "error");
@@ -193,7 +198,10 @@ export default function ForOthersScreen() {
                 newest: copy.filterNewest,
                 waiting: copy.filterWaiting,
               }}
-              onChange={setFilter}
+              onChange={(next) => {
+                telemetry.track("filter_changed", { filter: next });
+                setFilter(next);
+              }}
             />
           </View>
         }

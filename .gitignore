@@ -24,3 +24,6 @@ infra/docker/data
 *.aab
 *.ap_
 *.tsbuildinfo
+
+# Firebase client config (project identifiers, kept out of git; see apps/mobile/app.config.js)
+apps/mobile/firebase/

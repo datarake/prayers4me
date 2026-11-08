@@ -8,6 +8,7 @@ import { useLanguage } from "@/src/LanguageContext";
 import { Icon } from "@/src/components/Icon";
 import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
+import { telemetry } from "@/src/telemetry";
 import { resetLocalData } from "@/src/session";
 import { Screen } from "@/src/components/ui";
 import {
@@ -26,6 +27,7 @@ export default function SettingsScreen() {
   const { language, copy } = useLanguage();
   const [notifications, setNotifications] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: copy.tabSettings });
@@ -34,6 +36,7 @@ export default function SettingsScreen() {
   useFocusEffect(
     useCallback(() => {
       isNotificationsOn().then(setNotifications);
+      telemetry.init().then((consent) => setSharing(consent === "granted"));
     }, []),
   );
 
@@ -42,10 +45,12 @@ export default function SettingsScreen() {
     if (!next) {
       await disableNotifications();
       setNotifications(false);
+      telemetry.track("notifications_changed", { enabled: "no" });
     } else {
       const result = await enableNotifications();
       if (result === "enabled") {
         setNotifications(true);
+        telemetry.track("notifications_changed", { enabled: "yes" });
         toast.show(copy.notifyOn);
       } else {
         toast.show(
@@ -57,6 +62,11 @@ export default function SettingsScreen() {
     setBusy(false);
   };
 
+  const onToggleSharing = async (next: boolean) => {
+    setSharing(next);
+    await telemetry.setConsent(next);
+  };
+
   const confirmDeleteData = () => {
     Alert.alert(copy.deleteDataTitle, copy.deleteDataBody, [
       { text: copy.cancel, style: "cancel" },
@@ -65,6 +75,7 @@ export default function SettingsScreen() {
         style: "destructive",
         onPress: async () => {
           try {
+            telemetry.track("account_deleted");
             await api.deleteAccount();
           } catch (err) {
             toast.show(errorMessage(err, copy.errorNetwork), "error");
@@ -119,6 +130,21 @@ export default function SettingsScreen() {
               onValueChange={onToggleNotifications}
               trackColor={{ true: colors.tealBright, false: colors.mistDeep }}
               accessibilityLabel={copy.settingsNotifications}
+            />
+          </View>
+        </View>
+
+        <View style={styles.group}>
+          <View style={styles.row}>
+            <View style={styles.textBlock}>
+              <Text style={styles.label}>{copy.telemetryLabel}</Text>
+              <Text style={styles.hint}>{copy.telemetryHint}</Text>
+            </View>
+            <Switch
+              value={sharing}
+              onValueChange={onToggleSharing}
+              trackColor={{ true: colors.tealBright, false: colors.mistDeep }}
+              accessibilityLabel={copy.telemetryLabel}
             />
           </View>
         </View>

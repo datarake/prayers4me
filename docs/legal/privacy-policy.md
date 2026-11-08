@@ -25,9 +25,20 @@ A place to ask for prayer and to pray for others, anonymously. People who pray s
 
 Your requests can describe health, family and faith. That is sensitive information. We ask for your agreement when you send one, and we use it only to show your request to the community and to keep the community safe.
 
+## Usage and crash reports (only if you agree)
+
+Under Settings, "Help improve the app" is **off until you turn it on**. Nothing is collected before that, and turning it off again stops collection and asks Google to clear the analytics data held for your device.
+
+If you turn it on, the app uses Firebase Analytics and Firebase Crashlytics (Google) to send:
+
+- which screens are opened and a short list of anonymous actions, for example "a request was sent" with its language, "someone prayed", "the language was changed";
+- reports when the app crashes or the server fails, with the technical details needed to fix it.
+
+These reports never contain what you write, names, contact details, ids of requests, or who you pray for. The app only sends actions from a fixed list, with values from fixed choices, and removes anything that looks like an id, an email or a phone number from error details. We do not use advertising identifiers, we do not use Google's advertising features, and we do not link these reports to an account (there is none). Firebase still receives the technical identifier of the app installation and a rough location derived from the network address, as part of how it works. [Confirm retention settings in the Firebase console and state them here.]
+
 ## What we do not collect
 
-No advertising identifier, no location, no contacts, no analytics tools inside the app, and no tracking of what individuals read or tap. We measure whether the service works with counts computed on the server (for example how many requests received a prayer within a day). Request text is not used for that.
+No advertising identifier, no location from your phone, no contacts. Without your agreement above, no usage tracking or crash reporting at all. We measure whether the service works with counts computed on the server (for example how many requests received a prayer within a day). Request text is not used for that.
 
 ## How long we keep it
 
@@ -43,7 +54,7 @@ You can delete everything in the app under Settings, Delete my data. To ask for 
 
 ## Who helps us run it
 
-[Hosting provider, for example Google Cloud, and where the data is stored], the push service (Expo and Apple or Google), [crash reporting service, if any]. We do not sell data and we show no ads.
+[Hosting provider, for example Google Cloud, and where the data is stored], the push service (Expo and Apple or Google), and Google (Firebase Analytics and Crashlytics) if you agree to usage and crash reports. We do not sell data and we show no ads.
 
 ## Children
 
