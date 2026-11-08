@@ -45,6 +45,8 @@ export type CreateRequestInput = z.infer<typeof createRequestSchema>;
 export const feedQuerySchema = z.object({
   language: languageSchema,
   cursor: z.string().optional(),
+  /** "waiting" shows only requests nobody has prayed for yet (never your own). */
+  filter: z.enum(["newest", "waiting"]).default("newest"),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });
 

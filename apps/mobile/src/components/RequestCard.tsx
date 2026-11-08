@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { LanguageCode, PrayerRequestPublic } from "@prayers4me/shared";
 import { prayersLabel, type Copy } from "../i18n";
@@ -6,6 +7,10 @@ import { useStyles } from "../useStyles";
 import { PrayButton } from "./PrayButton";
 import { Body } from "./ui";
 import { Pressable } from "react-native";
+
+/** Long stories are clamped so one request cannot push the rest of the feed off screen. */
+const CLAMP_LINES = 5;
+const LONG_MESSAGE_CHARS = 260;
 
 const LOCALES: Record<LanguageCode, string> = {
   en: "en",
@@ -59,11 +64,20 @@ export function RequestCard({
 }) {
   const styles = useStyles(createStyles);
   const hasPrayers = item.prayersCount > 0;
+  const [expanded, setExpanded] = useState(false);
+  const isLong =
+    item.message.length > LONG_MESSAGE_CHARS ||
+    item.message.split("\n").length > CLAMP_LINES;
   const canAct = !item.isMine && Boolean(onPray);
 
   return (
     <View
-      style={[styles.row, item.isMine && hasPrayers && styles.rowPrayedFor]}
+      style={[
+        styles.row,
+        item.isMine && hasPrayers && styles.rowPrayedFor,
+        // Once you have prayed, the card steps back so the ones still waiting stand out.
+        item.prayedByMe && styles.rowPrayed,
+      ]}
     >
       <View style={styles.header}>
         <Text style={styles.name}>{item.displayName}</Text>
@@ -86,7 +100,25 @@ export function RequestCard({
         </View>
       ) : null}
 
-      <Body style={styles.message}>{item.message}</Body>
+      <Body
+        style={[styles.message, isLong && styles.messageClamped]}
+        numberOfLines={isLong && !expanded ? CLAMP_LINES : undefined}
+      >
+        {item.message}
+      </Body>
+      {isLong ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ expanded }}
+          onPress={() => setExpanded((v) => !v)}
+          hitSlop={8}
+          style={styles.moreBtn}
+        >
+          <Text style={styles.moreLabel}>
+            {expanded ? copy.readLess : copy.readMore}
+          </Text>
+        </Pressable>
+      ) : null}
 
       <View style={styles.countRow}>
         <Text style={styles.flame}>{hasPrayers ? "🕯" : "·"}</Text>
@@ -158,6 +190,22 @@ const createStyles = (fonts: FontSet) =>
       paddingVertical: 22,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: colors.border,
+    },
+    rowPrayed: {
+      opacity: 0.72,
+    },
+    messageClamped: {
+      marginBottom: 4,
+    },
+    moreBtn: {
+      minHeight: 44,
+      justifyContent: "center",
+      alignSelf: "flex-start",
+    },
+    moreLabel: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 15,
+      color: colors.teal,
     },
     rowPrayedFor: {
       paddingLeft: 14,

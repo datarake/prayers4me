@@ -53,6 +53,12 @@ export type ExtraDictionary = {
   saveChanges: string;
   updated: string;
   edited: string;
+  readMore: string;
+  readLess: string;
+  filterNewest: string;
+  filterWaiting: string;
+  waitingEmptyTitle: string;
+  waitingEmptyBody: string;
 };
 
 export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
@@ -115,6 +121,12 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     saveChanges: "Save changes",
     updated: "Request updated",
     edited: "Edited",
+    readMore: "Read more",
+    readLess: "Show less",
+    filterNewest: "Newest",
+    filterWaiting: "Needs prayer",
+    waitingEmptyTitle: "Every request has a prayer",
+    waitingEmptyBody: "Thank you for praying. New requests will appear here.",
   },
   es: {
     cancel: "Cancelar",
@@ -175,6 +187,12 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     saveChanges: "Guardar cambios",
     updated: "Petición actualizada",
     edited: "Editada",
+    readMore: "Leer más",
+    readLess: "Mostrar menos",
+    filterNewest: "Recientes",
+    filterWaiting: "Esperan oración",
+    waitingEmptyTitle: "Todas tienen una oración",
+    waitingEmptyBody: "Gracias por orar. Las nuevas peticiones aparecerán aquí.",
   },
   fr: {
     cancel: "Annuler",
@@ -235,6 +253,12 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     saveChanges: "Enregistrer",
     updated: "Demande mise à jour",
     edited: "Modifiée",
+    readMore: "Lire la suite",
+    readLess: "Réduire",
+    filterNewest: "Récentes",
+    filterWaiting: "Attendent une prière",
+    waitingEmptyTitle: "Chaque demande a une prière",
+    waitingEmptyBody: "Merci de prier. Les nouvelles demandes apparaîtront ici.",
   },
   ro: {
     cancel: "Anulează",
@@ -295,6 +319,12 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     saveChanges: "Salvează modificările",
     updated: "Cerere actualizată",
     edited: "Editată",
+    readMore: "Citește mai mult",
+    readLess: "Arată mai puțin",
+    filterNewest: "Recente",
+    filterWaiting: "Așteaptă rugăciune",
+    waitingEmptyTitle: "Fiecare cerere are o rugăciune",
+    waitingEmptyBody: "Mulțumim că te rogi. Cererile noi vor apărea aici.",
   },
   uk: {
     cancel: "Скасувати",
@@ -355,6 +385,12 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     saveChanges: "Зберегти зміни",
     updated: "Прохання оновлено",
     edited: "Відредаговано",
+    readMore: "Читати далі",
+    readLess: "Згорнути",
+    filterNewest: "Нові",
+    filterWaiting: "Чекають молитви",
+    waitingEmptyTitle: "Кожне прохання має молитву",
+    waitingEmptyBody: "Дякуємо, що молишся. Нові прохання зʼявляться тут.",
   },
   ru: {
     cancel: "Отмена",
@@ -415,5 +451,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     saveChanges: "Сохранить изменения",
     updated: "Просьба обновлена",
     edited: "Изменено",
+    readMore: "Читать далее",
+    readLess: "Свернуть",
+    filterNewest: "Новые",
+    filterWaiting: "Ждут молитвы",
+    waitingEmptyTitle: "У каждой просьбы есть молитва",
+    waitingEmptyBody: "Спасибо, что молишься. Новые просьбы появятся здесь.",
   },
 };

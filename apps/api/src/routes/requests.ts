@@ -60,37 +60,34 @@ requestsRoutes.get("/", async (c) => {
   const query = feedQuerySchema.parse({
     language: c.req.query("language"),
     cursor: c.req.query("cursor"),
+    filter: c.req.query("filter"),
     limit: c.req.query("limit"),
   });
 
-  const rows = query.cursor
-    ? await sql<RequestRow[]>`
-        SELECT
-          r.*,
-          EXISTS(
-            SELECT 1 FROM prayers p
-            WHERE p.request_id = r.id AND p.user_id = ${user.id}
-          ) AS prayed_by_me
-        FROM prayer_requests r
-        WHERE r.language = ${query.language}
-          AND r.status = 'active'
-          AND r.created_at < ${query.cursor}::timestamptz
-        ORDER BY r.created_at DESC
-        LIMIT ${query.limit}
-      `
-    : await sql<RequestRow[]>`
-        SELECT
-          r.*,
-          EXISTS(
-            SELECT 1 FROM prayers p
-            WHERE p.request_id = r.id AND p.user_id = ${user.id}
-          ) AS prayed_by_me
-        FROM prayer_requests r
-        WHERE r.language = ${query.language}
-          AND r.status = 'active'
-        ORDER BY r.created_at DESC
-        LIMIT ${query.limit}
-      `;
+  const afterCursor = query.cursor
+    ? sql`AND r.created_at < ${query.cursor}::timestamptz`
+    : sql``;
+  // "Needs prayer": still waiting for a first prayer, and not the viewer's own request.
+  const onlyWaiting =
+    query.filter === "waiting"
+      ? sql`AND r.prayers_count = 0 AND r.author_id <> ${user.id}`
+      : sql``;
+
+  const rows = await sql<RequestRow[]>`
+    SELECT
+      r.*,
+      EXISTS(
+        SELECT 1 FROM prayers p
+        WHERE p.request_id = r.id AND p.user_id = ${user.id}
+      ) AS prayed_by_me
+    FROM prayer_requests r
+    WHERE r.language = ${query.language}
+      AND r.status = 'active'
+      ${onlyWaiting}
+      ${afterCursor}
+    ORDER BY r.created_at DESC
+    LIMIT ${query.limit}
+  `;
 
   const items = rows.map((row) => mapRequest(row, user.id));
   const last = rows[rows.length - 1];

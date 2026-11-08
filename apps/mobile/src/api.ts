@@ -79,8 +79,12 @@ export const api = {
       "/v1/session",
     ),
 
-  feed: (language: LanguageCode, cursor?: string) => {
-    const params = new URLSearchParams({ language, limit: "20" });
+  feed: (
+    language: LanguageCode,
+    cursor?: string,
+    filter: "newest" | "waiting" = "newest",
+  ) => {
+    const params = new URLSearchParams({ language, limit: "20", filter });
     if (cursor) params.set("cursor", cursor);
     return request<FeedPage>(`/v1/requests?${params.toString()}`);
   },

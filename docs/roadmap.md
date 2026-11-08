@@ -31,6 +31,8 @@ The tagline is "Someone prayed for you." Today the author only learns it by open
 |---------|-------|
 | **Edit my request** (done) | Authors can fix typos: name, text and contact only, never the language. Capped at 3 edits, same content checks as a new request, marked "Edited", previous versions stored in `request_edits`. Not allowed while a request is under review. |
 
+| **Feed readability** (done) | Long requests are clamped to 5 lines with "Read more". A "Needs prayer" filter lists requests nobody has prayed for yet. Prayed-for cards step back, and the pray button is outlined until pressed. |
+
 ## Phase 3: Delight and retention
 
 | # | Feature | Notes |

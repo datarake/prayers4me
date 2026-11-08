@@ -77,19 +77,22 @@ const createStyles = (fonts: FontSet) =>
       gap: 8,
       paddingHorizontal: 20,
       borderRadius: 24,
-      backgroundColor: colors.sea,
+      backgroundColor: "transparent",
+      borderWidth: 1.5,
+      borderColor: colors.sea,
     },
     btnDone: {
       backgroundColor: colors.mistDeep,
+      borderColor: colors.mistDeep,
     },
     icon: {
       fontSize: 16,
-      color: colors.candle,
+      color: colors.sea,
     },
     label: {
       fontFamily: fonts.bodyBold,
       fontSize: 16,
-      color: colors.white,
+      color: colors.sea,
     },
     labelDone: {
       color: colors.sea,

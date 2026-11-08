@@ -19,6 +19,7 @@ import type { PrayerRequestPublic, ReportReason } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
 import { api, errorMessage } from "@/src/api";
 import { EmptyState } from "@/src/components/EmptyState";
+import { FilterPills, type FeedFilter } from "@/src/components/FilterPills";
 import { ReportSheet } from "@/src/components/ReportSheet";
 import { RequestCard } from "@/src/components/RequestCard";
 import { SkeletonList } from "@/src/components/Skeleton";
@@ -40,6 +41,7 @@ export default function ForOthersScreen() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [failed, setFailed] = useState(false);
   const [reportId, setReportId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<FeedFilter>("newest");
 
   // Ignore responses that arrive after the language changed or a newer load started.
   const generation = useRef(0);
@@ -53,7 +55,7 @@ export default function ForOthersScreen() {
       const current = ++generation.current;
       setFailed(false);
       try {
-        const page = await api.feed(language);
+        const page = await api.feed(language, undefined, filter);
         if (current !== generation.current) return;
         setItems(page.items);
         setCursor(page.nextCursor);
@@ -71,7 +73,7 @@ export default function ForOthersScreen() {
         }
       }
     },
-    [language, copy.errorNetwork, toast],
+    [language, filter, copy.errorNetwork, toast],
   );
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function ForOthersScreen() {
     const current = generation.current;
     setLoadingMore(true);
     try {
-      const page = await api.feed(language, cursor);
+      const page = await api.feed(language, cursor, filter);
       if (current !== generation.current) return;
       setItems((prev) => {
         const seen = new Set(prev.map((p) => p.id));
@@ -98,7 +100,7 @@ export default function ForOthersScreen() {
     } finally {
       setLoadingMore(false);
     }
-  }, [cursor, loadingMore, loading, refreshing, language, copy.errorNetwork, toast]);
+  }, [cursor, loadingMore, loading, refreshing, language, filter, copy.errorNetwork, toast]);
 
   const patch = (id: string, change: Partial<PrayerRequestPublic>) =>
     setItems((prev) =>
@@ -118,6 +120,13 @@ export default function ForOthersScreen() {
         prayersCount: result.prayersCount,
       });
       if (!result.alreadyPrayed) toast.show(copy.prayerSent);
+      if (filter === "waiting") {
+        // Give the confirmation a moment to be seen, then let the request leave this list.
+        setTimeout(() => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setItems((prev) => prev.filter((i) => i.id !== item.id));
+        }, 1400);
+      }
     } catch (err) {
       patch(item.id, {
         prayedByMe: item.prayedByMe,
@@ -167,6 +176,14 @@ export default function ForOthersScreen() {
         ListHeaderComponent={
           <View style={styles.intro}>
             <Text style={styles.introText}>{copy.forOthersIntro}</Text>
+            <FilterPills
+              value={filter}
+              labels={{
+                newest: copy.filterNewest,
+                waiting: copy.filterWaiting,
+              }}
+              onChange={setFilter}
+            />
           </View>
         }
         ListEmptyComponent={
@@ -180,7 +197,18 @@ export default function ForOthersScreen() {
               onAction={retry}
             />
           ) : (
-            <EmptyState title={copy.emptyFeedTitle} body={copy.emptyFeedBody} />
+            <EmptyState
+              title={
+                filter === "waiting"
+                  ? copy.waitingEmptyTitle
+                  : copy.emptyFeedTitle
+              }
+              body={
+                filter === "waiting"
+                  ? copy.waitingEmptyBody
+                  : copy.emptyFeedBody
+              }
+            />
           )
         }
         ListFooterComponent={

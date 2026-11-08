@@ -73,7 +73,7 @@ Feeds only show `active`. Hidden rows stay for audit.
 |--------|------|---------|
 | GET | `/health` | Liveness |
 | GET | `/v1/session` | Upsert/return current user |
-| GET | `/v1/requests?language=&cursor=` | For-others feed |
+| GET | `/v1/requests?language=&cursor=&filter=` | For-others feed. `filter=newest` (default) or `waiting` (only requests with no prayers yet, never your own) |
 | GET | `/v1/requests/me` | My asks |
 | POST | `/v1/requests` | Create ask (rate-limited + heuristics) |
 | POST | `/v1/requests/:id/pray` | Pray once (idempotent) |
