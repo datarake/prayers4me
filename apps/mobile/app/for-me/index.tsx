@@ -8,9 +8,11 @@ import { EmptyState } from "@/src/components/EmptyState";
 import { RequestCard } from "@/src/components/RequestCard";
 import { SkeletonList } from "@/src/components/Skeleton";
 import { PrimaryButton, Screen } from "@/src/components/ui";
-import { colors, fonts } from "@/src/theme";
+import { colors, type FontSet } from "@/src/theme";
+import { useStyles } from "@/src/useStyles";
 
 export default function ForMeScreen() {
+  const styles = useStyles(createStyles);
   const router = useRouter();
   const navigation = useNavigation();
   const { language, copy } = useLanguage();
@@ -112,40 +114,41 @@ export default function ForMeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    paddingHorizontal: 22,
-    paddingBottom: 56,
-    flexGrow: 1,
-  },
-  top: {
-    paddingTop: 12,
-    paddingBottom: 18,
-    gap: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  summary: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    gap: 12,
-  },
-  summaryNumber: {
-    fontFamily: fonts.display,
-    fontSize: 48,
-    lineHeight: 54,
-    color: colors.sea,
-  },
-  summaryLabel: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 16,
-    color: colors.teal,
-    flexShrink: 1,
-  },
-  intro: {
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 23,
-    color: colors.inkSoft,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    list: {
+      paddingHorizontal: 22,
+      paddingBottom: 56,
+      flexGrow: 1,
+    },
+    top: {
+      paddingTop: 12,
+      paddingBottom: 18,
+      gap: 16,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.border,
+    },
+    summary: {
+      flexDirection: "row",
+      alignItems: "baseline",
+      gap: 12,
+    },
+    summaryNumber: {
+      fontFamily: fonts.display,
+      fontSize: 48,
+      lineHeight: 54,
+      color: colors.sea,
+    },
+    summaryLabel: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 16,
+      color: colors.teal,
+      flexShrink: 1,
+    },
+    intro: {
+      fontFamily: fonts.body,
+      fontSize: 15,
+      lineHeight: 23,
+      color: colors.inkSoft,
+    },
+  });

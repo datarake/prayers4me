@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import type { LanguageCode, PrayerRequestPublic } from "@prayers4me/shared";
 import { prayersLabel, type Copy } from "../i18n";
-import { colors, fonts } from "../theme";
+import { colors, type FontSet } from "../theme";
+import { useStyles } from "../useStyles";
 import { PrayButton } from "./PrayButton";
 import { Body } from "./ui";
 import { Pressable } from "react-native";
@@ -51,6 +52,7 @@ export function RequestCard({
   onPray?: () => void;
   onReport?: () => void;
 }) {
+  const styles = useStyles(createStyles);
   const hasPrayers = item.prayersCount > 0;
   const canAct = !item.isMine && Boolean(onPray);
 
@@ -109,96 +111,97 @@ export function RequestCard({
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    paddingVertical: 22,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  rowPrayedFor: {
-    paddingLeft: 14,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.candle,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-    gap: 12,
-    marginBottom: 8,
-  },
-  name: {
-    fontFamily: fonts.display,
-    fontSize: 21,
-    lineHeight: 27,
-    color: colors.ink,
-    flexShrink: 1,
-  },
-  date: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.inkSoft,
-  },
-  badges: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 10,
-  },
-  badge: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 12,
-    color: colors.sea,
-    backgroundColor: colors.mistDeep,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  badgeWarn: {
-    color: "#7A4B00",
-    backgroundColor: "#F8E7BE",
-  },
-  message: {
-    color: colors.ink,
-    fontSize: 17,
-    lineHeight: 26,
-    marginBottom: 14,
-  },
-  countRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 16,
-  },
-  flame: {
-    fontSize: 15,
-    color: colors.teal,
-  },
-  count: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: colors.teal,
-    flexShrink: 1,
-  },
-  countNone: {
-    color: colors.inkSoft,
-  },
-  actions: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  },
-  reportBtn: {
-    minHeight: 44,
-    minWidth: 44,
-    alignItems: "flex-end",
-    justifyContent: "center",
-  },
-  reportLabel: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: colors.inkSoft,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    row: {
+      paddingVertical: 22,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.border,
+    },
+    rowPrayedFor: {
+      paddingLeft: 14,
+      borderLeftWidth: 3,
+      borderLeftColor: colors.candle,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 12,
+      marginBottom: 8,
+    },
+    name: {
+      fontFamily: fonts.display,
+      fontSize: 21,
+      lineHeight: 27,
+      color: colors.ink,
+      flexShrink: 1,
+    },
+    date: {
+      fontFamily: fonts.body,
+      fontSize: 13,
+      color: colors.inkSoft,
+    },
+    badges: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+      marginBottom: 10,
+    },
+    badge: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 12,
+      color: colors.sea,
+      backgroundColor: colors.mistDeep,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 10,
+      overflow: "hidden",
+    },
+    badgeWarn: {
+      color: "#7A4B00",
+      backgroundColor: "#F8E7BE",
+    },
+    message: {
+      color: colors.ink,
+      fontSize: 17,
+      lineHeight: 26,
+      marginBottom: 14,
+    },
+    countRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginBottom: 16,
+    },
+    flame: {
+      fontSize: 15,
+      color: colors.teal,
+    },
+    count: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 14,
+      color: colors.teal,
+      flexShrink: 1,
+    },
+    countNone: {
+      color: colors.inkSoft,
+    },
+    actions: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 16,
+    },
+    reportBtn: {
+      minHeight: 44,
+      minWidth: 44,
+      alignItems: "flex-end",
+      justifyContent: "center",
+    },
+    reportLabel: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 14,
+      color: colors.inkSoft,
+    },
+  });

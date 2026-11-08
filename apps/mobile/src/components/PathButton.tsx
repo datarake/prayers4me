@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, fonts } from "../theme";
+import { colors, type FontSet } from "../theme";
+import { useStyles } from "../useStyles";
 
 export function PathButton({
   title,
@@ -12,6 +13,7 @@ export function PathButton({
   onPress: () => void;
   emphasis?: "primary" | "secondary";
 }) {
+  const styles = useStyles(createStyles);
   const isPrimary = emphasis === "primary";
 
   return (
@@ -40,48 +42,49 @@ export function PathButton({
   );
 }
 
-const styles = StyleSheet.create({
-  base: {
-    minHeight: 84,
-    borderRadius: 20,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  primary: {
-    backgroundColor: colors.candle,
-  },
-  secondary: {
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.28)",
-  },
-  textBlock: {
-    flex: 1,
-    gap: 4,
-  },
-  title: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 18,
-    color: colors.white,
-  },
-  titleOnPrimary: {
-    color: colors.sea,
-  },
-  hint: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: "rgba(255,255,255,0.78)",
-  },
-  hintOnPrimary: {
-    color: "rgba(15, 61, 58, 0.72)",
-  },
-  chevron: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 22,
-    color: colors.white,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    base: {
+      minHeight: 84,
+      borderRadius: 20,
+      paddingHorizontal: 18,
+      paddingVertical: 16,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    primary: {
+      backgroundColor: colors.candle,
+    },
+    secondary: {
+      backgroundColor: "rgba(255,255,255,0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.28)",
+    },
+    textBlock: {
+      flex: 1,
+      gap: 4,
+    },
+    title: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 18,
+      color: colors.white,
+    },
+    titleOnPrimary: {
+      color: colors.sea,
+    },
+    hint: {
+      fontFamily: fonts.body,
+      fontSize: 14,
+      lineHeight: 20,
+      color: "rgba(255,255,255,0.78)",
+    },
+    hintOnPrimary: {
+      color: "rgba(15, 61, 58, 0.72)",
+    },
+    chevron: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 22,
+      color: colors.white,
+    },
+  });

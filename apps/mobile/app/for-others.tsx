@@ -24,9 +24,11 @@ import { RequestCard } from "@/src/components/RequestCard";
 import { SkeletonList } from "@/src/components/Skeleton";
 import { useToast } from "@/src/components/Toast";
 import { Screen } from "@/src/components/ui";
-import { colors, fonts } from "@/src/theme";
+import { colors, type FontSet } from "@/src/theme";
+import { useStyles } from "@/src/useStyles";
 
 export default function ForOthersScreen() {
+  const styles = useStyles(createStyles);
   const navigation = useNavigation();
   const toast = useToast();
   const { language, copy } = useLanguage();
@@ -209,32 +211,33 @@ export default function ForOthersScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    paddingHorizontal: 22,
-    paddingBottom: 56,
-    flexGrow: 1,
-  },
-  intro: {
-    paddingTop: 8,
-    paddingBottom: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  introText: {
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 23,
-    color: colors.inkSoft,
-  },
-  footer: {
-    paddingVertical: 28,
-  },
-  end: {
-    textAlign: "center",
-    fontFamily: fonts.displayItalic,
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.inkSoft,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    list: {
+      paddingHorizontal: 22,
+      paddingBottom: 56,
+      flexGrow: 1,
+    },
+    intro: {
+      paddingTop: 8,
+      paddingBottom: 14,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.border,
+    },
+    introText: {
+      fontFamily: fonts.body,
+      fontSize: 15,
+      lineHeight: 23,
+      color: colors.inkSoft,
+    },
+    footer: {
+      paddingVertical: 28,
+    },
+    end: {
+      textAlign: "center",
+      fontFamily: fonts.displayItalic,
+      fontSize: 16,
+      lineHeight: 24,
+      color: colors.inkSoft,
+    },
+  });

@@ -5,9 +5,11 @@ import { useLayoutEffect } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { useLanguage } from "@/src/LanguageContext";
 import { Screen } from "@/src/components/ui";
-import { colors, fonts } from "@/src/theme";
+import { colors, fontsFor, type FontSet } from "@/src/theme";
+import { useStyles } from "@/src/useStyles";
 
 export default function LanguagesScreen() {
+  const styles = useStyles(createStyles);
   const router = useRouter();
   const navigation = useNavigation();
   const { language, setLanguage, copy } = useLanguage();
@@ -40,7 +42,15 @@ export default function LanguagesScreen() {
                 pressed && { opacity: 0.85 },
               ]}
             >
-              <Text style={[styles.label, selected && styles.labelSelected]}>
+              <Text
+                style={[
+                  styles.label,
+                  // Each language name is set in the font that actually contains its letters.
+                  { fontFamily: fontsFor(item.code).bodyMedium },
+                  selected && styles.labelSelected,
+                  selected && { fontFamily: fontsFor(item.code).bodyBold },
+                ]}
+              >
                 {item.label}
               </Text>
               {selected ? <Text style={styles.check}>✓</Text> : null}
@@ -52,40 +62,41 @@ export default function LanguagesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    padding: 20,
-  },
-  sep: {
-    height: 10,
-  },
-  row: {
-    minHeight: 60,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.border,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  rowSelected: {
-    borderColor: colors.teal,
-    backgroundColor: colors.mistDeep,
-  },
-  label: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 16,
-    color: colors.ink,
-  },
-  labelSelected: {
-    fontFamily: fonts.bodyBold,
-    color: colors.sea,
-  },
-  check: {
-    fontFamily: fonts.bodyBold,
-    color: colors.teal,
-    fontSize: 18,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    list: {
+      padding: 20,
+    },
+    sep: {
+      height: 10,
+    },
+    row: {
+      minHeight: 60,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      backgroundColor: colors.white,
+      borderWidth: 1,
+      borderColor: colors.border,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    rowSelected: {
+      borderColor: colors.teal,
+      backgroundColor: colors.mistDeep,
+    },
+    label: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 16,
+      color: colors.ink,
+    },
+    labelSelected: {
+      fontFamily: fonts.bodyBold,
+      color: colors.sea,
+    },
+    check: {
+      fontFamily: fonts.bodyBold,
+      color: colors.teal,
+      fontSize: 18,
+    },
+  });

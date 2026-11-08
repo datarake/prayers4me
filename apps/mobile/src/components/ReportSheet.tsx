@@ -2,7 +2,8 @@ import { REPORT_REASONS, type ReportReason } from "@prayers4me/shared";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Copy } from "../i18n";
-import { colors, fonts } from "../theme";
+import { colors, type FontSet } from "../theme";
+import { useStyles } from "../useStyles";
 
 function reasonLabel(copy: Copy, reason: ReportReason): string {
   switch (reason) {
@@ -31,6 +32,7 @@ export function ReportSheet({
   onSelect: (reason: ReportReason) => void;
   onClose: () => void;
 }) {
+  const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
 
   return (
@@ -80,67 +82,68 @@ export function ReportSheet({
   );
 }
 
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(8, 28, 26, 0.5)",
-  },
-  sheet: {
-    backgroundColor: colors.mist,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  grabber: {
-    alignSelf: "center",
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.mistDeep,
-    marginBottom: 16,
-  },
-  title: {
-    fontFamily: fonts.display,
-    fontSize: 22,
-    lineHeight: 28,
-    color: colors.ink,
-  },
-  subtitle: {
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
-    color: colors.inkSoft,
-    marginTop: 4,
-    marginBottom: 14,
-  },
-  row: {
-    minHeight: 54,
-    justifyContent: "center",
-    paddingHorizontal: 16,
-    borderRadius: 14,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.border,
-    marginBottom: 8,
-  },
-  rowPressed: {
-    backgroundColor: colors.mistDeep,
-  },
-  rowLabel: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 16,
-    color: colors.ink,
-  },
-  cancel: {
-    minHeight: 52,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 4,
-  },
-  cancelLabel: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: colors.sea,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    backdrop: {
+      flex: 1,
+      backgroundColor: "rgba(8, 28, 26, 0.5)",
+    },
+    sheet: {
+      backgroundColor: colors.mist,
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
+      paddingHorizontal: 20,
+      paddingTop: 10,
+    },
+    grabber: {
+      alignSelf: "center",
+      width: 40,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: colors.mistDeep,
+      marginBottom: 16,
+    },
+    title: {
+      fontFamily: fonts.display,
+      fontSize: 22,
+      lineHeight: 28,
+      color: colors.ink,
+    },
+    subtitle: {
+      fontFamily: fonts.body,
+      fontSize: 15,
+      lineHeight: 22,
+      color: colors.inkSoft,
+      marginTop: 4,
+      marginBottom: 14,
+    },
+    row: {
+      minHeight: 54,
+      justifyContent: "center",
+      paddingHorizontal: 16,
+      borderRadius: 14,
+      backgroundColor: colors.white,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginBottom: 8,
+    },
+    rowPressed: {
+      backgroundColor: colors.mistDeep,
+    },
+    rowLabel: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 16,
+      color: colors.ink,
+    },
+    cancel: {
+      minHeight: 52,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 4,
+    },
+    cancelLabel: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 16,
+      color: colors.sea,
+    },
+  });

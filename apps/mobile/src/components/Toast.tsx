@@ -17,7 +17,8 @@ import {
   Text,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors, fonts } from "../theme";
+import { colors, type FontSet } from "../theme";
+import { useStyles } from "../useStyles";
 
 type ToastKind = "success" | "error";
 type ToastApi = { show: (message: string, kind?: ToastKind) => void };
@@ -30,6 +31,7 @@ export function useToast() {
 
 /** Lives at the root so a toast survives screen transitions (e.g. after compose closes). */
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
   const [toast, setToast] = useState<{
     id: number;
@@ -109,31 +111,32 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
-const styles = StyleSheet.create({
-  toast: {
-    position: "absolute",
-    left: 20,
-    right: 20,
-    alignSelf: "center",
-    maxWidth: 480,
-    backgroundColor: colors.sea,
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    shadowColor: "#000",
-    shadowOpacity: 0.22,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 8,
-  },
-  toastError: {
-    backgroundColor: colors.danger,
-  },
-  text: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 15,
-    lineHeight: 21,
-    color: colors.white,
-    textAlign: "center",
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    toast: {
+      position: "absolute",
+      left: 20,
+      right: 20,
+      alignSelf: "center",
+      maxWidth: 480,
+      backgroundColor: colors.sea,
+      borderRadius: 16,
+      paddingVertical: 14,
+      paddingHorizontal: 18,
+      shadowColor: "#000",
+      shadowOpacity: 0.22,
+      shadowRadius: 14,
+      shadowOffset: { width: 0, height: 6 },
+      elevation: 8,
+    },
+    toastError: {
+      backgroundColor: colors.danger,
+    },
+    text: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 15,
+      lineHeight: 21,
+      color: colors.white,
+      textAlign: "center",
+    },
+  });

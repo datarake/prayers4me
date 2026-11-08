@@ -1,8 +1,10 @@
 import { Link, Stack } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
-import { colors, fonts } from "@/src/theme";
+import { colors, type FontSet } from "@/src/theme";
+import { useStyles } from "@/src/useStyles";
 
 export default function NotFoundScreen() {
+  const styles = useStyles(createStyles);
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
@@ -16,26 +18,27 @@ export default function NotFoundScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-    backgroundColor: colors.mist,
-  },
-  title: {
-    fontFamily: fonts.display,
-    fontSize: 22,
-    color: colors.ink,
-  },
-  link: {
-    marginTop: 16,
-    paddingVertical: 12,
-  },
-  linkText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: colors.teal,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 20,
+      backgroundColor: colors.mist,
+    },
+    title: {
+      fontFamily: fonts.display,
+      fontSize: 22,
+      color: colors.ink,
+    },
+    link: {
+      marginTop: 16,
+      paddingVertical: 12,
+    },
+    linkText: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 16,
+      color: colors.teal,
+    },
+  });

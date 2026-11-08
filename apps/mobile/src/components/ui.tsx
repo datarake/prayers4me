@@ -7,25 +7,31 @@ import {
   type TextProps,
   type ViewProps,
 } from "react-native";
-import { colors, fonts } from "../theme";
+import { colors, type FontSet } from "../theme";
+import { useStyles } from "../useStyles";
 
 export function Screen({ style, ...props }: ViewProps) {
+  const styles = useStyles(createStyles);
   return <View style={[styles.screen, style]} {...props} />;
 }
 
 export function BrandTitle({ style, ...props }: TextProps) {
+  const styles = useStyles(createStyles);
   return <Text style={[styles.brand, style]} {...props} />;
 }
 
 export function Heading({ style, ...props }: TextProps) {
+  const styles = useStyles(createStyles);
   return <Text style={[styles.heading, style]} {...props} />;
 }
 
 export function Body({ style, ...props }: TextProps) {
+  const styles = useStyles(createStyles);
   return <Text style={[styles.body, style]} {...props} />;
 }
 
 export function Muted({ style, ...props }: TextProps) {
+  const styles = useStyles(createStyles);
   return <Text style={[styles.muted, style]} {...props} />;
 }
 
@@ -42,6 +48,7 @@ export function PrimaryButton({
   loading?: boolean;
   variant?: "solid" | "soft" | "ghost" | "onDark" | "candle";
 }) {
+  const styles = useStyles(createStyles);
   return (
     <Pressable
       accessibilityRole="button"
@@ -81,6 +88,7 @@ export function PrimaryButton({
 }
 
 export function LoadingState({ label }: { label: string }) {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.centered}>
       <ActivityIndicator color={colors.teal} />
@@ -89,70 +97,71 @@ export function LoadingState({ label }: { label: string }) {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.mist,
-  },
-  brand: {
-    fontFamily: fonts.display,
-    fontSize: 42,
-    lineHeight: 48,
-    color: colors.white,
-    letterSpacing: -0.5,
-  },
-  heading: {
-    fontFamily: fonts.display,
-    fontSize: 28,
-    lineHeight: 34,
-    color: colors.ink,
-  },
-  body: {
-    fontFamily: fonts.body,
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.inkSoft,
-  },
-  muted: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: colors.inkSoft,
-  },
-  button: {
-    minHeight: 52,
-    borderRadius: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 18,
-  },
-  buttonSolid: {
-    backgroundColor: colors.teal,
-  },
-  buttonSoft: {
-    backgroundColor: "rgba(15, 61, 58, 0.08)",
-  },
-  buttonGhost: {
-    backgroundColor: "transparent",
-  },
-  buttonOnDark: {
-    backgroundColor: "rgba(255,255,255,0.14)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.28)",
-  },
-  buttonCandle: {
-    backgroundColor: colors.candle,
-  },
-  buttonLabel: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: colors.white,
-  },
-  centered: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.mist,
+    },
+    brand: {
+      fontFamily: fonts.display,
+      fontSize: 42,
+      lineHeight: 48,
+      color: colors.white,
+      letterSpacing: -0.5,
+    },
+    heading: {
+      fontFamily: fonts.display,
+      fontSize: 28,
+      lineHeight: 34,
+      color: colors.ink,
+    },
+    body: {
+      fontFamily: fonts.body,
+      fontSize: 16,
+      lineHeight: 24,
+      color: colors.inkSoft,
+    },
+    muted: {
+      fontFamily: fonts.body,
+      fontSize: 14,
+      lineHeight: 20,
+      color: colors.inkSoft,
+    },
+    button: {
+      minHeight: 52,
+      borderRadius: 16,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 18,
+    },
+    buttonSolid: {
+      backgroundColor: colors.teal,
+    },
+    buttonSoft: {
+      backgroundColor: "rgba(15, 61, 58, 0.08)",
+    },
+    buttonGhost: {
+      backgroundColor: "transparent",
+    },
+    buttonOnDark: {
+      backgroundColor: "rgba(255,255,255,0.14)",
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.28)",
+    },
+    buttonCandle: {
+      backgroundColor: colors.candle,
+    },
+    buttonLabel: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 16,
+      color: colors.white,
+    },
+    centered: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 24,
+    },
+  });

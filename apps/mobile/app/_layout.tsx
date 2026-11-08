@@ -7,15 +7,21 @@ import {
   Fraunces_600SemiBold,
   Fraunces_600SemiBold_Italic,
 } from "@expo-google-fonts/fraunces";
+import { Lora_600SemiBold, Lora_600SemiBold_Italic } from "@expo-google-fonts/lora";
+import {
+  Manrope_400Regular,
+  Manrope_500Medium,
+  Manrope_700Bold,
+} from "@expo-google-fonts/manrope";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
-import { LanguageProvider } from "@/src/LanguageContext";
+import { LanguageProvider, useLanguage } from "@/src/LanguageContext";
 import { ToastProvider } from "@/src/components/Toast";
-import { colors } from "@/src/theme";
+import { colors, fontsFor } from "@/src/theme";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -28,6 +34,11 @@ export default function RootLayout() {
     DMSans_700Bold,
     Fraunces_600SemiBold,
     Fraunces_600SemiBold_Italic,
+    Lora_600SemiBold,
+    Lora_600SemiBold_Italic,
+    Manrope_400Regular,
+    Manrope_500Medium,
+    Manrope_700Bold,
   });
 
   useEffect(() => {
@@ -43,6 +54,18 @@ export default function RootLayout() {
   return (
     <LanguageProvider>
       <ToastProvider>
+        <RootStack />
+      </ToastProvider>
+    </LanguageProvider>
+  );
+}
+
+function RootStack() {
+  const { language } = useLanguage();
+  const fonts = fontsFor(language);
+
+  return (
+    <>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -51,7 +74,7 @@ export default function RootLayout() {
           headerShadowVisible: false,
           headerBackButtonDisplayMode: "minimal",
           headerTitleStyle: {
-            fontFamily: "Fraunces_600SemiBold",
+            fontFamily: fonts.display,
             fontSize: 20,
             color: colors.ink,
           },
@@ -67,7 +90,6 @@ export default function RootLayout() {
           options={{ title: "Ask for prayer", presentation: "modal" }}
         />
       </Stack>
-      </ToastProvider>
-    </LanguageProvider>
+    </>
   );
 }

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet, Text } from "react-native";
 import * as Haptics from "expo-haptics";
-import { colors, fonts } from "../theme";
+import { colors, type FontSet } from "../theme";
+import { useStyles } from "../useStyles";
 
 /** The core action. Springs on press, gives haptic feedback, and settles into a calm "done" state. */
 export function PrayButton({
@@ -17,6 +18,7 @@ export function PrayButton({
   accessibilityLabel: string;
   onPress: () => void;
 }) {
+  const styles = useStyles(createStyles);
   const scale = useRef(new Animated.Value(1)).current;
   const first = useRef(true);
 
@@ -66,29 +68,30 @@ export function PrayButton({
   );
 }
 
-const styles = StyleSheet.create({
-  btn: {
-    minHeight: 48,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 20,
-    borderRadius: 24,
-    backgroundColor: colors.sea,
-  },
-  btnDone: {
-    backgroundColor: colors.mistDeep,
-  },
-  icon: {
-    fontSize: 16,
-    color: colors.candle,
-  },
-  label: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: colors.white,
-  },
-  labelDone: {
-    color: colors.sea,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    btn: {
+      minHeight: 48,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      paddingHorizontal: 20,
+      borderRadius: 24,
+      backgroundColor: colors.sea,
+    },
+    btnDone: {
+      backgroundColor: colors.mistDeep,
+    },
+    icon: {
+      fontSize: 16,
+      color: colors.candle,
+    },
+    label: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 16,
+      color: colors.white,
+    },
+    labelDone: {
+      color: colors.sea,
+    },
+  });

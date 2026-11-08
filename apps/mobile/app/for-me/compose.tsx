@@ -29,11 +29,13 @@ import { useLanguage } from "@/src/LanguageContext";
 import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
 import { PrimaryButton, Screen } from "@/src/components/ui";
-import { colors, fonts } from "@/src/theme";
+import { colors, type FontSet } from "@/src/theme";
+import { useStyles } from "@/src/useStyles";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ComposeScreen() {
+  const styles = useStyles(createStyles);
   const router = useRouter();
   // Typed loosely: expo-router's typed navigation omits the stack's `beforeRemove` event.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -293,6 +295,7 @@ function Field({
   error?: string | null;
   children: ReactNode;
 }) {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
@@ -308,87 +311,88 @@ function Field({
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 22,
-    paddingBottom: 48,
-    gap: 20,
-  },
-  intro: {
-    fontFamily: fonts.body,
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.inkSoft,
-  },
-  field: {
-    gap: 8,
-  },
-  label: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 15,
-    color: colors.ink,
-  },
-  input: {
-    minHeight: 52,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    backgroundColor: colors.white,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontFamily: fonts.body,
-    fontSize: 17,
-    color: colors.ink,
-  },
-  inputError: {
-    borderColor: colors.danger,
-  },
-  textarea: {
-    minHeight: 160,
-    lineHeight: 25,
-  },
-  counter: {
-    alignSelf: "flex-end",
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.inkSoft,
-  },
-  counterWarn: {
-    color: colors.danger,
-  },
-  help: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 19,
-    color: colors.inkSoft,
-  },
-  error: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 13,
-    lineHeight: 19,
-    color: colors.danger,
-  },
-  switchCard: {
-    backgroundColor: "rgba(255,255,255,0.7)",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 16,
-  },
-  switchRow: {
-    minHeight: 44,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-  },
-  headerBtn: {
-    minHeight: 44,
-    justifyContent: "center",
-    paddingHorizontal: 4,
-  },
-  headerBtnLabel: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 16,
-    color: colors.sea,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    content: {
+      padding: 22,
+      paddingBottom: 48,
+      gap: 20,
+    },
+    intro: {
+      fontFamily: fonts.body,
+      fontSize: 16,
+      lineHeight: 24,
+      color: colors.inkSoft,
+    },
+    field: {
+      gap: 8,
+    },
+    label: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 15,
+      color: colors.ink,
+    },
+    input: {
+      minHeight: 52,
+      borderRadius: 14,
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      backgroundColor: colors.white,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      fontFamily: fonts.body,
+      fontSize: 17,
+      color: colors.ink,
+    },
+    inputError: {
+      borderColor: colors.danger,
+    },
+    textarea: {
+      minHeight: 160,
+      lineHeight: 25,
+    },
+    counter: {
+      alignSelf: "flex-end",
+      fontFamily: fonts.body,
+      fontSize: 13,
+      color: colors.inkSoft,
+    },
+    counterWarn: {
+      color: colors.danger,
+    },
+    help: {
+      fontFamily: fonts.body,
+      fontSize: 13,
+      lineHeight: 19,
+      color: colors.inkSoft,
+    },
+    error: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 13,
+      lineHeight: 19,
+      color: colors.danger,
+    },
+    switchCard: {
+      backgroundColor: "rgba(255,255,255,0.7)",
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 16,
+    },
+    switchRow: {
+      minHeight: 44,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 16,
+    },
+    headerBtn: {
+      minHeight: 44,
+      justifyContent: "center",
+      paddingHorizontal: 4,
+    },
+    headerBtnLabel: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 16,
+      color: colors.sea,
+    },
+  });

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { colors, fonts } from "../theme";
+import { colors, type FontSet } from "../theme";
+import { useStyles } from "../useStyles";
 import { Body, PrimaryButton } from "./ui";
 
 /** Empty or error state. Always offers a way forward (an action) when one exists. */
@@ -15,6 +16,7 @@ export function EmptyState({
   actionLabel?: string;
   onAction?: () => void;
 }) {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.wrap}>
       <LinearGradient
@@ -34,30 +36,31 @@ export function EmptyState({
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: {
-    paddingTop: 48,
-    paddingHorizontal: 4,
-    alignItems: "flex-start",
-  },
-  orb: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    marginBottom: 22,
-  },
-  title: {
-    fontFamily: fonts.display,
-    fontSize: 26,
-    lineHeight: 32,
-    color: colors.ink,
-    marginBottom: 10,
-  },
-  body: {
-    maxWidth: 340,
-  },
-  action: {
-    alignSelf: "stretch",
-    marginTop: 24,
-  },
-});
+const createStyles = (fonts: FontSet) =>
+  StyleSheet.create({
+    wrap: {
+      paddingTop: 48,
+      paddingHorizontal: 4,
+      alignItems: "flex-start",
+    },
+    orb: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+      marginBottom: 22,
+    },
+    title: {
+      fontFamily: fonts.display,
+      fontSize: 26,
+      lineHeight: 32,
+      color: colors.ink,
+      marginBottom: 10,
+    },
+    body: {
+      maxWidth: 340,
+    },
+    action: {
+      alignSelf: "stretch",
+      marginTop: 24,
+    },
+  });

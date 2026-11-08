@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D6A62"/><stop offset="1" stop-color="#081F1D"/></linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#E6C16A" stop-opacity=".42"/><stop offset="1" stop-color="#E6C16A" stop-opacity="0"/></radialGradient>
+    <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE29A"/><stop offset="1" stop-color="#E0A23A"/></linearGradient>
+    <linearGradient id="hand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#CFE7E1"/></linearGradient>
+  </defs>
+
+  <g id="mark">
+    <circle cx="512" cy="520" r="360" fill="none"/>
+    <!-- rising prayers -->
+    <circle cx="418" cy="318" r="9" fill="#fff" opacity=".85"/>
+    <circle cx="612" cy="292" r="7" fill="#fff" opacity=".7"/>
+    <circle cx="566" cy="222" r="5" fill="#fff" opacity=".55"/>
+    <!-- flame -->
+    <path d="M512 262 C566 338 654 404 654 512 C654 592 592 652 512 652 C432 652 370 592 370 512 C370 442 416 402 448 350 C468 402 490 414 502 414 C490 352 496 306 512 262 Z" fill="#fff"/>
+    <path d="M512 404 C546 452 586 482 586 532 C586 577 553 608 512 608 C471 608 438 577 438 532 C438 482 478 452 512 404 Z" fill="#000"/>
+    <!-- cupped hands -->
+    <path d="M262 506 C250 700 372 800 508 812 C430 700 334 600 262 506 Z" fill="#fff"/>
+    <path d="M762 506 C774 700 652 800 516 812 C594 700 690 600 762 506 Z" fill="#fff"/>
+  </g>
+</svg>
