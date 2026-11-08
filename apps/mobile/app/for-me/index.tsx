@@ -98,6 +98,19 @@ export default function ForMeScreen() {
 
   const compose = () => router.push("/for-me/compose");
 
+  const startEdit = (item: PrayerRequestPublic) =>
+    router.push({
+      pathname: "/for-me/compose",
+      params: {
+        id: item.id,
+        name: item.displayName,
+        message: item.message,
+        contactable: item.contactable ? "1" : "0",
+        phone: item.phone ?? "",
+        email: item.email ?? "",
+      },
+    });
+
   const confirmDelete = (item: PrayerRequestPublic) => {
     Alert.alert(copy.deleteTitle, copy.deleteBody, [
       { text: copy.cancel, style: "cancel" },
@@ -182,6 +195,7 @@ export default function ForMeScreen() {
             language={language}
             copy={copy}
             onDelete={() => confirmDelete(item)}
+            onEdit={() => startEdit(item)}
           />
         )}
       />

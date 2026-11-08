@@ -5,7 +5,7 @@ import {
 } from "@prayers4me/shared";
 import * as Haptics from "expo-haptics";
 import * as WebBrowser from "expo-web-browser";
-import { useNavigation, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import {
   useEffect,
   useLayoutEffect,
@@ -45,11 +45,30 @@ export default function ComposeScreen() {
   const toast = useToast();
   const { language, copy } = useLanguage();
 
-  const [displayName, setDisplayName] = useState("");
-  const [message, setMessage] = useState("");
-  const [contactable, setContactable] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  // Editing reuses this form: the request arrives through route params.
+  const params = useLocalSearchParams<{
+    id?: string;
+    name?: string;
+    message?: string;
+    contactable?: string;
+    phone?: string;
+    email?: string;
+  }>();
+  const editingId = params.id;
+  const isEditing = Boolean(editingId);
+  const initial = useRef({
+    name: params.name ?? "",
+    message: params.message ?? "",
+    contactable: params.contactable === "1",
+    phone: params.phone ?? "",
+    email: params.email ?? "",
+  }).current;
+
+  const [displayName, setDisplayName] = useState(initial.name);
+  const [message, setMessage] = useState(initial.message);
+  const [contactable, setContactable] = useState(initial.contactable);
+  const [phone, setPhone] = useState(initial.phone);
+  const [email, setEmail] = useState(initial.email);
   const [submitting, setSubmitting] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -62,7 +81,14 @@ export default function ComposeScreen() {
 
   const name = displayName.trim();
   const body = message.trim();
-  const dirty = name.length > 0 || body.length > 0;
+  const changed =
+    name !== initial.name.trim() ||
+    body !== initial.message.trim() ||
+    contactable !== initial.contactable ||
+    phone.trim() !== initial.phone.trim() ||
+    email.trim() !== initial.email.trim();
+  // A new request is "dirty" once anything is typed. An edit only once something changed.
+  const dirty = isEditing ? changed : name.length > 0 || body.length > 0;
 
   const errors = {
     name: name.length === 0 ? copy.nameRequired : null,
@@ -86,7 +112,7 @@ export default function ComposeScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: copy.composeTitle,
+      title: isEditing ? copy.editTitle : copy.composeTitle,
       headerLeft: () => (
         <Pressable
           accessibilityRole="button"
@@ -98,7 +124,7 @@ export default function ComposeScreen() {
         </Pressable>
       ),
     });
-  }, [navigation, router, copy.composeTitle, copy.cancel]);
+  }, [navigation, router, isEditing, copy.composeTitle, copy.editTitle, copy.cancel]);
 
   // Never lose a heartfelt, half-written request to a stray swipe-down.
   useEffect(() => {
@@ -128,8 +154,30 @@ export default function ComposeScreen() {
       else emailRef.current?.focus();
       return;
     }
+    if (isEditing && !changed) {
+      // Nothing to save: leave quietly, without spending one of the limited edits.
+      done.current = true;
+      router.back();
+      return;
+    }
     setSubmitting(true);
     try {
+      if (isEditing && editingId) {
+        await api.updateRequest(editingId, {
+          displayName: name,
+          message: body,
+          contactable,
+          phone: contactable ? phone.trim() || null : null,
+          email: contactable ? email.trim() || null : null,
+        });
+        done.current = true;
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
+          () => undefined,
+        );
+        toast.show(copy.updated);
+        router.back();
+        return;
+      }
       await api.createRequest({
         language,
         displayName: name,
@@ -295,16 +343,18 @@ export default function ComposeScreen() {
             ) : null}
           </View>
 
-          <Pressable
-            accessibilityRole="link"
-            onPress={() => router.push("/guidelines")}
-            hitSlop={8}
-          >
-            <Text style={styles.agree}>{copy.guidelinesAgree}</Text>
-          </Pressable>
+          {isEditing ? null : (
+            <Pressable
+              accessibilityRole="link"
+              onPress={() => router.push("/guidelines")}
+              hitSlop={8}
+            >
+              <Text style={styles.agree}>{copy.guidelinesAgree}</Text>
+            </Pressable>
+          )}
 
           <PrimaryButton
-            label={submitting ? copy.sending : copy.send}
+            label={submitting ? copy.sending : isEditing ? copy.saveChanges : copy.send}
             onPress={onSubmit}
             loading={submitting}
           />

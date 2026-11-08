@@ -48,6 +48,11 @@ export type ExtraDictionary = {
   notifyOn: string;
   notifyDenied: string;
   notifyUnavailable: string;
+  edit: string;
+  editTitle: string;
+  saveChanges: string;
+  updated: string;
+  edited: string;
 };
 
 export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
@@ -105,6 +110,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     notifyOn: "Notifications are on",
     notifyDenied: "Notifications are off. You can turn them on in your phone settings.",
     notifyUnavailable: "Notifications are not available on this device",
+    edit: "Edit",
+    editTitle: "Edit request",
+    saveChanges: "Save changes",
+    updated: "Request updated",
+    edited: "Edited",
   },
   es: {
     cancel: "Cancelar",
@@ -160,6 +170,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     notifyOn: "Notificaciones activadas",
     notifyDenied: "Las notificaciones están desactivadas. Puedes activarlas en los ajustes del teléfono.",
     notifyUnavailable: "Las notificaciones no están disponibles en este dispositivo",
+    edit: "Editar",
+    editTitle: "Editar petición",
+    saveChanges: "Guardar cambios",
+    updated: "Petición actualizada",
+    edited: "Editada",
   },
   fr: {
     cancel: "Annuler",
@@ -215,6 +230,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     notifyOn: "Notifications activées",
     notifyDenied: "Les notifications sont désactivées. Tu peux les activer dans les réglages du téléphone.",
     notifyUnavailable: "Les notifications ne sont pas disponibles sur cet appareil",
+    edit: "Modifier",
+    editTitle: "Modifier la demande",
+    saveChanges: "Enregistrer",
+    updated: "Demande mise à jour",
+    edited: "Modifiée",
   },
   ro: {
     cancel: "Anulează",
@@ -270,6 +290,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     notifyOn: "Notificări activate",
     notifyDenied: "Notificările sunt dezactivate. Le poți activa din setările telefonului.",
     notifyUnavailable: "Notificările nu sunt disponibile pe acest dispozitiv",
+    edit: "Editează",
+    editTitle: "Editează cererea",
+    saveChanges: "Salvează modificările",
+    updated: "Cerere actualizată",
+    edited: "Editată",
   },
   uk: {
     cancel: "Скасувати",
@@ -325,6 +350,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     notifyOn: "Сповіщення увімкнено",
     notifyDenied: "Сповіщення вимкнено. Увімкни їх у налаштуваннях телефона.",
     notifyUnavailable: "Сповіщення недоступні на цьому пристрої",
+    edit: "Редагувати",
+    editTitle: "Редагувати прохання",
+    saveChanges: "Зберегти зміни",
+    updated: "Прохання оновлено",
+    edited: "Відредаговано",
   },
   ru: {
     cancel: "Отмена",
@@ -380,5 +410,10 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     notifyOn: "Уведомления включены",
     notifyDenied: "Уведомления выключены. Включи их в настройках телефона.",
     notifyUnavailable: "Уведомления недоступны на этом устройстве",
+    edit: "Изменить",
+    editTitle: "Изменить просьбу",
+    saveChanges: "Сохранить изменения",
+    updated: "Просьба обновлена",
+    edited: "Изменено",
   },
 };

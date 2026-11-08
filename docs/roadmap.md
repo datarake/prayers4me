@@ -25,6 +25,12 @@ The tagline is "Someone prayed for you." Today the author only learns it by open
 | 6 | **Block** | Hide everything from one author for me. App stores expect blocking in addition to reporting. Needs a `blocks` table and a feed filter. |
 | 7 | **Gentle daily reminder** | Optional local notification at a time the user picks. No server needed. |
 
+### Added during phase 2
+
+| Feature | Notes |
+|---------|-------|
+| **Edit my request** (done) | Authors can fix typos: name, text and contact only, never the language. Capped at 3 edits, same content checks as a new request, marked "Edited", previous versions stored in `request_edits`. Not allowed while a request is under review. |
+
 ## Phase 3: Delight and retention
 
 | # | Feature | Notes |

@@ -1,9 +1,11 @@
 import { Hono } from "hono";
 import {
+  MAX_EDITS_PER_REQUEST,
   RATE_LIMITS,
   createRequestSchema,
   feedQuerySchema,
   reportRequestSchema,
+  updateRequestSchema,
   type PrayerRequestPublic,
 } from "@prayers4me/shared";
 import type { AppVariables } from "../auth.js";
@@ -25,6 +27,8 @@ type RequestRow = {
   prayers_count: number;
   status: PrayerRequestPublic["status"];
   created_at: Date;
+  edit_count: number;
+  edited_at: Date | null;
   prayed_by_me: boolean;
 };
 
@@ -43,6 +47,8 @@ function mapRequest(row: RequestRow, viewerId: string): PrayerRequestPublic {
     email: isMine && row.contactable ? row.email : null,
     status: row.status,
     createdAt: row.created_at.toISOString(),
+    editedAt: row.edited_at ? row.edited_at.toISOString() : null,
+    editsLeft: isMine ? Math.max(0, MAX_EDITS_PER_REQUEST - row.edit_count) : 0,
   };
 }
 
@@ -293,4 +299,75 @@ requestsRoutes.delete("/:id", requireNotBanned(), async (c) => {
   }
 
   return c.json({ id: requestId, deleted: true });
+});
+
+requestsRoutes.patch("/:id", requireNotBanned(), async (c) => {
+  const sql = c.get("sql");
+  const user = c.get("user");
+  const requestId = c.req.param("id");
+  if (!/^[0-9a-f-]{36}$/i.test(requestId)) {
+    throw new ApiError(404, "not_found", "Prayer request not found");
+  }
+
+  const body = updateRequestSchema.parse(await c.req.json());
+  // An edit must pass the same checks as a new request, or it would be a way around them.
+  assertMessageLooksHuman(body.message);
+
+  const phone = body.contactable ? body.phone ?? null : null;
+  const email = body.contactable ? body.email ?? null : null;
+
+  const row = await sql.begin(async (tx) => {
+    const found = await tx<RequestRow[]>`
+      SELECT *, false AS prayed_by_me
+      FROM prayer_requests
+      WHERE id = ${requestId} AND author_id = ${user.id} AND status <> 'removed'
+      FOR UPDATE
+    `;
+    const current = found[0];
+    if (!current) throw new ApiError(404, "not_found", "Prayer request not found");
+
+    // A request hidden by reports is under review. Editing it would dodge that review.
+    if (current.status !== "active") {
+      throw new ApiError(409, "under_review", "This request is under review");
+    }
+
+    const unchanged =
+      current.display_name === body.displayName &&
+      current.message === body.message &&
+      current.contactable === body.contactable &&
+      current.phone === phone &&
+      current.email === email;
+    if (unchanged) return current;
+
+    if (current.edit_count >= MAX_EDITS_PER_REQUEST) {
+      throw new ApiError(429, "edit_limit", "You have used all edits for this request");
+    }
+
+    await tx`
+      INSERT INTO request_edits (request_id, display_name, message, contactable, phone, email)
+      VALUES (
+        ${requestId}, ${current.display_name}, ${current.message},
+        ${current.contactable}, ${current.phone}, ${current.email}
+      )
+    `;
+
+    const updated = await tx<RequestRow[]>`
+      UPDATE prayer_requests
+      SET display_name = ${body.displayName},
+          message = ${body.message},
+          contactable = ${body.contactable},
+          phone = ${phone},
+          email = ${email},
+          edit_count = edit_count + 1,
+          edited_at = now(),
+          updated_at = now()
+      WHERE id = ${requestId}
+      RETURNING *, false AS prayed_by_me
+    `;
+    const next = updated[0];
+    if (!next) throw new ApiError(500, "update_failed", "Could not update request");
+    return next;
+  });
+
+  return c.json(mapRequest(row, user.id));
 });

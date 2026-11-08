@@ -7,25 +7,38 @@ import {
 } from "./constants.js";
 export const languageSchema = z.enum(["en", "es", "fr", "ro", "uk", "ru"]);
 
-export const createRequestSchema = z
-  .object({
-    language: languageSchema,
-    displayName: z.string().trim().min(1).max(NAME_MAX_LENGTH),
-    message: z.string().trim().min(MESSAGE_MIN_LENGTH).max(MESSAGE_MAX_LENGTH),
-    contactable: z.boolean().default(false),
-    phone: z.string().trim().max(40).optional().nullable(),
-    email: z.string().trim().email().max(120).optional().nullable(),
-  })
-  .superRefine((data, ctx) => {
-    if (!data.contactable) return;
-    if (!data.phone && !data.email) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Enter phone or email when contact is enabled",
-        path: ["email"],
-      });
-    }
-  });
+const requestFields = z.object({
+  displayName: z.string().trim().min(1).max(NAME_MAX_LENGTH),
+  message: z.string().trim().min(MESSAGE_MIN_LENGTH).max(MESSAGE_MAX_LENGTH),
+  contactable: z.boolean().default(false),
+  phone: z.string().trim().max(40).optional().nullable(),
+  email: z.string().trim().email().max(120).optional().nullable(),
+});
+
+function requireContactWhenEnabled(
+  data: { contactable: boolean; phone?: string | null; email?: string | null },
+  ctx: z.RefinementCtx,
+) {
+  if (!data.contactable) return;
+  if (!data.phone && !data.email) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Enter phone or email when contact is enabled",
+      path: ["email"],
+    });
+  }
+}
+
+export const createRequestSchema = requestFields
+  .extend({ language: languageSchema })
+  .superRefine(requireContactWhenEnabled);
+
+/** Editing keeps the language (it decides which feed the request lives in). */
+export const updateRequestSchema = requestFields.superRefine(
+  requireContactWhenEnabled,
+);
+
+export type UpdateRequestInput = z.infer<typeof updateRequestSchema>;
 
 export type CreateRequestInput = z.infer<typeof createRequestSchema>;
 

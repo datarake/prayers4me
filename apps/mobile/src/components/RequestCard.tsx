@@ -45,6 +45,7 @@ export function RequestCard({
   onPray,
   onReport,
   onDelete,
+  onEdit,
 }: {
   item: PrayerRequestPublic;
   language: LanguageCode;
@@ -54,6 +55,7 @@ export function RequestCard({
   onReport?: () => void;
   /** Present only where the user can manage their own requests. */
   onDelete?: () => void;
+  onEdit?: () => void;
 }) {
   const styles = useStyles(createStyles);
   const hasPrayers = item.prayersCount > 0;
@@ -68,10 +70,13 @@ export function RequestCard({
         <Text style={styles.date}>{whenLabel(item.createdAt, language)}</Text>
       </View>
 
-      {item.isMine || item.status !== "active" ? (
+      {item.isMine || item.status !== "active" || item.editedAt ? (
         <View style={styles.badges}>
           {item.isMine ? (
             <Text style={styles.badge}>{copy.yourRequest}</Text>
+          ) : null}
+          {item.editedAt ? (
+            <Text style={[styles.badge, styles.badgeQuiet]}>{copy.edited}</Text>
           ) : null}
           {item.status !== "active" ? (
             <Text style={[styles.badge, styles.badgeWarn]}>
@@ -92,7 +97,23 @@ export function RequestCard({
 
       {item.isMine && onDelete ? (
         <View style={styles.actions}>
-          <View />
+          {onEdit && item.editsLeft > 0 && item.status === "active" ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={copy.edit}
+              onPress={onEdit}
+              hitSlop={8}
+              style={({ pressed }) => [
+                styles.reportBtn,
+                styles.editBtn,
+                pressed && { opacity: 0.6 },
+              ]}
+            >
+              <Text style={[styles.reportLabel, styles.editLabel]}>{copy.edit}</Text>
+            </Pressable>
+          ) : (
+            <View />
+          )}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={copy.delete}
@@ -218,6 +239,17 @@ const createStyles = (fonts: FontSet) =>
       minWidth: 44,
       alignItems: "flex-end",
       justifyContent: "center",
+    },
+    badgeQuiet: {
+      color: colors.inkSoft,
+      backgroundColor: "rgba(15, 61, 58, 0.07)",
+    },
+    editBtn: {
+      alignItems: "flex-start",
+    },
+    editLabel: {
+      color: colors.sea,
+      fontFamily: fonts.bodyBold,
     },
     deleteLabel: {
       color: colors.danger,

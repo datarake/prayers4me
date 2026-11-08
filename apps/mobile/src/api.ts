@@ -108,6 +108,21 @@ export const api = {
       prayersCount: number;
     }>(`/v1/requests/${id}/pray`, { method: "POST" }),
 
+  updateRequest: (
+    id: string,
+    payload: {
+      displayName: string;
+      message: string;
+      contactable: boolean;
+      phone?: string | null;
+      email?: string | null;
+    },
+  ) =>
+    request<PrayerRequestPublic>(`/v1/requests/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+
   registerPushToken: (token: string | null) =>
     request<{ registered: boolean }>("/v1/session/push-token", {
       method: "PUT",

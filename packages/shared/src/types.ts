@@ -20,6 +20,10 @@ export type PrayerRequestPublic = {
   email: string | null;
   status: RequestStatus;
   createdAt: string;
+  /** Set once the author has edited the text, so readers can tell it changed. */
+  editedAt: string | null;
+  /** Edits the author has left. Always 0 for other people's requests. */
+  editsLeft: number;
 };
 
 export type FeedPage = {
