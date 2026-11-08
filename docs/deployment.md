@@ -1,5 +1,45 @@
 # Deployment (Google Cloud)
 
+**Status (2026-11-08):** deployed in `europe-west1` (Belgium). The API answers at `https://api.stillflame.app` (also `https://stillflame-api-799342684788.europe-west1.run.app`). Real phones cannot use it yet, because App Check is enforced and needs the Apple and Google developer accounts.
+
+## What exists
+
+| Resource | Name |
+|----------|------|
+| Cloud Run service | `stillflame-api` (public invoker, max 3 instances, scales to zero, 512 MiB) |
+| Cloud Run jobs | `stillflame-migrate`, `stillflame-maintain` |
+| Cloud Scheduler | `stillflame-maintain-every-6h` (europe-west1) |
+| Cloud SQL | `stillflame-db`, Postgres 16, `db-f1-micro`, 10 GB SSD, daily backup 03:00, deletion protection on; database and user `stillflame` |
+| Secrets | `database-url`, `ip-hash-secret` (Secret Manager) |
+| Service accounts | `stillflame-api` (Cloud SQL client, secret reader), `stillflame-scheduler` (invokes the maintain job) |
+| Image registry | `europe-west1-docker.pkg.dev/prayers4me/stillflame/api` |
+| Budget | 20 USD a month with emails at 50%, 90% and 100% (warns only, it does not stop anything) |
+| DNS (GoDaddy) | `api` CNAME to `ghs.googlehosted.com`; TXT `google-site-verification=...` on `@` (keep it, removing it loses domain ownership in Google) |
+
+Everything is in the Firebase project `prayers4me` (project number `799342684788`). A project id cannot be renamed, so the older name stays internal.
+
+## Releasing a new version
+
+Use the account `burdibox@gmail.com` and the project `prayers4me` explicitly (the machine has other Google accounts):
+
+```bash
+export CLOUDSDK_CORE_ACCOUNT=burdibox@gmail.com CLOUDSDK_CORE_PROJECT=prayers4me
+TAG=v4   # a new tag each time
+IMG=europe-west1-docker.pkg.dev/prayers4me/stillflame/api:$TAG
+gcloud builds submit . --tag $IMG --region=europe-west1
+gcloud run jobs update stillflame-migrate --image=$IMG --region=europe-west1
+gcloud run jobs execute stillflame-migrate --region=europe-west1 --wait      # before the new code runs
+gcloud run jobs update stillflame-maintain --image=$IMG --region=europe-west1
+gcloud run deploy stillflame-api --image=$IMG --region=europe-west1          # keeps the existing settings
+```
+
+## Things learned
+
+- The database URL for Cloud Run is `postgres://stillflame:PASSWORD@localhost/stillflame?host=/cloudsql/prayers4me:europe-west1:stillflame-db`. The driver ignores a `host` parameter, so `connect()` in `apps/api/src/db/client.ts` reads it and opens the socket itself (tested).
+- A failed connection can print the full URL, password included, into the logs. If that happens, rotate the password (`gcloud sql users set-password`) and add a new secret version.
+- Deleting a Google Cloud project does not free its slot in the project quota for 30 days.
+- Anonymous Firebase accounts must not be auto-cleaned (see `docs/development.md`).
+
 Everything runs in the Firebase project `prayers4me` (it is also a Google Cloud project, number `799342684788`), so sign-in, attestation, the API and the database share one place and one bill.
 
 | Piece | Service | Notes |

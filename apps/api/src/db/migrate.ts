@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import postgres from "postgres";
+import { connect } from "./client.js";
 import { runMigrations } from "./migrations.js";
 
 const databaseUrl =
@@ -8,7 +8,7 @@ const databaseUrl =
   "postgres://prayers4me:prayers4me@localhost:5432/prayers4me";
 
 async function main() {
-  const sql = postgres(databaseUrl, { max: 1, onnotice: () => undefined });
+  const sql = connect(databaseUrl, { max: 1, onnotice: () => undefined });
   const dir = path.resolve(
     path.dirname(fileURLToPath(import.meta.url)),
     "../../../../infra/sql",
