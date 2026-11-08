@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet, Text } from "react-native";
 import * as Haptics from "expo-haptics";
 import { colors, type FontSet } from "../theme";
+import { Icon } from "./Icon";
 import { useStyles } from "../useStyles";
 
 /** The core action. Springs on press, gives haptic feedback, and settles into a calm "done" state. */
@@ -57,9 +58,7 @@ export function PrayButton({
           pressed && !prayed && { opacity: 0.85, transform: [{ scale: 0.97 }] },
         ]}
       >
-        <Text style={[styles.icon, prayed && styles.labelDone]}>
-          {prayed ? "✓" : "🕯"}
-        </Text>
+        <Icon name={prayed ? "check" : "candle"} size={18} color={colors.sea} />
         <Text style={[styles.label, prayed && styles.labelDone]}>
           {prayed ? prayedLabel : label}
         </Text>

@@ -4,6 +4,7 @@ import type { LanguageCode, PrayerRequestPublic } from "@prayers4me/shared";
 import { prayersLabel, type Copy } from "../i18n";
 import { colors, type FontSet } from "../theme";
 import { useStyles } from "../useStyles";
+import { Icon } from "./Icon";
 import { PrayButton } from "./PrayButton";
 import { Body } from "./ui";
 import { Pressable } from "react-native";
@@ -121,7 +122,13 @@ export function RequestCard({
       ) : null}
 
       <View style={styles.countRow}>
-        <Text style={styles.flame}>{hasPrayers ? "🕯" : "·"}</Text>
+        <View style={styles.flame}>
+          <Icon
+            name="candle"
+            size={16}
+            color={hasPrayers ? colors.teal : "rgba(61, 90, 86, 0.45)"}
+          />
+        </View>
         <Text style={[styles.count, !hasPrayers && styles.countNone]}>
           {prayersLabel(language, item.prayersCount)}
         </Text>
@@ -264,8 +271,8 @@ const createStyles = (fonts: FontSet) =>
       marginBottom: 16,
     },
     flame: {
-      fontSize: 15,
-      color: colors.teal,
+      width: 18,
+      alignItems: "center",
     },
     count: {
       fontFamily: fonts.bodyMedium,

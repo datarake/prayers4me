@@ -28,6 +28,7 @@ import {
 } from "react-native";
 import { useLanguage } from "@/src/LanguageContext";
 import { api, errorMessage } from "@/src/api";
+import { Icon } from "@/src/components/Icon";
 import { useToast } from "@/src/components/Toast";
 import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
 import { PrimaryButton, Screen } from "@/src/components/ui";
@@ -297,7 +298,10 @@ export default function ComposeScreen() {
             </View>
             {contactable ? (
               <View style={{ gap: 14, marginTop: 14 }}>
-                <Text style={styles.help}>🔒 {copy.contactHelp}</Text>
+                <View style={styles.helpRow}>
+                  <Icon name="lock" size={15} color={colors.inkSoft} />
+                  <Text style={[styles.help, { flex: 1 }]}>{copy.contactHelp}</Text>
+                </View>
                 <Field label={copy.phoneLabel}>
                   <TextInput
                     ref={phoneRef}
@@ -464,6 +468,11 @@ const createStyles = (fonts: FontSet) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 16,
+    },
+    helpRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 8,
     },
     supportCard: {
       backgroundColor: "#FFF4DA",

@@ -1,10 +1,11 @@
+/** `nativeName` is the language's own name (for scanning a list), `label` the community phrase. */
 export const LANGUAGES = [
-  { code: "en", label: "Prayers in English" },
-  { code: "es", label: "Oraciones en español" },
-  { code: "fr", label: "Prières en français" },
-  { code: "ro", label: "Rugăciuni în română" },
-  { code: "uk", label: "Молитви українською" },
-  { code: "ru", label: "Молитвы на русском языке" },
+  { code: "en", nativeName: "English", label: "Prayers in English" },
+  { code: "es", nativeName: "Español", label: "Oraciones en español" },
+  { code: "fr", nativeName: "Français", label: "Prières en français" },
+  { code: "ro", nativeName: "Română", label: "Rugăciuni în română" },
+  { code: "uk", nativeName: "Українська", label: "Молитви українською" },
+  { code: "ru", nativeName: "Русский", label: "Молитвы на русском языке" },
 ] as const;
 
 export type LanguageCode = (typeof LANGUAGES)[number]["code"];

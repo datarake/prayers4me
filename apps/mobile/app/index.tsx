@@ -2,11 +2,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect } from "react";
 import { setStatusBarStyle } from "expo-status-bar";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { APP_NAME } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
 import { api } from "@/src/api";
+import { LanguagePill } from "@/src/components/LanguagePill";
 import { PathButton } from "@/src/components/PathButton";
 import { brandFont, colors, type FontSet } from "@/src/theme";
 import { useStyles } from "@/src/useStyles";
@@ -15,7 +16,7 @@ export default function WelcomeScreen() {
   const styles = useStyles(createStyles);
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { copy, ready } = useLanguage();
+  const { copy, language, ready } = useLanguage();
 
   // Light icons over the dark hero; the other screens are light-themed.
   useFocusEffect(
@@ -105,18 +106,11 @@ export default function WelcomeScreen() {
               emphasis="secondary"
               onPress={() => router.push("/for-others")}
             />
-            <Pressable
-              accessibilityRole="button"
-              accessibilityHint={copy.languagesTitle}
+            <LanguagePill
+              language={language}
+              accessibilityLabel={copy.languagesTitle}
               onPress={() => router.push("/languages")}
-              hitSlop={12}
-              style={({ pressed }) => [
-                styles.languageLink,
-                pressed && { opacity: 0.7 },
-              ]}
-            >
-              <Text style={styles.languageText}>🌐  {copy.languageButton}</Text>
-            </Pressable>
+            />
           </View>
         </View>
       </View>
@@ -203,17 +197,5 @@ const createStyles = (fonts: FontSet) =>
     },
     actions: {
       gap: 12,
-    },
-    languageLink: {
-      alignSelf: "center",
-      minHeight: 44,
-      justifyContent: "center",
-      paddingHorizontal: 12,
-    },
-    languageText: {
-      fontFamily: fonts.bodyMedium,
-      fontSize: 14,
-      color: "rgba(255,255,255,0.82)",
-      textDecorationLine: "underline",
     },
   });

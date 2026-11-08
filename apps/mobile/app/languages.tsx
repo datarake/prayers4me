@@ -4,6 +4,7 @@ import { useNavigation, useRouter } from "expo-router";
 import { useLayoutEffect } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { useLanguage } from "@/src/LanguageContext";
+import { Icon } from "@/src/components/Icon";
 import { Screen } from "@/src/components/ui";
 import { colors, fontsFor, type FontSet } from "@/src/theme";
 import { useStyles } from "@/src/useStyles";
@@ -25,12 +26,19 @@ export default function LanguagesScreen() {
         keyExtractor={(item) => item.code}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={() => <View style={styles.sep} />}
+        ListHeaderComponent={
+          // The language decides which community you see, so say so.
+          <Text style={styles.intro}>{copy.languageIntro}</Text>
+        }
         renderItem={({ item }) => {
           const selected = item.code === language;
+          // Each name is set in the font that actually contains its letters.
+          const f = fontsFor(item.code);
           return (
             <Pressable
               accessibilityRole="radio"
               accessibilityState={{ selected }}
+              accessibilityLabel={`${item.nativeName}. ${item.label}`}
               onPress={async () => {
                 Haptics.selectionAsync().catch(() => undefined);
                 await setLanguage(item.code);
@@ -42,18 +50,27 @@ export default function LanguagesScreen() {
                 pressed && { opacity: 0.85 },
               ]}
             >
-              <Text
-                style={[
-                  styles.label,
-                  // Each language name is set in the font that actually contains its letters.
-                  { fontFamily: fontsFor(item.code).bodyMedium },
-                  selected && styles.labelSelected,
-                  selected && { fontFamily: fontsFor(item.code).bodyBold },
-                ]}
-              >
-                {item.label}
-              </Text>
-              {selected ? <Text style={styles.check}>✓</Text> : null}
+              <View style={styles.names}>
+                <Text
+                  style={[
+                    styles.name,
+                    { fontFamily: selected ? f.bodyBold : f.bodyMedium },
+                    selected && styles.nameSelected,
+                  ]}
+                >
+                  {item.nativeName}
+                </Text>
+                <Text style={[styles.phrase, { fontFamily: f.body }]}>
+                  {item.label}
+                </Text>
+              </View>
+              {selected ? (
+                <View style={styles.checked}>
+                  <Icon name="check" size={16} color={colors.white} strokeWidth={2.4} />
+                </View>
+              ) : (
+                <Icon name="circle" size={26} color="rgba(15, 61, 58, 0.25)" />
+              )}
             </Pressable>
           );
         }}
@@ -66,37 +83,58 @@ const createStyles = (fonts: FontSet) =>
   StyleSheet.create({
     list: {
       padding: 20,
+      paddingBottom: 40,
+    },
+    intro: {
+      fontFamily: fonts.body,
+      fontSize: 15,
+      lineHeight: 22,
+      color: colors.inkSoft,
+      marginBottom: 16,
     },
     sep: {
       height: 10,
     },
     row: {
-      minHeight: 60,
+      minHeight: 68,
       borderRadius: 16,
-      paddingHorizontal: 16,
+      paddingHorizontal: 18,
+      paddingVertical: 12,
       backgroundColor: colors.white,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: colors.border,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
+      gap: 12,
     },
     rowSelected: {
       borderColor: colors.teal,
       backgroundColor: colors.mistDeep,
     },
-    label: {
-      fontFamily: fonts.bodyMedium,
-      fontSize: 16,
+    names: {
+      flex: 1,
+      gap: 2,
+    },
+    name: {
+      fontSize: 19,
+      lineHeight: 25,
       color: colors.ink,
     },
-    labelSelected: {
-      fontFamily: fonts.bodyBold,
+    nameSelected: {
       color: colors.sea,
     },
-    check: {
-      fontFamily: fonts.bodyBold,
-      color: colors.teal,
-      fontSize: 18,
+    phrase: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: colors.inkSoft,
+    },
+    checked: {
+      width: 26,
+      height: 26,
+      borderRadius: 13,
+      backgroundColor: colors.teal,
+      alignItems: "center",
+      justifyContent: "center",
     },
   });

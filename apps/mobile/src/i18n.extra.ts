@@ -54,6 +54,7 @@ export type ExtraDictionary = {
   updated: string;
   edited: string;
   readMore: string;
+  languageIntro: string;
   readLess: string;
   filterNewest: string;
   filterWaiting: string;
@@ -122,6 +123,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     updated: "Request updated",
     edited: "Edited",
     readMore: "Read more",
+    languageIntro: "You will see and pray for requests in this language.",
     readLess: "Show less",
     filterNewest: "Newest",
     filterWaiting: "Needs prayer",
@@ -188,6 +190,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     updated: "Petición actualizada",
     edited: "Editada",
     readMore: "Leer más",
+    languageIntro: "Verás peticiones y orarás por ellas en este idioma.",
     readLess: "Mostrar menos",
     filterNewest: "Recientes",
     filterWaiting: "Esperan oración",
@@ -254,6 +257,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     updated: "Demande mise à jour",
     edited: "Modifiée",
     readMore: "Lire la suite",
+    languageIntro: "Tu verras les demandes et prieras en cette langue.",
     readLess: "Réduire",
     filterNewest: "Récentes",
     filterWaiting: "Attendent une prière",
@@ -320,6 +324,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     updated: "Cerere actualizată",
     edited: "Editată",
     readMore: "Citește mai mult",
+    languageIntro: "Vei vedea cererile și te vei ruga în această limbă.",
     readLess: "Arată mai puțin",
     filterNewest: "Recente",
     filterWaiting: "Așteaptă rugăciune",
@@ -386,6 +391,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     updated: "Прохання оновлено",
     edited: "Відредаговано",
     readMore: "Читати далі",
+    languageIntro: "Ти бачитимеш прохання й молитимешся цією мовою.",
     readLess: "Згорнути",
     filterNewest: "Нові",
     filterWaiting: "Чекають молитви",
@@ -452,6 +458,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     updated: "Просьба обновлена",
     edited: "Изменено",
     readMore: "Читать далее",
+    languageIntro: "Ты будешь видеть просьбы и молиться на этом языке.",
     readLess: "Свернуть",
     filterNewest: "Новые",
     filterWaiting: "Ждут молитвы",
