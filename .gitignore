@@ -27,3 +27,6 @@ infra/docker/data
 
 # Firebase client config (project identifiers, kept out of git; see apps/mobile/app.config.js)
 apps/mobile/firebase/
+
+# Firebase CLI cache
+.firebase/
