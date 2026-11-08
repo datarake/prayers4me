@@ -26,11 +26,13 @@ import { RequestCard } from "@/src/components/RequestCard";
 import { SkeletonList } from "@/src/components/Skeleton";
 import { useToast } from "@/src/components/Toast";
 import { Screen } from "@/src/components/ui";
-import { colors, type FontSet } from "@/src/theme";
+import { type FontSet, type Palette } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
 
 export default function ForOthersScreen() {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   const navigation = useNavigation();
   const toast = useToast();
   const { language, copy } = useLanguage();
@@ -258,7 +260,7 @@ export default function ForOthersScreen() {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     list: {
       paddingHorizontal: 22,

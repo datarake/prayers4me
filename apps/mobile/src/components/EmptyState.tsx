@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 import { Body, PrimaryButton } from "./ui";
 
@@ -17,10 +18,11 @@ export function EmptyState({
   onAction?: () => void;
 }) {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   return (
     <View style={styles.wrap}>
       <LinearGradient
-        colors={[colors.mistDeep, "rgba(201,228,222,0.35)"]}
+        colors={[colors.mistDeep, `${colors.mistDeep}59`]}
         style={styles.orb}
       />
       <Text style={styles.title} accessibilityRole="header">
@@ -36,7 +38,7 @@ export function EmptyState({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     wrap: {
       paddingTop: 48,

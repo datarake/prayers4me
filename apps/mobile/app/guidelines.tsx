@@ -3,7 +3,8 @@ import { useLayoutEffect } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useLanguage } from "@/src/LanguageContext";
 import { Screen } from "@/src/components/ui";
-import { colors, type FontSet } from "@/src/theme";
+import { type FontSet, type Palette } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
 
 export default function GuidelinesScreen() {
@@ -44,7 +45,7 @@ export default function GuidelinesScreen() {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     headerBtn: {
       minHeight: 44,
@@ -54,7 +55,7 @@ const createStyles = (fonts: FontSet) =>
     headerBtnLabel: {
       fontFamily: fonts.bodyMedium,
       fontSize: 16,
-      color: colors.sea,
+      color: colors.heading,
     },
     content: {
       padding: 22,
@@ -82,7 +83,7 @@ const createStyles = (fonts: FontSet) =>
       lineHeight: 32,
       fontFamily: fonts.bodyBold,
       fontSize: 15,
-      color: colors.sea,
+      color: colors.heading,
       backgroundColor: colors.mistDeep,
     },
     ruleText: {

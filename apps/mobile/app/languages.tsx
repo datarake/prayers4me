@@ -7,11 +7,13 @@ import { useLanguage } from "@/src/LanguageContext";
 import { telemetry } from "@/src/telemetry";
 import { Icon } from "@/src/components/Icon";
 import { Screen } from "@/src/components/ui";
-import { colors, fontsFor, type FontSet } from "@/src/theme";
+import { fontsFor, type FontSet, type Palette } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
 
 export default function LanguagesScreen() {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
   const { language, setLanguage, copy } = useLanguage();
@@ -71,7 +73,7 @@ export default function LanguagesScreen() {
                   <Icon name="check" size={16} color={colors.white} strokeWidth={2.4} />
                 </View>
               ) : (
-                <Icon name="circle" size={26} color="rgba(15, 61, 58, 0.25)" />
+                <Icon name="circle" size={26} color={colors.radioOff} />
               )}
             </Pressable>
           );
@@ -81,7 +83,7 @@ export default function LanguagesScreen() {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     list: {
       padding: 20,
@@ -102,7 +104,7 @@ const createStyles = (fonts: FontSet) =>
       borderRadius: 16,
       paddingHorizontal: 18,
       paddingVertical: 12,
-      backgroundColor: colors.white,
+      backgroundColor: colors.surface,
       borderWidth: 1.5,
       borderColor: colors.border,
       flexDirection: "row",
@@ -124,7 +126,7 @@ const createStyles = (fonts: FontSet) =>
       color: colors.ink,
     },
     nameSelected: {
-      color: colors.sea,
+      color: colors.heading,
     },
     phrase: {
       fontSize: 14,

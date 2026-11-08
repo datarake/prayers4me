@@ -24,7 +24,8 @@ import { LanguageProvider, useLanguage } from "@/src/LanguageContext";
 import { syncPushRegistration } from "@/src/notifications";
 import { telemetry } from "@/src/telemetry";
 import { ToastProvider } from "@/src/components/Toast";
-import { colors, fontsFor } from "@/src/theme";
+import { fontsFor } from "@/src/theme";
+import { ThemeProvider, useTheme } from "@/src/ThemeContext";
 
 /** Shows the default error screen, and reports the crash if the person agreed to crash reports. */
 export function ErrorBoundary(props: ErrorBoundaryProps) {
@@ -61,17 +62,20 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <LanguageProvider>
-      <ToastProvider>
-        <RootStack />
-      </ToastProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <ToastProvider>
+          <RootStack />
+        </ToastProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }
 
 function RootStack() {
   const { language } = useLanguage();
   const fonts = fontsFor(language);
+  const { colors, scheme } = useTheme();
   const router = useRouter();
 
   // Keep the server's push token in step with the phone (tokens change, permission can be revoked).
@@ -105,11 +109,11 @@ function RootStack() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={scheme === "dark" ? "light" : "dark"} />
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: colors.mist },
-          headerTintColor: colors.sea,
+          headerTintColor: colors.heading,
           headerShadowVisible: false,
           headerBackButtonDisplayMode: "minimal",
           headerTitleStyle: {

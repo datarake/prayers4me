@@ -52,6 +52,12 @@ export const feedQuerySchema = z.object({
 
 export type FeedQuery = z.infer<typeof feedQuerySchema>;
 
+/** Paging for the private list of requests the viewer prayed for. */
+export const historyQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+});
+
 export const reportRequestSchema = z.object({
   reason: z.enum(REPORT_REASONS),
   note: z.string().trim().max(500).optional(),

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import type { Copy } from "../i18n";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 import { PrimaryButton } from "./ui";
 
@@ -37,13 +38,13 @@ export function WaitCard({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     card: {
-      backgroundColor: "#FFF4DA",
+      backgroundColor: colors.noteBg,
       borderRadius: 18,
       borderWidth: 1,
-      borderColor: "#EBCB86",
+      borderColor: colors.noteBorder,
       padding: 18,
       gap: 8,
     },

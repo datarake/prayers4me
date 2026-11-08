@@ -2,7 +2,8 @@ import { REPORT_REASONS, type ReportReason } from "@prayers4me/shared";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Copy } from "../i18n";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 
 function reasonLabel(copy: Copy, reason: ReportReason): string {
@@ -82,11 +83,11 @@ export function ReportSheet({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     backdrop: {
       flex: 1,
-      backgroundColor: "rgba(8, 28, 26, 0.5)",
+      backgroundColor: colors.overlay,
     },
     sheet: {
       backgroundColor: colors.mist,
@@ -122,7 +123,7 @@ const createStyles = (fonts: FontSet) =>
       justifyContent: "center",
       paddingHorizontal: 16,
       borderRadius: 14,
-      backgroundColor: colors.white,
+      backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
       marginBottom: 8,
@@ -144,6 +145,6 @@ const createStyles = (fonts: FontSet) =>
     cancelLabel: {
       fontFamily: fonts.bodyBold,
       fontSize: 16,
-      color: colors.sea,
+      color: colors.heading,
     },
   });

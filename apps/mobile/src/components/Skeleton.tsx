@@ -1,13 +1,16 @@
 import { useEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
-import { colors } from "../theme";
+import { useStyles } from "../useStyles";
+import type { Palette } from "../theme";
 
 function Bar({ width, height = 14 }: { width: `${number}%`; height?: number }) {
+  const styles = useStyles(createStyles);
   return <View style={[styles.bar, { width, height }]} />;
 }
 
 /** Placeholder cards shown while the first page loads (feels faster than a spinner). */
 export function SkeletonList({ count = 3 }: { count?: number }) {
+  const styles = useStyles(createStyles);
   const pulse = useRef(new Animated.Value(0.55)).current;
 
   useEffect(() => {
@@ -54,7 +57,8 @@ export function SkeletonList({ count = 3 }: { count?: number }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (_fonts: unknown, colors: Palette) =>
+  StyleSheet.create({
   card: {
     paddingVertical: 22,
     borderBottomWidth: StyleSheet.hairlineWidth,

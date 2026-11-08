@@ -17,7 +17,8 @@ import {
   Text,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 
 type ToastKind = "success" | "error";
@@ -111,7 +112,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     toast: {
       position: "absolute",
@@ -119,7 +120,7 @@ const createStyles = (fonts: FontSet) =>
       right: 20,
       alignSelf: "center",
       maxWidth: 480,
-      backgroundColor: colors.sea,
+      backgroundColor: colors.solid,
       borderRadius: 16,
       paddingVertical: 14,
       paddingHorizontal: 18,

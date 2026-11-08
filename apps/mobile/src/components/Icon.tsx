@@ -9,7 +9,8 @@ export type IconName =
   | "circle"
   | "user"
   | "settings"
-  | "chevronRight";
+  | "chevronRight"
+  | "share";
 
 /**
  * Small drawn icon set. Emoji look different on every device and cannot take the app's
@@ -85,6 +86,12 @@ export function Icon({
           <Path d="M4 8h9M19 8h1M4 16h1M11 16h9" {...stroke} />
           <Circle cx="16" cy="8" r="2.4" {...stroke} />
           <Circle cx="8" cy="16" r="2.4" {...stroke} />
+        </>
+      ) : null}
+      {name === "share" ? (
+        <>
+          <Path d="M12 15V4M8 7.5L12 3.5l4 4" {...stroke} />
+          <Path d="M6 11H5.5A1.5 1.5 0 0 0 4 12.5v6A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-6a1.5 1.5 0 0 0-1.5-1.5H18" {...stroke} />
         </>
       ) : null}
       {name === "circle" ? <Circle cx="12" cy="12" r="8.5" {...stroke} /> : null}

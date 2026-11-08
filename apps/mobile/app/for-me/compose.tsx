@@ -34,13 +34,15 @@ import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
 import { markJustSent } from "@/src/session";
 import { telemetry } from "@/src/telemetry";
 import { PrimaryButton, Screen } from "@/src/components/ui";
-import { colors, type FontSet } from "@/src/theme";
+import { type FontSet, type Palette } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ComposeScreen() {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   const router = useRouter();
   // Typed loosely: expo-router's typed navigation omits the stack's `beforeRemove` event.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -406,7 +408,7 @@ function Field({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     content: {
       padding: 22,
@@ -432,7 +434,7 @@ const createStyles = (fonts: FontSet) =>
       borderRadius: 14,
       borderWidth: 1.5,
       borderColor: colors.border,
-      backgroundColor: colors.white,
+      backgroundColor: colors.surface,
       paddingHorizontal: 14,
       paddingVertical: 12,
       fontFamily: fonts.body,
@@ -468,7 +470,7 @@ const createStyles = (fonts: FontSet) =>
       color: colors.danger,
     },
     switchCard: {
-      backgroundColor: "rgba(255,255,255,0.7)",
+      backgroundColor: colors.fieldBg,
       borderRadius: 16,
       borderWidth: 1,
       borderColor: colors.border,
@@ -486,10 +488,10 @@ const createStyles = (fonts: FontSet) =>
       gap: 8,
     },
     supportCard: {
-      backgroundColor: "#FFF4DA",
+      backgroundColor: colors.noteBg,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: "#EBCB86",
+      borderColor: colors.noteBorder,
       padding: 16,
       gap: 8,
     },
@@ -510,7 +512,7 @@ const createStyles = (fonts: FontSet) =>
       borderRadius: 14,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: colors.sea,
+      backgroundColor: colors.solid,
       marginTop: 6,
     },
     supportBtnLabel: {
@@ -534,6 +536,6 @@ const createStyles = (fonts: FontSet) =>
     headerBtnLabel: {
       fontFamily: fonts.bodyMedium,
       fontSize: 16,
-      color: colors.sea,
+      color: colors.heading,
     },
   });

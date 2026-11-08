@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, type FontSet } from "../theme";
+import { brand, type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 
 export function PathButton({
@@ -42,7 +43,7 @@ export function PathButton({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     base: {
       minHeight: 84,
@@ -71,7 +72,7 @@ const createStyles = (fonts: FontSet) =>
       color: colors.white,
     },
     titleOnPrimary: {
-      color: colors.sea,
+      color: brand.sea,
     },
     hint: {
       fontFamily: fonts.body,

@@ -1,12 +1,14 @@
 import { Tabs } from "expo-router";
 import { useLanguage } from "@/src/LanguageContext";
 import { Icon } from "@/src/components/Icon";
-import { colors, fontsFor } from "@/src/theme";
+import { fontsFor } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 
 /** The app's home: pray, my requests, settings. Always one tap apart. */
 export default function TabsLayout() {
   const { language, copy } = useLanguage();
   const fonts = fontsFor(language);
+  const { colors } = useTheme();
 
   return (
     <Tabs
@@ -19,8 +21,8 @@ export default function TabsLayout() {
           color: colors.ink,
         },
         sceneStyle: { backgroundColor: colors.mist },
-        tabBarActiveTintColor: colors.sea,
-        tabBarInactiveTintColor: "rgba(61, 90, 86, 0.75)",
+        tabBarActiveTintColor: colors.heading,
+        tabBarInactiveTintColor: colors.tabInactive,
         tabBarStyle: {
           backgroundColor: colors.mist,
           borderTopColor: colors.border,

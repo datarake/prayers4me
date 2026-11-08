@@ -7,7 +7,8 @@ import {
   type TextProps,
   type ViewProps,
 } from "react-native";
-import { colors, type FontSet } from "../theme";
+import { brand, type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 
 export function Screen({ style, ...props }: ViewProps) {
@@ -49,6 +50,7 @@ export function PrimaryButton({
   variant?: "solid" | "soft" | "ghost" | "onDark" | "candle";
 }) {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   return (
     <Pressable
       accessibilityRole="button"
@@ -68,17 +70,17 @@ export function PrimaryButton({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === "solid" || variant === "onDark" ? colors.white : colors.sea}
+          color={variant === "solid" || variant === "onDark" ? colors.white : colors.heading}
         />
       ) : null}
       <Text
         style={[
           styles.buttonLabel,
           loading && { marginLeft: 10 },
-          variant === "ghost" && { color: colors.sea },
-          variant === "soft" && { color: colors.sea },
+          variant === "ghost" && { color: colors.heading },
+          variant === "soft" && { color: colors.heading },
           variant === "onDark" && { color: colors.white },
-          variant === "candle" && { color: colors.sea },
+          variant === "candle" && { color: brand.sea },
         ]}
       >
         {label}
@@ -89,6 +91,7 @@ export function PrimaryButton({
 
 export function LoadingState({ label }: { label: string }) {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   return (
     <View style={styles.centered}>
       <ActivityIndicator color={colors.teal} />
@@ -97,7 +100,7 @@ export function LoadingState({ label }: { label: string }) {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     screen: {
       flex: 1,
@@ -140,7 +143,7 @@ const createStyles = (fonts: FontSet) =>
       backgroundColor: colors.teal,
     },
     buttonSoft: {
-      backgroundColor: "rgba(15, 61, 58, 0.08)",
+      backgroundColor: colors.subtle,
     },
     buttonGhost: {
       backgroundColor: "transparent",

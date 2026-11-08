@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import type { Copy } from "../i18n";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 import { PrimaryButton } from "./ui";
 
@@ -48,10 +49,10 @@ export function NotifyPrompt({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     card: {
-      backgroundColor: colors.white,
+      backgroundColor: colors.surface,
       borderRadius: 18,
       borderWidth: 1,
       borderColor: colors.border,

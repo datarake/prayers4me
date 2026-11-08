@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import type { LanguageCode, PrayerRequestPublic } from "@prayers4me/shared";
 import { prayersLabel, type Copy } from "../i18n";
 import { telemetry } from "../telemetry";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 import { Icon } from "./Icon";
 import { PrayButton } from "./PrayButton";
@@ -62,6 +63,7 @@ export function RequestCard({
   onEdit?: () => void;
 }) {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   const hasPrayers = item.prayersCount > 0;
   const [expanded, setExpanded] = useState(false);
   const isLong =
@@ -127,7 +129,7 @@ export function RequestCard({
           <Icon
             name="candle"
             size={16}
-            color={hasPrayers ? colors.teal : "rgba(61, 90, 86, 0.45)"}
+            color={hasPrayers ? colors.teal : colors.muted}
           />
         </View>
         <Text style={[styles.count, !hasPrayers && styles.countNone]}>
@@ -192,7 +194,7 @@ export function RequestCard({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     row: {
       paddingVertical: 22,
@@ -248,7 +250,7 @@ const createStyles = (fonts: FontSet) =>
     badge: {
       fontFamily: fonts.bodyBold,
       fontSize: 12,
-      color: colors.sea,
+      color: colors.heading,
       backgroundColor: colors.mistDeep,
       paddingHorizontal: 10,
       paddingVertical: 4,
@@ -256,8 +258,8 @@ const createStyles = (fonts: FontSet) =>
       overflow: "hidden",
     },
     badgeWarn: {
-      color: "#7A4B00",
-      backgroundColor: "#F8E7BE",
+      color: colors.warnText,
+      backgroundColor: colors.warnBg,
     },
     message: {
       color: colors.ink,
@@ -298,13 +300,13 @@ const createStyles = (fonts: FontSet) =>
     },
     badgeQuiet: {
       color: colors.inkSoft,
-      backgroundColor: "rgba(15, 61, 58, 0.07)",
+      backgroundColor: colors.subtle,
     },
     editBtn: {
       alignItems: "flex-start",
     },
     editLabel: {
-      color: colors.sea,
+      color: colors.heading,
       fontFamily: fonts.bodyBold,
     },
     deleteLabel: {

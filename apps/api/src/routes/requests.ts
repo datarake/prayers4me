@@ -4,6 +4,7 @@ import {
   RATE_LIMITS,
   createRequestSchema,
   feedQuerySchema,
+  historyQuerySchema,
   reportRequestSchema,
   updateRequestSchema,
   type PrayerRequestPublic,
@@ -146,6 +147,50 @@ requestsRoutes.get("/me", async (c) => {
   return c.json({
     items: rows.map((row) => mapRequest(row, user.id)),
     nextCursor: null,
+  });
+});
+
+/**
+ * Requests the viewer has prayed for, newest prayer first. Private: it only ever lists the
+ * viewer's own prayers. Requests that were deleted or are under review drop out of the list.
+ */
+requestsRoutes.get("/prayed", async (c) => {
+  const sql = c.get("sql");
+  const user = c.get("user");
+  const query = historyQuerySchema.parse({
+    cursor: c.req.query("cursor"),
+    limit: c.req.query("limit"),
+  });
+
+  const after = query.cursor ? decodeCursor(query.cursor) : null;
+  const afterCursor = after
+    ? sql`AND (p.created_at, p.id) < ((${after.t}::text)::timestamptz, ${after.id}::uuid)`
+    : sql``;
+
+  const rows = await sql<(RequestRow & { prayer_id: string })[]>`
+    SELECT
+      r.*,
+      p.id AS prayer_id,
+      p.created_at::text AS created_at_raw,
+      true AS prayed_by_me
+    FROM prayers p
+    JOIN prayer_requests r ON r.id = p.request_id
+    WHERE p.user_id = ${user.id}
+      AND r.status = 'active'
+      ${afterCursor}
+    ORDER BY p.created_at DESC, p.id DESC
+    LIMIT ${query.limit}
+  `;
+
+  const last = rows[rows.length - 1];
+  const nextCursor =
+    rows.length === query.limit && last?.created_at_raw
+      ? encodeCursor({ t: last.created_at_raw, id: last.prayer_id })
+      : null;
+
+  return c.json({
+    items: rows.map((row) => mapRequest(row, user.id)),
+    nextCursor,
   });
 });
 

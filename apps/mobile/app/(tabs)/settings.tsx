@@ -16,11 +16,15 @@ import {
   enableNotifications,
   isNotificationsOn,
 } from "@/src/notifications";
-import { colors, fontsFor, type FontSet } from "@/src/theme";
+import { fontsFor, type FontSet, type Palette } from "@/src/theme";
+import { useTheme, type ThemePreference } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
+import { Segmented } from "@/src/components/Segmented";
+import { shareApp } from "@/src/share";
 
 export default function SettingsScreen() {
   const styles = useStyles(createStyles);
+  const { colors, preference, setPreference } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
   const toast = useToast();
@@ -65,6 +69,19 @@ export default function SettingsScreen() {
   const onToggleSharing = async (next: boolean) => {
     setSharing(next);
     await telemetry.setConsent(next);
+  };
+
+  const onChangeTheme = (next: ThemePreference) => {
+    setPreference(next);
+    telemetry.track("theme_changed", { theme: next });
+  };
+
+  const onShare = async () => {
+    try {
+      telemetry.track("app_shared", { outcome: await shareApp(copy.shareMessage) });
+    } catch {
+      toast.show(copy.errorGeneric, "error");
+    }
   };
 
   const confirmDeleteData = () => {
@@ -119,6 +136,22 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.group}>
+          <View style={styles.block}>
+            <Text style={styles.label}>{copy.appearanceLabel}</Text>
+            <Segmented
+              label={copy.appearanceLabel}
+              value={preference}
+              onChange={onChangeTheme}
+              options={[
+                { key: "system", label: copy.appearanceSystem },
+                { key: "light", label: copy.appearanceLight },
+                { key: "dark", label: copy.appearanceDark },
+              ]}
+            />
+          </View>
+        </View>
+
+        <View style={styles.group}>
           <View style={styles.row}>
             <View style={styles.textBlock}>
               <Text style={styles.label}>{copy.settingsNotifications}</Text>
@@ -132,6 +165,29 @@ export default function SettingsScreen() {
               accessibilityLabel={copy.settingsNotifications}
             />
           </View>
+        </View>
+
+        <View style={styles.group}>
+          <Pressable
+            accessibilityRole="link"
+            onPress={() => router.push("/prayed")}
+            style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+          >
+            <Text style={styles.label}>{copy.prayedLabel}</Text>
+            <Icon name="chevronRight" size={18} color={colors.inkSoft} />
+          </Pressable>
+          <View style={styles.divider} />
+          <Pressable
+            accessibilityRole="button"
+            onPress={onShare}
+            style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+          >
+            <View style={styles.textBlock}>
+              <Text style={styles.label}>{copy.shareLabel}</Text>
+              <Text style={styles.hint}>{copy.shareHint}</Text>
+            </View>
+            <Icon name="share" size={20} color={colors.inkSoft} />
+          </Pressable>
         </View>
 
         <View style={styles.group}>
@@ -178,7 +234,7 @@ export default function SettingsScreen() {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     content: {
       padding: 20,
@@ -186,7 +242,7 @@ const createStyles = (fonts: FontSet) =>
       gap: 16,
     },
     group: {
-      backgroundColor: colors.white,
+      backgroundColor: colors.surface,
       borderRadius: 16,
       borderWidth: 1,
       borderColor: colors.border,
@@ -200,6 +256,15 @@ const createStyles = (fonts: FontSet) =>
       alignItems: "center",
       justifyContent: "space-between",
       gap: 12,
+    },
+    block: {
+      paddingHorizontal: 18,
+      paddingVertical: 16,
+    },
+    divider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.border,
+      marginLeft: 18,
     },
     rowPressed: {
       backgroundColor: colors.mist,

@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { useStyles } from "../useStyles";
 
 export type FeedFilter = "newest" | "waiting";
@@ -47,7 +48,7 @@ export function FilterPills({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     row: {
       flexDirection: "row",
@@ -63,11 +64,11 @@ const createStyles = (fonts: FontSet) =>
       justifyContent: "center",
       borderWidth: 1,
       borderColor: colors.border,
-      backgroundColor: "rgba(255,255,255,0.6)",
+      backgroundColor: colors.pillBg,
     },
     pillSelected: {
-      backgroundColor: colors.sea,
-      borderColor: colors.sea,
+      backgroundColor: colors.solid,
+      borderColor: colors.solid,
     },
     label: {
       fontFamily: fonts.bodyMedium,

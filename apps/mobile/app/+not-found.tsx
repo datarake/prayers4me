@@ -1,6 +1,7 @@
 import { Link, Stack } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
-import { colors, type FontSet } from "@/src/theme";
+import { type FontSet, type Palette } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
 
 export default function NotFoundScreen() {
@@ -18,7 +19,7 @@ export default function NotFoundScreen() {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     container: {
       flex: 1,

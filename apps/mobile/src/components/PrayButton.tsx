@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet, Text } from "react-native";
 import * as Haptics from "expo-haptics";
-import { colors, type FontSet } from "../theme";
+import { type FontSet, type Palette } from "../theme";
+import { useTheme } from "../ThemeContext";
 import { Icon } from "./Icon";
 import { useStyles } from "../useStyles";
 
@@ -20,6 +21,7 @@ export function PrayButton({
   onPress: () => void;
 }) {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   const scale = useRef(new Animated.Value(1)).current;
   const first = useRef(true);
 
@@ -58,7 +60,7 @@ export function PrayButton({
           pressed && !prayed && { opacity: 0.85, transform: [{ scale: 0.97 }] },
         ]}
       >
-        <Icon name={prayed ? "check" : "candle"} size={18} color={colors.sea} />
+        <Icon name={prayed ? "check" : "candle"} size={18} color={colors.heading} />
         <Text style={[styles.label, prayed && styles.labelDone]}>
           {prayed ? prayedLabel : label}
         </Text>
@@ -67,7 +69,7 @@ export function PrayButton({
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     btn: {
       minHeight: 48,
@@ -78,7 +80,7 @@ const createStyles = (fonts: FontSet) =>
       borderRadius: 24,
       backgroundColor: "transparent",
       borderWidth: 1.5,
-      borderColor: colors.sea,
+      borderColor: colors.heading,
     },
     btnDone: {
       backgroundColor: colors.mistDeep,
@@ -86,14 +88,14 @@ const createStyles = (fonts: FontSet) =>
     },
     icon: {
       fontSize: 16,
-      color: colors.sea,
+      color: colors.heading,
     },
     label: {
       fontFamily: fonts.bodyBold,
       fontSize: 16,
-      color: colors.sea,
+      color: colors.heading,
     },
     labelDone: {
-      color: colors.sea,
+      color: colors.heading,
     },
   });

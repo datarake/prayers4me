@@ -11,7 +11,8 @@ import { hasSeenWelcome, markWelcomeSeen } from "@/src/session";
 import { telemetry } from "@/src/telemetry";
 import { LanguagePill } from "@/src/components/LanguagePill";
 import { PathButton } from "@/src/components/PathButton";
-import { brandFont, colors, type FontSet } from "@/src/theme";
+import { brand, brandFont, type FontSet, type Palette } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
 
 /** First launch shows the welcome. Everyone after that goes straight to the feed. */
@@ -22,7 +23,7 @@ export default function Index() {
     hasSeenWelcome().then(setSeen);
   }, []);
 
-  if (seen === null) return <View style={{ flex: 1, backgroundColor: colors.sea }} />;
+  if (seen === null) return <View style={{ flex: 1, backgroundColor: brand.sea }} />;
   if (seen) return <Redirect href="/pray" />;
   return <WelcomeScreen />;
 }
@@ -32,13 +33,14 @@ function WelcomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { copy, language, ready } = useLanguage();
+  const { scheme } = useTheme();
 
   // Light icons over the dark hero; the other screens are light-themed.
   useFocusEffect(
     useCallback(() => {
       setStatusBarStyle("light");
-      return () => setStatusBarStyle("dark");
-    }, []),
+      return () => setStatusBarStyle(scheme === "dark" ? "light" : "dark");
+    }, [scheme]),
   );
 
   useEffect(() => {
@@ -142,11 +144,11 @@ function WelcomeScreen() {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     root: {
       flex: 1,
-      backgroundColor: colors.sea,
+      backgroundColor: brand.sea,
     },
     heroImage: {
       position: "absolute",

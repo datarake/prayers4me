@@ -100,6 +100,13 @@ export const api = {
 
   myRequests: () => request<FeedPage>("/v1/requests/me"),
 
+  /** Requests the person prayed for. Private to them. */
+  prayedFor: (cursor?: string) => {
+    const params = new URLSearchParams({ limit: "20" });
+    if (cursor) params.set("cursor", cursor);
+    return request<FeedPage>(`/v1/requests/prayed?${params.toString()}`);
+  },
+
   createRequest: (payload: {
     language: LanguageCode;
     displayName: string;

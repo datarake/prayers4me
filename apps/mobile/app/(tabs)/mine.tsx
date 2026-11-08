@@ -27,11 +27,13 @@ import {
   type PromptState,
 } from "@/src/notifications";
 import { PrimaryButton, Screen } from "@/src/components/ui";
-import { colors, type FontSet } from "@/src/theme";
+import { type FontSet, type Palette } from "@/src/theme";
+import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
 
 export default function ForMeScreen() {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
   const toast = useToast();
@@ -235,7 +237,7 @@ export default function ForMeScreen() {
   );
 }
 
-const createStyles = (fonts: FontSet) =>
+const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
     list: {
       paddingHorizontal: 22,
@@ -256,7 +258,7 @@ const createStyles = (fonts: FontSet) =>
       fontFamily: fonts.display,
       fontSize: 28,
       lineHeight: 34,
-      color: colors.sea,
+      color: colors.heading,
     },
     summary: {
       flexDirection: "row",
@@ -267,7 +269,7 @@ const createStyles = (fonts: FontSet) =>
       fontFamily: fonts.display,
       fontSize: 48,
       lineHeight: 54,
-      color: colors.sea,
+      color: colors.heading,
     },
     summaryLabel: {
       fontFamily: fonts.bodyMedium,
