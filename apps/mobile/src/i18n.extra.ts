@@ -55,6 +55,15 @@ export type ExtraDictionary = {
   edited: string;
   readMore: string;
   languageIntro: string;
+  timeNow: string;
+  timeMinutes: (n: number) => string;
+  timeHours: (n: number) => string;
+  timeDays: (n: number) => string;
+  tabPray: string;
+  tabSettings: string;
+  settingsNotifications: string;
+  settingsNotificationsHint: string;
+  settingsVersion: string;
   readLess: string;
   filterNewest: string;
   filterWaiting: string;
@@ -124,6 +133,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     edited: "Edited",
     readMore: "Read more",
     languageIntro: "You will see and pray for requests in this language.",
+    timeNow: "Just now",
+    timeMinutes: (n) => `${n} min ago`,
+    timeHours: (n) => `${n} h ago`,
+    timeDays: (n) => `${n} d ago`,
+    tabPray: "Pray",
+    tabSettings: "Settings",
+    settingsNotifications: "Prayer notifications",
+    settingsNotificationsHint: "One quiet notification when someone prays for you.",
+    settingsVersion: "Version",
     readLess: "Show less",
     filterNewest: "Newest",
     filterWaiting: "Needs prayer",
@@ -191,6 +209,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     edited: "Editada",
     readMore: "Leer más",
     languageIntro: "Verás peticiones y orarás por ellas en este idioma.",
+    timeNow: "Ahora mismo",
+    timeMinutes: (n) => `hace ${n} min`,
+    timeHours: (n) => `hace ${n} h`,
+    timeDays: (n) => `hace ${n} d`,
+    tabPray: "Orar",
+    tabSettings: "Ajustes",
+    settingsNotifications: "Notificaciones de oración",
+    settingsNotificationsHint: "Una notificación discreta cuando alguien ore por ti.",
+    settingsVersion: "Versión",
     readLess: "Mostrar menos",
     filterNewest: "Recientes",
     filterWaiting: "Esperan oración",
@@ -258,6 +285,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     edited: "Modifiée",
     readMore: "Lire la suite",
     languageIntro: "Tu verras les demandes et prieras en cette langue.",
+    timeNow: "À l’instant",
+    timeMinutes: (n) => `il y a ${n} min`,
+    timeHours: (n) => `il y a ${n} h`,
+    timeDays: (n) => `il y a ${n} j`,
+    tabPray: "Prier",
+    tabSettings: "Réglages",
+    settingsNotifications: "Notifications de prière",
+    settingsNotificationsHint: "Une notification discrète quand quelqu’un prie pour toi.",
+    settingsVersion: "Version",
     readLess: "Réduire",
     filterNewest: "Récentes",
     filterWaiting: "Attendent une prière",
@@ -325,6 +361,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     edited: "Editată",
     readMore: "Citește mai mult",
     languageIntro: "Vei vedea cererile și te vei ruga în această limbă.",
+    timeNow: "Chiar acum",
+    timeMinutes: (n) => `acum ${n} min`,
+    timeHours: (n) => `acum ${n} h`,
+    timeDays: (n) => `acum ${n} z`,
+    tabPray: "Roagă-te",
+    tabSettings: "Setări",
+    settingsNotifications: "Notificări de rugăciune",
+    settingsNotificationsHint: "O notificare discretă când cineva se roagă pentru tine.",
+    settingsVersion: "Versiune",
     readLess: "Arată mai puțin",
     filterNewest: "Recente",
     filterWaiting: "Așteaptă rugăciune",
@@ -392,6 +437,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     edited: "Відредаговано",
     readMore: "Читати далі",
     languageIntro: "Ти бачитимеш прохання й молитимешся цією мовою.",
+    timeNow: "Щойно",
+    timeMinutes: (n) => `${n} хв тому`,
+    timeHours: (n) => `${n} год тому`,
+    timeDays: (n) => `${n} дн. тому`,
+    tabPray: "Молитва",
+    tabSettings: "Налаштування",
+    settingsNotifications: "Сповіщення про молитву",
+    settingsNotificationsHint: "Одне тихе сповіщення, коли хтось помолиться за тебе.",
+    settingsVersion: "Версія",
     readLess: "Згорнути",
     filterNewest: "Нові",
     filterWaiting: "Чекають молитви",
@@ -459,6 +513,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     edited: "Изменено",
     readMore: "Читать далее",
     languageIntro: "Ты будешь видеть просьбы и молиться на этом языке.",
+    timeNow: "Только что",
+    timeMinutes: (n) => `${n} мин назад`,
+    timeHours: (n) => `${n} ч назад`,
+    timeDays: (n) => `${n} дн. назад`,
+    tabPray: "Молитва",
+    tabSettings: "Настройки",
+    settingsNotifications: "Уведомления о молитве",
+    settingsNotificationsHint: "Одно тихое уведомление, когда кто-то помолится за тебя.",
+    settingsVersion: "Версия",
     readLess: "Свернуть",
     filterNewest: "Новые",
     filterWaiting: "Ждут молитвы",

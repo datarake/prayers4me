@@ -80,7 +80,7 @@ function RootStack() {
       lastResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER &&
       lastResponse.notification.request.content.data?.screen === "for-me"
     ) {
-      router.push("/for-me");
+      router.push("/mine");
       Notifications.clearLastNotificationResponseAsync().catch(() => undefined);
     }
   }, [lastResponse, router]);
@@ -103,10 +103,9 @@ function RootStack() {
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="languages" options={{ title: "Language" }} />
         <Stack.Screen name="guidelines" options={{ title: "Guidelines" }} />
-        <Stack.Screen name="for-others" options={{ title: "For others" }} />
-        <Stack.Screen name="for-me/index" options={{ title: "For me" }} />
         <Stack.Screen
           name="for-me/compose"
           options={{ title: "Ask for prayer", presentation: "modal" }}

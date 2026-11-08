@@ -31,6 +31,8 @@ The tagline is "Someone prayed for you." Today the author only learns it by open
 |---------|-------|
 | **Edit my request** (done) | Authors can fix typos: name, text and contact only, never the language. Capped at 3 edits, same content checks as a new request, marked "Edited", previous versions stored in `request_edits`. Not allowed while a request is under review. |
 
+| **Tabs and settings** (done) | Pray, My requests and Settings in a tab bar. The welcome screen shows on the first launch only. Settings holds language, a notifications switch and the guidelines. |
+| **UX review fixes** (done) | Relative times ("25 min ago") from our own localized strings, because the built-in formatter silently fell back to calendar dates. A darker teal (`tealText`, 5.3:1) for small text. |
 | **Feed readability** (done) | Long requests are clamped to 5 lines with "Read more". A "Needs prayer" filter lists requests nobody has prayed for yet. Prayed-for cards step back, and the pray button is outlined until pressed. |
 
 ## Phase 3: Delight and retention

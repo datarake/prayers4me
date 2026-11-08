@@ -106,3 +106,23 @@ export async function syncPushRegistration() {
     // Offline or unsupported: nothing to do.
   }
 }
+
+/** True when the person turned notifications on and the phone still allows them. */
+export async function isNotificationsOn(): Promise<boolean> {
+  try {
+    if ((await getPromptState()) !== "enabled") return false;
+    return (await Notifications.getPermissionsAsync()).granted;
+  } catch {
+    return false;
+  }
+}
+
+/** Stops "someone prayed" pushes: the server forgets this device's token. */
+export async function disableNotifications(): Promise<void> {
+  await setPromptState("dismissed");
+  try {
+    await api.registerPushToken(null);
+  } catch {
+    // Offline: the server keeps the token until the next launch syncs it.
+  }
+}

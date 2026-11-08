@@ -1,18 +1,32 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { Redirect, useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { setStatusBarStyle } from "expo-status-bar";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { APP_NAME } from "@prayers4me/shared";
 import { useLanguage } from "@/src/LanguageContext";
 import { api } from "@/src/api";
+import { hasSeenWelcome, markWelcomeSeen } from "@/src/session";
 import { LanguagePill } from "@/src/components/LanguagePill";
 import { PathButton } from "@/src/components/PathButton";
 import { brandFont, colors, type FontSet } from "@/src/theme";
 import { useStyles } from "@/src/useStyles";
 
-export default function WelcomeScreen() {
+/** First launch shows the welcome. Everyone after that goes straight to the feed. */
+export default function Index() {
+  const [seen, setSeen] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    hasSeenWelcome().then(setSeen);
+  }, []);
+
+  if (seen === null) return <View style={{ flex: 1, backgroundColor: colors.sea }} />;
+  if (seen) return <Redirect href="/pray" />;
+  return <WelcomeScreen />;
+}
+
+function WelcomeScreen() {
   const styles = useStyles(createStyles);
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -98,13 +112,20 @@ export default function WelcomeScreen() {
               title={copy.forMeAction}
               hint={copy.forMeActionHint}
               emphasis="primary"
-              onPress={() => router.push("/for-me")}
+              onPress={async () => {
+              await markWelcomeSeen();
+              router.replace("/mine");
+              router.push("/for-me/compose");
+            }}
             />
             <PathButton
               title={copy.forOthersAction}
               hint={copy.forOthersActionHint}
               emphasis="secondary"
-              onPress={() => router.push("/for-others")}
+              onPress={async () => {
+              await markWelcomeSeen();
+              router.replace("/pray");
+            }}
             />
             <LanguagePill
               language={language}

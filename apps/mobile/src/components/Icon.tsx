@@ -6,7 +6,10 @@ export type IconName =
   | "check"
   | "lock"
   | "candle"
-  | "circle";
+  | "circle"
+  | "user"
+  | "settings"
+  | "chevronRight";
 
 /**
  * Small drawn icon set. Emoji look different on every device and cannot take the app's
@@ -68,6 +71,20 @@ export function Icon({
           />
           <Rect x="9" y="11.5" width="6" height="8.5" rx="1.4" {...stroke} />
           <Path d="M7 20.5h10" {...stroke} />
+        </>
+      ) : null}
+      {name === "chevronRight" ? <Path d="M9 6l6 6-6 6" {...stroke} /> : null}
+      {name === "user" ? (
+        <>
+          <Circle cx="12" cy="8.5" r="3.6" {...stroke} />
+          <Path d="M5 20.5c0-3.7 3.1-6.2 7-6.2s7 2.5 7 6.2" {...stroke} />
+        </>
+      ) : null}
+      {name === "settings" ? (
+        <>
+          <Path d="M4 8h9M19 8h1M4 16h1M11 16h9" {...stroke} />
+          <Circle cx="16" cy="8" r="2.4" {...stroke} />
+          <Circle cx="8" cy="16" r="2.4" {...stroke} />
         </>
       ) : null}
       {name === "circle" ? <Circle cx="12" cy="12" r="8.5" {...stroke} /> : null}

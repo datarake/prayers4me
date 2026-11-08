@@ -7,6 +7,8 @@ export const colors = {
   seaMid: "#1A5C56",
   teal: "#1F8A80",
   tealBright: "#2BB3A6",
+  /** Teal for small text: 5.3:1 on the pale background (the bright teal is only 3.7:1). */
+  tealText: "#176E66",
   candle: "#E6C16A",
   white: "#FFFFFF",
   danger: "#B42318",

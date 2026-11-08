@@ -1,4 +1,4 @@
-import { useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import {
   useCallback,
   useEffect,
@@ -45,6 +45,7 @@ export default function ForOthersScreen() {
 
   // Ignore responses that arrive after the language changed or a newer load started.
   const generation = useRef(0);
+  const lastLoaded = useRef(0);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: copy.forOthersTitle });
@@ -59,6 +60,7 @@ export default function ForOthersScreen() {
         if (current !== generation.current) return;
         setItems(page.items);
         setCursor(page.nextCursor);
+        lastLoaded.current = Date.now();
       } catch (err) {
         if (current !== generation.current) return;
         if (mode === "refresh") {
@@ -82,6 +84,15 @@ export default function ForOthersScreen() {
     setCursor(null);
     load("initial");
   }, [load]);
+
+  // Coming back to this tab after a while: refresh quietly so the list is never stale.
+  useFocusEffect(
+    useCallback(() => {
+      if (lastLoaded.current && Date.now() - lastLoaded.current > 60_000) {
+        load("refresh");
+      }
+    }, [load]),
+  );
 
   const loadMore = useCallback(async () => {
     if (!cursor || loadingMore || loading || refreshing) return;

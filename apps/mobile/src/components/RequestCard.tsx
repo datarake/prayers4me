@@ -22,25 +22,22 @@ const LOCALES: Record<LanguageCode, string> = {
   ru: "ru",
 };
 
-/** "2 hours ago" when the runtime supports it, otherwise a short date. */
-function whenLabel(iso: string, language: LanguageCode): string {
+/**
+ * "5 min ago" from our own localized strings. Intl.RelativeTimeFormat is not available on
+ * every runtime, and a silent fallback to a calendar date made new requests look old.
+ */
+function whenLabel(iso: string, language: LanguageCode, copy: Copy): string {
   const date = new Date(iso);
-  try {
-    const diffMin = Math.round((date.getTime() - Date.now()) / 60000);
-    const rtf = new Intl.RelativeTimeFormat(LOCALES[language], {
-      numeric: "auto",
-    });
-    const abs = Math.abs(diffMin);
-    if (abs < 1) return rtf.format(0, "minute");
-    if (abs < 60) return rtf.format(diffMin, "minute");
-    if (abs < 60 * 24) return rtf.format(Math.round(diffMin / 60), "hour");
-    if (abs < 60 * 24 * 7) return rtf.format(Math.round(diffMin / 1440), "day");
-  } catch {
-    // fall through to a plain date
-  }
+  const minutes = Math.max(0, Math.round((Date.now() - date.getTime()) / 60000));
+  if (minutes < 1) return copy.timeNow;
+  if (minutes < 60) return copy.timeMinutes(minutes);
+  if (minutes < 60 * 24) return copy.timeHours(Math.round(minutes / 60));
+  if (minutes < 60 * 24 * 7) return copy.timeDays(Math.round(minutes / 1440));
+  const sameYear = date.getFullYear() === new Date().getFullYear();
   return date.toLocaleDateString(LOCALES[language], {
     month: "short",
     day: "numeric",
+    ...(sameYear ? {} : { year: "numeric" }),
   });
 }
 
@@ -82,7 +79,7 @@ export function RequestCard({
     >
       <View style={styles.header}>
         <Text style={styles.name}>{item.displayName}</Text>
-        <Text style={styles.date}>{whenLabel(item.createdAt, language)}</Text>
+        <Text style={styles.date}>{whenLabel(item.createdAt, language, copy)}</Text>
       </View>
 
       {item.isMine || item.status !== "active" || item.editedAt ? (
@@ -212,7 +209,7 @@ const createStyles = (fonts: FontSet) =>
     moreLabel: {
       fontFamily: fonts.bodyBold,
       fontSize: 15,
-      color: colors.teal,
+      color: colors.tealText,
     },
     rowPrayedFor: {
       paddingLeft: 14,
@@ -277,7 +274,7 @@ const createStyles = (fonts: FontSet) =>
     count: {
       fontFamily: fonts.bodyMedium,
       fontSize: 14,
-      color: colors.teal,
+      color: colors.tealText,
       flexShrink: 1,
     },
     countNone: {

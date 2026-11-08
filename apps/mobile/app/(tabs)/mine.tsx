@@ -231,7 +231,7 @@ const createStyles = (fonts: FontSet) =>
     summaryLabel: {
       fontFamily: fonts.bodyMedium,
       fontSize: 16,
-      color: colors.teal,
+      color: colors.tealText,
       flexShrink: 1,
     },
     intro: {
