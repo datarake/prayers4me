@@ -1,7 +1,10 @@
 {
   "name": "Stillflame",
   "domain": "stillflame.app",
-  "supportEmail": "",
+  "supportEmail": "bogdan.burdalescu@proton.me",
   "tagline": "Someone prayed for you.",
-  "stores": { "ios": "", "android": "" }
+  "stores": {
+    "ios": "",
+    "android": ""
+  }
 }
