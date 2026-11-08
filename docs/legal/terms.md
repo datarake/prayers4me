@@ -1,6 +1,4 @@
-# Terms of use (DRAFT)
-
-> **Draft for legal review.** Not legal advice. Delete this note and the word DRAFT in the title once a lawyer has checked it.
+# Terms of use
 
 Stillflame is run by its developer. **Contact:** {{supportEmail}}. **Last updated:** 9 November 2026.
 

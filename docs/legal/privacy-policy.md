@@ -1,6 +1,4 @@
-# Privacy policy (DRAFT)
-
-> **Draft for legal review.** This describes what the product does today so a lawyer can check it. It is not legal advice. Delete this note and the word DRAFT in the title once it has been reviewed.
+# Privacy policy
 
 **Who is responsible:** Stillflame is run by its developer. **Contact for anything about your data:** {{supportEmail}}
 **Last updated:** 9 November 2026
