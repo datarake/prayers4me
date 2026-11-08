@@ -5,7 +5,7 @@ import type {
   PrayerRequestPublic,
   ReportReason,
 } from "@prayers4me/shared";
-import { getDeviceId } from "./session";
+import { AUTH_MODE, authHeaders } from "./identity";
 import { telemetry } from "./telemetry";
 
 function apiBaseUrl(): string {
@@ -32,46 +32,22 @@ export function errorMessage(err: unknown, fallback: string): string {
   return err instanceof ApiError ? err.message : fallback;
 }
 
-async function authHeaders(): Promise<HeadersInit> {
-  const deviceId = await getDeviceId();
-  return {
-    Authorization: `Bearer dev:${deviceId}`,
-    "Content-Type": "application/json",
-  };
-}
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const headers = await authHeaders();
+async function send(path: string, init: RequestInit | undefined, forceRefresh: boolean) {
+  const headers = await authHeaders(forceRefresh);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
-
   try {
     const res = await fetch(`${apiBaseUrl()}${path}`, {
       ...init,
       signal: controller.signal,
       headers: {
+        "Content-Type": "application/json",
         ...headers,
         ...(init?.headers ?? {}),
       },
     });
-
     const body = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const message =
-        typeof body?.error?.message === "string"
-          ? body.error.message
-          : `Request failed (${res.status})`;
-      // A 5xx is the server failing, not the person making a mistake: worth knowing about.
-      // The address is reduced to its shape so no id leaves the phone.
-      if (res.status >= 500) {
-        telemetry.error(
-          new Error(`API ${init?.method ?? "GET"} ${path.split("?")[0]} answered ${res.status}`),
-          "api",
-        );
-      }
-      throw new ApiError(message, res.status);
-    }
-    return body as T;
+    return { res, body };
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {
       throw new Error("Server connection timed out");
@@ -80,6 +56,32 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  let { res, body } = await send(path, init, false);
+
+  // An expired or revoked sign-in token: get a fresh one from Firebase and try once more.
+  if (res.status === 401 && AUTH_MODE === "firebase") {
+    ({ res, body } = await send(path, init, true));
+  }
+
+  if (!res.ok) {
+    const message =
+      typeof body?.error?.message === "string"
+        ? body.error.message
+        : `Request failed (${res.status})`;
+    // A 5xx is the server failing, not the person making a mistake: worth knowing about.
+    // The address is reduced to its shape so no id leaves the phone.
+    if (res.status >= 500) {
+      telemetry.error(
+        new Error(`API ${init?.method ?? "GET"} ${path.split("?")[0]} answered ${res.status}`),
+        "api",
+      );
+    }
+    throw new ApiError(message, res.status);
+  }
+  return body as T;
 }
 
 export const api = {

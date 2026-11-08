@@ -9,6 +9,7 @@ import { Icon } from "@/src/components/Icon";
 import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
 import { telemetry } from "@/src/telemetry";
+import { forgetIdentity } from "@/src/identity";
 import { resetLocalData } from "@/src/session";
 import { Screen } from "@/src/components/ui";
 import {
@@ -94,6 +95,7 @@ export default function SettingsScreen() {
           try {
             telemetry.track("account_deleted");
             await api.deleteAccount();
+            await forgetIdentity();
           } catch (err) {
             toast.show(errorMessage(err, copy.errorNetwork), "error");
             return;

@@ -57,7 +57,10 @@ If the first-prayer rate falls, people who ask are leaving disappointed. Act on 
 
 ## Infrastructure to put in place before a beta
 
-- [ ] Production auth (`AUTH_MODE=firebase`) and device attestation (App Check, DeviceCheck, Play Integrity)
+- [x] Code for production auth and device attestation (see "Sign-in and attestation" in `docs/development.md`)
+- [ ] Production settings on the API: `AUTH_MODE=firebase`, `FIREBASE_PROJECT_ID=prayers4me`, `FIREBASE_PROJECT_NUMBER=799342684788`, `APP_CHECK=enforce` (the API refuses to start in production without them)
+- [ ] App Check set up in the Firebase console for both apps (App Attest on iOS, Play Integrity on Android), which needs the Apple and Google developer accounts
+- [ ] Release builds made with `EXPO_PUBLIC_AUTH_MODE=firebase`
 - [ ] `TRUSTED_PROXY_HOPS=1` behind Cloud Run, and a long random `IP_HASH_SECRET`
 - [ ] `IP_LIMITS=on` and `NEW_ACCOUNT_PROBATION=on` (the defaults)
 - [ ] Database backups and a tested restore

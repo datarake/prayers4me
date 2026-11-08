@@ -9,6 +9,7 @@ import {
 } from "./auth.js";
 import type { Sql } from "./db/client.js";
 import type { Env } from "./env.js";
+import type { Verifiers } from "./firebaseAuth.js";
 import { z } from "zod";
 import { ApiError, jsonError } from "./errors.js";
 import { readJson } from "./validation.js";
@@ -16,14 +17,14 @@ import { EXPO_TOKEN_RE } from "./notifications/push.js";
 import { adminRoutes } from "./routes/admin.js";
 import { requestsRoutes } from "./routes/requests.js";
 
-export function createApp(env: Env, sql: Sql) {
+export function createApp(env: Env, sql: Sql, verifiers?: Verifiers) {
   const app = new Hono<{ Variables: AppVariables }>();
 
   app.use(
     "*",
     cors({
       origin: env.CORS_ORIGIN === "*" ? "*" : env.CORS_ORIGIN.split(","),
-      allowHeaders: ["Authorization", "Content-Type"],
+      allowHeaders: ["Authorization", "Content-Type", "X-Firebase-AppCheck"],
     }),
   );
 
@@ -64,7 +65,7 @@ export function createApp(env: Env, sql: Sql) {
     }
   });
 
-  const auth = createAuthMiddleware();
+  const auth = createAuthMiddleware(verifiers);
 
   app.use("/v1/*", auth);
 

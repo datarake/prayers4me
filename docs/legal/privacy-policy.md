@@ -14,7 +14,8 @@ A place to ask for prayer and to pray for others, anonymously. People who pray s
 
 | Data | Why | Who can see it |
 |------|-----|----------------|
-| A random device identifier created on your phone | So the app knows your requests are yours. There is no email, password or phone number to sign up. | Only the server |
+| An anonymous account identifier (Firebase Authentication, Google), created on your phone without asking you anything | So the app knows your requests are yours. There is no email, password or phone number to sign up. Deleting your data deletes this account too. | Only the server and Google, who issue it |
+| A proof from Apple or Google that the call comes from a genuine copy of the app (App Check: App Attest or DeviceCheck on iPhone, Play Integrity on Android) | To stop scripts and modified apps from flooding the service | Apple or Google, and the server, which only checks that the proof is valid |
 | Your requests: the name or nickname you choose, the text, the language | To show them to people who pray in that language | Everyone in that language |
 | Optional phone or email, if you add contact details | [Decide the purpose. Today the server never shows it to anyone but you.] | Only you |
 | Which device prayed for which request | To count prayers once per person | Only the server. You see counts, never who |
@@ -54,7 +55,7 @@ You can delete everything in the app under Settings, Delete my data. To ask for 
 
 ## Who helps us run it
 
-[Hosting provider, for example Google Cloud, and where the data is stored], the push service (Expo and Apple or Google), and Google (Firebase Analytics and Crashlytics) if you agree to usage and crash reports. We do not sell data and we show no ads.
+[Hosting provider, for example Google Cloud, and where the data is stored], the push service (Expo and Apple or Google), and Google (Firebase Authentication and App Check, always; Firebase Analytics and Crashlytics, only if you agree to usage and crash reports), and Apple or Google for the attestation. We do not sell data and we show no ads.
 
 ## Children
 

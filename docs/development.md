@@ -72,6 +72,24 @@ What is covered, and why it matters: pagination (no request is ever skipped or r
 
 When you fix a bug, add the test that would have caught it first. CI (`.github/workflows/ci.yml`) runs typecheck and tests on every push and pull request.
 
+## Sign-in and attestation
+
+Nobody signs in. On first launch the app asks Firebase for an **anonymous account** and sends its signed token with every call; the API verifies it against Google's published keys (`apps/api/src/firebaseAuth.ts`) and ties the account to the token's user id. A second token, **App Check**, shows the call comes from a genuine copy of the app (App Attest or DeviceCheck on iPhone, Play Integrity on Android).
+
+| Setting | Where | Meaning |
+|---------|-------|---------|
+| `AUTH_MODE=dev` or `firebase` | API | `dev` accepts `Bearer dev:<id>`, never in production |
+| `FIREBASE_PROJECT_ID`, `FIREBASE_PROJECT_NUMBER` | API | which project's tokens count (`prayers4me`, `799342684788`) |
+| `APP_CHECK=off`, `log` or `enforce` | API | `log` checks and logs without blocking, `enforce` refuses calls without a valid token. Production requires `enforce`. Admin routes are exempt (a browser cannot attest; they need the admin role) |
+| `EXPO_PUBLIC_AUTH_MODE=firebase` | app | use anonymous sign-in. Unset means the dev header. Needs a development or release build, not Expo Go |
+| `EXPO_PUBLIC_APPCHECK_DEBUG_TOKEN` | app | a fixed token for simulators, registered once under App Check, Apps, Manage debug tokens |
+
+To try it locally, run a second API with `AUTH_MODE=firebase FIREBASE_PROJECT_ID=prayers4me PORT=8092`, and start Metro with `EXPO_PUBLIC_AUTH_MODE=firebase EXPO_PUBLIC_API_URL=http://localhost:8092` (these values are baked in when Metro bundles, so restart it after changing them).
+
+Anonymous sign-in is enabled in the Firebase console. **Leave "Auto clean-up" off**: it deletes anonymous accounts older than 30 days, and people would lose their requests. Deleting data in Settings deletes the server account first and then the Firebase one.
+
+**Still to do in the console:** register both apps under App Check (App Attest and Play Integrity), which needs the Apple and Google developer accounts. The iOS App Attest entitlement (`com.apple.developer.devicecheck.appattest-environment`) must be added to the app when that account exists. Until then, simulators and development builds use the debug provider.
+
 ## Configuration that fails safe
 
 `AUTH_MODE` has no default: the API will not start without it. With `NODE_ENV=production` it also refuses to start with dev auth, the development hash secret, `CORS_ORIGIN=*`, or abuse protection turned off, and lists every problem at once. `/health` checks the database and answers 503 when it cannot reach it.

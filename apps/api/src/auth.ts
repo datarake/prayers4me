@@ -3,6 +3,7 @@ import type { LanguageCode } from "@prayers4me/shared";
 import type { Sql } from "./db/client.js";
 import { ApiError } from "./errors.js";
 import type { Env } from "./env.js";
+import { createVerifiers, type Verifiers } from "./firebaseAuth.js";
 
 export type AuthUser = {
   id: string;
@@ -20,7 +21,7 @@ export type AppVariables = {
   env: Env;
 };
 
-async function upsertDevUser(sql: Sql, firebaseUid: string): Promise<AuthUser> {
+async function upsertUser(sql: Sql, firebaseUid: string): Promise<AuthUser> {
   const rows = await sql<{
     id: string;
     firebase_uid: string;
@@ -60,9 +61,15 @@ async function upsertDevUser(sql: Sql, firebaseUid: string): Promise<AuthUser> {
   };
 }
 
-export function createAuthMiddleware(): MiddlewareHandler<{
+/** Admin calls come from a browser, which cannot attest, so they rely on the admin role instead. */
+const APP_CHECK_EXEMPT = /^\/v1\/admin(\/|$)/;
+
+export function createAuthMiddleware(
+  verifiers?: Verifiers,
+): MiddlewareHandler<{
   Variables: AppVariables;
 }> {
+  let shared: Verifiers | undefined = verifiers;
   return async (c, next) => {
     const env = c.get("env");
     const sql = c.get("sql");
@@ -73,6 +80,24 @@ export function createAuthMiddleware(): MiddlewareHandler<{
     }
 
     const token = header.slice("Bearer ".length).trim();
+
+    // Is the caller a genuine copy of the app? Checked before anything touches the database.
+    if (env.APP_CHECK !== "off" && !APP_CHECK_EXEMPT.test(c.req.path)) {
+      shared ??= createVerifiers(env);
+      const appCheckToken = c.req.header("x-firebase-appcheck");
+      if (appCheckToken) {
+        try {
+          await shared.verifyAppCheck(appCheckToken);
+        } catch (err) {
+          if (env.APP_CHECK === "enforce") throw err;
+          console.warn("App Check token rejected (log mode):", (err as Error).message);
+        }
+      } else if (env.APP_CHECK === "enforce") {
+        throw new ApiError(401, "app_check_failed", "This app could not be verified");
+      } else {
+        console.warn("App Check token missing (log mode)");
+      }
+    }
 
     if (env.AUTH_MODE === "dev") {
       if (!token.startsWith("dev:")) {
@@ -86,18 +111,18 @@ export function createAuthMiddleware(): MiddlewareHandler<{
       if (!firebaseUid) {
         throw new ApiError(401, "unauthorized", "Empty dev user id");
       }
-      const user = await upsertDevUser(sql, `dev:${firebaseUid}`);
+      const user = await upsertUser(sql, `dev:${firebaseUid}`);
       c.set("user", user);
       await next();
       return;
     }
 
-    // Firebase verification will be wired when GCP Auth is configured.
-    throw new ApiError(
-      501,
-      "auth_not_configured",
-      "Firebase auth mode is not configured yet",
-    );
+    // A Firebase ID token proves which install is calling. The uid is stable per install.
+    shared ??= createVerifiers(env);
+    const { uid } = await shared.verifyIdToken(token);
+    const user = await upsertUser(sql, uid);
+    c.set("user", user);
+    await next();
   };
 }
 

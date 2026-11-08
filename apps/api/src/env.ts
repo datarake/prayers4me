@@ -10,7 +10,15 @@ const envSchema = z
     /** Required on purpose: there is no safe default. `dev` accepts `Bearer dev:<any id>`. */
     AUTH_MODE: z.enum(["dev", "firebase"]),
     CORS_ORIGIN: z.string().default("*"),
+    /** Needed when AUTH_MODE is firebase: ID tokens must be issued for this project. */
     FIREBASE_PROJECT_ID: z.string().optional(),
+    /** Needed when APP_CHECK is not off: the numeric id of the same project. */
+    FIREBASE_PROJECT_NUMBER: z.string().regex(/^\d+$/).optional(),
+    /**
+     * Device attestation. `off` ignores it, `log` checks the token when one is sent and logs
+     * failures without blocking, `enforce` refuses calls without a valid App Check token.
+     */
+    APP_CHECK: z.enum(["off", "log", "enforce"]).default("off"),
     /**
      * How many reverse proxies sit in front of the API. 0 uses the socket address (safe when
      * the API is reached directly). With N hops, the client is the Nth entry from the right of
@@ -27,6 +35,14 @@ const envSchema = z
     PUSH_MODE: z.enum(["log", "expo"]).default("log"),
   })
   .superRefine((env, ctx) => {
+    const missing = (path: string, message: string) =>
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path], message });
+    if (env.AUTH_MODE === "firebase" && !env.FIREBASE_PROJECT_ID) {
+      missing("FIREBASE_PROJECT_ID", "required when AUTH_MODE is firebase");
+    }
+    if (env.APP_CHECK !== "off" && !env.FIREBASE_PROJECT_NUMBER) {
+      missing("FIREBASE_PROJECT_NUMBER", "required when APP_CHECK is log or enforce");
+    }
     if (env.NODE_ENV !== "production") return;
     // A production deploy that forgets one setting must not start in a weak configuration.
     const problem = (path: string, message: string) =>
@@ -36,6 +52,9 @@ const envSchema = z
     }
     if (env.IP_HASH_SECRET === DEV_HASH_SECRET || env.IP_HASH_SECRET.length < 24) {
       problem("IP_HASH_SECRET", "set a random secret of at least 24 characters");
+    }
+    if (env.APP_CHECK !== "enforce") {
+      problem("APP_CHECK", "device attestation must be enforced in production");
     }
     if (env.CORS_ORIGIN === "*") {
       problem("CORS_ORIGIN", "list the allowed origins instead of *");

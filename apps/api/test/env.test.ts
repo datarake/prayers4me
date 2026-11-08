@@ -7,6 +7,9 @@ const production = {
   DATABASE_URL: "postgres://x",
   AUTH_MODE: "firebase",
   CORS_ORIGIN: "https://stillflame.app",
+  FIREBASE_PROJECT_ID: "prayers4me",
+  FIREBASE_PROJECT_NUMBER: "799342684788",
+  APP_CHECK: "enforce",
   IP_HASH_SECRET: "a-random-secret-of-sufficient-length-1234",
 };
 
@@ -36,6 +39,10 @@ describe("configuration", () => {
     ["any origin allowed", { CORS_ORIGIN: "*" }, /CORS_ORIGIN/],
     ["per-network limits off", { IP_LIMITS: "off" }, /IP_LIMITS/],
     ["new account limits off", { NEW_ACCOUNT_PROBATION: "off" }, /IP_LIMITS/],
+    ["device attestation off", { APP_CHECK: "off" }, /APP_CHECK/],
+    ["device attestation only logged", { APP_CHECK: "log" }, /APP_CHECK/],
+    ["no Firebase project id", { FIREBASE_PROJECT_ID: undefined }, /FIREBASE_PROJECT_ID/],
+    ["no Firebase project number", { FIREBASE_PROJECT_NUMBER: undefined }, /FIREBASE_PROJECT_NUMBER/],
   ])("refuses to start in production with %s", (_label, change, message) => {
     expect(() => parseEnv({ ...production, ...change })).toThrow(message);
   });
