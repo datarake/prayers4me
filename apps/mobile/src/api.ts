@@ -113,9 +113,6 @@ export const api = {
     language: LanguageCode;
     displayName: string;
     message: string;
-    contactable: boolean;
-    phone?: string | null;
-    email?: string | null;
   }) =>
     request<PrayerRequestPublic>("/v1/requests", {
       method: "POST",
@@ -135,9 +132,6 @@ export const api = {
     payload: {
       displayName: string;
       message: string;
-      contactable: boolean;
-      phone?: string | null;
-      email?: string | null;
     },
   ) =>
     request<PrayerRequestPublic>(`/v1/requests/${id}`, {

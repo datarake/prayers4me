@@ -15,9 +15,6 @@ export type PrayerRequestPublic = {
   prayersCount: number;
   prayedByMe: boolean;
   isMine: boolean;
-  contactable: boolean;
-  phone: string | null;
-  email: string | null;
   status: RequestStatus;
   createdAt: string;
   /** Set once the author has edited the text, so readers can tell it changed. */

@@ -19,9 +19,6 @@ export type ExtraDictionary = {
   nameHelp: string;
   nameRequired: string;
   messageTooShort: (min: number) => string;
-  contactHelp: string;
-  contactNeeded: string;
-  emailInvalid: string;
   sending: string;
   discardTitle: string;
   discardBody: string;
@@ -113,9 +110,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     nameHelp: "A first name or nickname is enough. It is shown with your request.",
     nameRequired: "Enter a name",
     messageTooShort: (min) => `Write at least ${min} characters`,
-    contactHelp: "Optional. Never shown to people who pray.",
-    contactNeeded: "Enter a phone number or email",
-    emailInvalid: "Check this email address",
     sending: "Sending…",
     discardTitle: "Discard draft?",
     discardBody: "Your text will be lost.",
@@ -211,9 +205,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     nameHelp: "Basta con un nombre o apodo. Se muestra con tu petición.",
     nameRequired: "Escribe un nombre",
     messageTooShort: (min) => `Escribe al menos ${min} caracteres`,
-    contactHelp: "Opcional. Nunca se muestra a quienes oran.",
-    contactNeeded: "Escribe un teléfono o un correo",
-    emailInvalid: "Revisa este correo",
     sending: "Enviando…",
     discardTitle: "¿Descartar el borrador?",
     discardBody: "Se perderá tu texto.",
@@ -309,9 +300,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     nameHelp: "Un prénom ou un pseudo suffit. Il s’affiche avec ta demande.",
     nameRequired: "Entre un prénom",
     messageTooShort: (min) => `Écris au moins ${min} caractères`,
-    contactHelp: "Facultatif. Jamais montré à ceux qui prient.",
-    contactNeeded: "Entre un téléphone ou un e-mail",
-    emailInvalid: "Vérifie cet e-mail",
     sending: "Envoi…",
     discardTitle: "Abandonner le brouillon ?",
     discardBody: "Ton texte sera perdu.",
@@ -407,9 +395,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     nameHelp: "Un prenume sau o poreclă este de ajuns. Apare împreună cu cererea ta.",
     nameRequired: "Scrie un nume",
     messageTooShort: (min) => `Scrie cel puțin ${min} caractere`,
-    contactHelp: "Opțional. Nu se arată niciodată celor care se roagă.",
-    contactNeeded: "Scrie un telefon sau un e-mail",
-    emailInvalid: "Verifică acest e-mail",
     sending: "Se trimite…",
     discardTitle: "Renunți la ciornă?",
     discardBody: "Textul tău se va pierde.",
@@ -505,9 +490,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     nameHelp: "Достатньо імені чи псевдоніма. Воно показується з твоїм проханням.",
     nameRequired: "Введи імʼя",
     messageTooShort: (min) => `Напиши щонайменше ${min} символів`,
-    contactHelp: "Необовʼязково. Ніколи не показується тим, хто молиться.",
-    contactNeeded: "Введи телефон або ел. пошту",
-    emailInvalid: "Перевір ел. пошту",
     sending: "Надсилання…",
     discardTitle: "Видалити чернетку?",
     discardBody: "Текст буде втрачено.",
@@ -603,9 +585,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     nameHelp: "Достаточно имени или псевдонима. Оно показывается с твоей просьбой.",
     nameRequired: "Введи имя",
     messageTooShort: (min) => `Напиши не меньше ${min} символов`,
-    contactHelp: "Необязательно. Никогда не показывается тем, кто молится.",
-    contactNeeded: "Введи телефон или эл. почту",
-    emailInvalid: "Проверь эл. почту",
     sending: "Отправка…",
     discardTitle: "Удалить черновик?",
     discardBody: "Текст будет потерян.",

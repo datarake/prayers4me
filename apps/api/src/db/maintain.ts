@@ -1,5 +1,5 @@
 import { connect } from "./client.js";
-import { pruneRateLimitBuckets } from "../maintenance.js";
+import { pruneRateLimitBuckets, purgeExpiredData } from "../maintenance.js";
 
 /**
  * One-shot housekeeping for a scheduler (Cloud Run Job + Cloud Scheduler). On a service that
@@ -12,6 +12,8 @@ async function main() {
   try {
     const removed = await pruneRateLimitBuckets(sql);
     console.log(`maintenance: removed ${removed} old rate limit counters`);
+    const purged = await purgeExpiredData(sql);
+    console.log(`maintenance: purged ${JSON.stringify(purged)}`);
   } finally {
     await sql.end();
   }

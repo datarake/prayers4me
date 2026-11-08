@@ -28,6 +28,8 @@ Then connect the domain in the Firebase console (Hosting, Add custom domain) for
 
 ## Before it can go public
 
-1. Fill in every decision in `docs/legal/privacy-policy.md` and `docs/legal/terms.md` and have a lawyer check them (operator name and address, retention periods, minimum age, governing law, the purpose of the optional contact details).
+0. **Confirm in the consoles** the retention promised in the privacy policy: in Google Analytics (Admin, Data collection and modification, Data retention) event data retention must be **2 months**, and Crashlytics keeps crash reports 90 days. The policy states both.
+
+1. Have a lawyer check `docs/legal/privacy-policy.md` and `docs/legal/terms.md`, then delete the draft note and the word DRAFT from both. The decisions are made (retention 30 and 90 days and one year, minimum age 16, Romanian law, no optional contact details). **Open point:** no operator name or address is stated, on purpose; the GDPR normally requires the controller's identity and contact details, so ask the lawyer whether the support email alone is enough.
 2. Choose the support email and put it in `site/config.json`.
 3. The site is English only. Add Spanish, French, Romanian, Ukrainian and Russian versions later, with the app's text.

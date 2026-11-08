@@ -21,14 +21,12 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { useLanguage } from "@/src/LanguageContext";
 import { api, errorMessage } from "@/src/api";
-import { Icon } from "@/src/components/Icon";
 import { useToast } from "@/src/components/Toast";
 import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
 import { markJustSent } from "@/src/session";
@@ -37,8 +35,6 @@ import { PrimaryButton, Screen } from "@/src/components/ui";
 import { type FontSet, type Palette } from "@/src/theme";
 import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ComposeScreen() {
   const styles = useStyles(createStyles);
@@ -55,32 +51,21 @@ export default function ComposeScreen() {
     id?: string;
     name?: string;
     message?: string;
-    contactable?: string;
-    phone?: string;
-    email?: string;
   }>();
   const editingId = params.id;
   const isEditing = Boolean(editingId);
   const initial = useRef({
     name: params.name ?? "",
     message: params.message ?? "",
-    contactable: params.contactable === "1",
-    phone: params.phone ?? "",
-    email: params.email ?? "",
   }).current;
 
   const [displayName, setDisplayName] = useState(initial.name);
   const [message, setMessage] = useState(initial.message);
-  const [contactable, setContactable] = useState(initial.contactable);
-  const [phone, setPhone] = useState(initial.phone);
-  const [email, setEmail] = useState(initial.email);
   const [submitting, setSubmitting] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const messageRef = useRef<ElementRef<typeof TextInput>>(null);
-  const phoneRef = useRef<ElementRef<typeof TextInput>>(null);
-  const emailRef = useRef<ElementRef<typeof TextInput>>(null);
   const nameRef = useRef<ElementRef<typeof TextInput>>(null);
   const done = useRef(false);
 
@@ -88,10 +73,7 @@ export default function ComposeScreen() {
   const body = message.trim();
   const changed =
     name !== initial.name.trim() ||
-    body !== initial.message.trim() ||
-    contactable !== initial.contactable ||
-    phone.trim() !== initial.phone.trim() ||
-    email.trim() !== initial.email.trim();
+    body !== initial.message.trim();
   // A new request is "dirty" once anything is typed. An edit only once something changed.
   const dirty = isEditing ? changed : name.length > 0 || body.length > 0;
 
@@ -101,17 +83,8 @@ export default function ComposeScreen() {
       body.length < MESSAGE_MIN_LENGTH
         ? copy.messageTooShort(MESSAGE_MIN_LENGTH)
         : null,
-    contact: !contactable
-      ? null
-      : !phone.trim() && !email.trim()
-        ? copy.contactNeeded
-        : null,
-    email:
-      contactable && email.trim() && !EMAIL_RE.test(email.trim())
-        ? copy.emailInvalid
-        : null,
   };
-  const valid = !errors.name && !errors.message && !errors.contact && !errors.email;
+  const valid = !errors.name && !errors.message;
   const show = (key: string) => attempted || touched[key];
   const touch = (key: string) => setTouched((t) => ({ ...t, [key]: true }));
 
@@ -156,9 +129,7 @@ export default function ComposeScreen() {
         () => undefined,
       );
       if (errors.name) nameRef.current?.focus();
-      else if (errors.message) messageRef.current?.focus();
-      else if (errors.contact) phoneRef.current?.focus();
-      else emailRef.current?.focus();
+      else messageRef.current?.focus();
       return;
     }
     if (isEditing && !changed) {
@@ -173,9 +144,6 @@ export default function ComposeScreen() {
         await api.updateRequest(editingId, {
           displayName: name,
           message: body,
-          contactable,
-          phone: contactable ? phone.trim() || null : null,
-          email: contactable ? email.trim() || null : null,
         });
         done.current = true;
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
@@ -190,9 +158,6 @@ export default function ComposeScreen() {
         language,
         displayName: name,
         message: body,
-        contactable,
-        phone: contactable ? phone.trim() || null : null,
-        email: contactable ? email.trim() || null : null,
       });
       done.current = true;
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
@@ -201,7 +166,6 @@ export default function ComposeScreen() {
       await markJustSent();
       telemetry.track("request_sent", {
         language,
-        contact: contactable ? "yes" : "no",
         length: body.length < 100 ? "short" : body.length < 400 ? "medium" : "long",
         support_card: showSupport ? "yes" : "no",
       });
@@ -298,67 +262,6 @@ export default function ComposeScreen() {
               </Pressable>
             </View>
           ) : null}
-
-          <View style={styles.switchCard}>
-            <View style={styles.switchRow}>
-              <Text style={[styles.label, { flex: 1 }]}>{copy.contactLabel}</Text>
-              <Switch
-                value={contactable}
-                onValueChange={setContactable}
-                trackColor={{ true: colors.tealBright, false: colors.mistDeep }}
-                accessibilityLabel={copy.contactLabel}
-              />
-            </View>
-            {contactable ? (
-              <View style={{ gap: 14, marginTop: 14 }}>
-                <View style={styles.helpRow}>
-                  <Icon name="lock" size={15} color={colors.inkSoft} />
-                  <Text style={[styles.help, { flex: 1 }]}>{copy.contactHelp}</Text>
-                </View>
-                <Field label={copy.phoneLabel}>
-                  <TextInput
-                    ref={phoneRef}
-                    value={phone}
-                    onChangeText={setPhone}
-                    style={styles.input}
-                    keyboardType="phone-pad"
-                    autoComplete="tel"
-                    textContentType="telephoneNumber"
-                    accessibilityLabel={copy.phoneLabel}
-                  />
-                </Field>
-                <Field
-                  label={copy.emailLabel}
-                  error={
-                    errors.email && show("email")
-                      ? errors.email
-                      : errors.contact && attempted
-                        ? errors.contact
-                        : null
-                  }
-                >
-                  <TextInput
-                    ref={emailRef}
-                    value={email}
-                    onChangeText={setEmail}
-                    onBlur={() => touch("email")}
-                    style={[
-                      styles.input,
-                      ((errors.email && show("email")) ||
-                        (errors.contact && attempted)) &&
-                        styles.inputError,
-                    ]}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    autoComplete="email"
-                    textContentType="emailAddress"
-                    accessibilityLabel={copy.emailLabel}
-                  />
-                </Field>
-              </View>
-            ) : null}
-          </View>
 
           {isEditing ? null : (
             <Pressable
@@ -468,24 +371,6 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
       fontSize: 13,
       lineHeight: 19,
       color: colors.danger,
-    },
-    switchCard: {
-      backgroundColor: colors.fieldBg,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: colors.border,
-      padding: 16,
-    },
-    switchRow: {
-      minHeight: 44,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 16,
-    },
-    helpRow: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: 8,
     },
     supportCard: {
       backgroundColor: colors.noteBg,

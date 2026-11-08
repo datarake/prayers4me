@@ -1,10 +1,9 @@
 # Privacy policy (DRAFT)
 
-> **Draft for legal review.** This describes what the product does today so a lawyer can finish it. It is not legal advice and must not be published as it is. Items in [brackets] are decisions or facts only you can fill in.
+> **Draft for legal review.** This describes what the product does today so a lawyer can check it. It is not legal advice. Delete this note and the word DRAFT in the title once it has been reviewed.
 
-**Controller:** [legal name and address]
-**Contact:** [support email]
-**Last updated:** [date]
+**Who is responsible:** Stillflame is run by its developer. **Contact for anything about your data:** {{supportEmail}}
+**Last updated:** 9 November 2026
 
 ## What Stillflame is
 
@@ -17,7 +16,6 @@ A place to ask for prayer and to pray for others, anonymously. People who pray s
 | An anonymous account identifier (Firebase Authentication, Google), created on your phone without asking you anything | So the app knows your requests are yours. There is no email, password or phone number to sign up. Deleting your data deletes this account too. | Only the server and Google, who issue it |
 | A proof from Apple or Google that the call comes from a genuine copy of the app (App Check: App Attest or DeviceCheck on iPhone, Play Integrity on Android) | To stop scripts and modified apps from flooding the service | Apple or Google, and the server, which only checks that the proof is valid |
 | Your requests: the name or nickname you choose, the text, the language | To show them to people who pray in that language | Everyone in that language |
-| Optional phone or email, if you add contact details | [Decide the purpose. Today the server never shows it to anyone but you.] | Only you |
 | Which device prayed for which request | To count prayers once per person | Only the server. You see counts, never who |
 | Reports you make about a request | Moderation | Moderators |
 | Your push notification token, only if you turn notifications on | To tell you when someone prays | Only the server and the push service |
@@ -35,7 +33,7 @@ If you turn it on, the app uses Firebase Analytics and Firebase Crashlytics (Goo
 - which screens are opened and a short list of anonymous actions, for example "a request was sent" with its language, "someone prayed", "the language was changed";
 - reports when the app crashes or the server fails, with the technical details needed to fix it.
 
-These reports never contain what you write, names, contact details, ids of requests, or who you pray for. The app only sends actions from a fixed list, with values from fixed choices, and removes anything that looks like an id, an email or a phone number from error details. We do not use advertising identifiers, we do not use Google's advertising features, and we do not link these reports to an account (there is none). Firebase still receives the technical identifier of the app installation and a rough location derived from the network address, as part of how it works. [Confirm retention settings in the Firebase console and state them here.]
+These reports never contain what you write, names, contact details, ids of requests, or who you pray for. The app only sends actions from a fixed list, with values from fixed choices, and removes anything that looks like an id, an email or a phone number from error details. We do not use advertising identifiers, we do not use Google's advertising features, and we do not link these reports to an account (there is none). Firebase still receives the technical identifier of the app installation and a rough location derived from the network address, as part of how it works.
 
 ## What we do not collect
 
@@ -44,23 +42,31 @@ No advertising identifier, no location from your phone, no contacts. Without you
 ## How long we keep it
 
 - Your requests stay until you delete them, or delete your account.
-- Earlier versions of an edited request are kept so moderators can review reported requests. [Decide how long.]
-- Requests you delete are removed from view at once. [Decide when they are erased from the database. Today the row is kept hidden, which needs a scheduled clean-up before launch.]
+- A request you delete leaves view at once and is erased from our database after **30 days**, together with the prayers and reports attached to it. If a moderator removes a request, the same 30 days apply.
+- When you edit a request, the earlier version is kept for **90 days** so moderators can review a report about it, then erased.
 - Deleting your data in Settings erases your account, your requests, your prayers and your reports straight away.
-- Moderation records about bans [decide the period].
+- A ban is kept on record for as long as it is in force, and for **one year** after it ends.
+- Network fingerprints and daily counters used to stop abuse are erased after 7 days.
+- Usage and crash reports, only if you agreed to them: Google keeps event-level usage data for 2 months and crash reports for 90 days.
+
+These periods are enforced by an automatic job that runs every few hours.
 
 ## Your rights
 
-You can delete everything in the app under Settings, Delete my data. To ask for a copy of your data or to object to something, write to [support email]. [Add the supervisory authority and rights wording required in your country.]
+You can delete everything in the app under Settings, Delete my data. Under the EU General Data Protection Regulation you also have the right to access your data, to have it corrected or erased, to restrict or object to its use, and to receive it in a portable format. Because there is no email or name attached to your account, we may need you to show us a request you wrote before we can find your data. To use a right, write to {{supportEmail}}.
+
+If you are not satisfied with our answer you can complain to the data protection authority of your country. In Romania this is the National Supervisory Authority for Personal Data Processing (ANSPDCP, www.dataprotection.ro).
+
+We process your data because it is needed to provide the service you ask for, because you agree to it (your requests, and usage and crash reports), and because we have a legitimate interest in keeping the community safe and the service secure.
 
 ## Who helps us run it
 
-[Hosting provider, for example Google Cloud, and where the data is stored], the push service (Expo and Apple or Google), and Google (Firebase Authentication and App Check, always; Firebase Analytics and Crashlytics, only if you agree to usage and crash reports), and Apple or Google for the attestation. We do not sell data and we show no ads.
+Google Cloud, which hosts the server and the database in Belgium (European Union), the push service (Expo and Apple or Google), and Google (Firebase Authentication and App Check, always; Firebase Analytics and Crashlytics, only if you agree to usage and crash reports), and Apple or Google for the attestation. We do not sell data and we show no ads.
 
 ## Children
 
-[Decide the minimum age. Many countries require 16 for consent-based processing.]
+Stillflame is for people aged 16 and over. We do not knowingly collect data from younger children. If you believe a child has used the app, write to {{supportEmail}} and we will erase the request.
 
 ## Changes
 
-[How we tell you about changes.]
+If this policy changes in a way that matters to you, we will update the date above and show a notice in the app before the change applies.

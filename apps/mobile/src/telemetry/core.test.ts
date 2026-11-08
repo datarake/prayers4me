@@ -109,7 +109,6 @@ describe("what an event may contain", () => {
     const { telemetry, calls } = await started({ [KEY]: "granted" });
     telemetry.track("request_sent", {
       language: "en",
-      contact: "yes",
       length: "short",
       support_card: "no",
       // Things a careless call site might add. None may get through.
@@ -121,7 +120,7 @@ describe("what an event may contain", () => {
 
     expect(calls.events[0]).toEqual([
       "request_sent",
-      { language: "en", contact: "yes", length: "short", support_card: "no" },
+      { language: "en", length: "short", support_card: "no" },
     ]);
     expect(calls.events[1]).toEqual(["report_sent", {}]);
   });

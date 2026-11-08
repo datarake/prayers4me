@@ -16,9 +16,10 @@ const guidelines = JSON.parse(readFileSync(path.join(here, "guidelines.json"), "
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 // ---- Legal text -------------------------------------------------------------------------
+const withEmail = (md) => md.replaceAll("{{supportEmail}}", config.supportEmail || "(support email to come)");
 const legal = {
-  privacy: readFileSync(path.join(root, "docs/legal/privacy-policy.md"), "utf8"),
-  terms: readFileSync(path.join(root, "docs/legal/terms.md"), "utf8"),
+  privacy: withEmail(readFileSync(path.join(root, "docs/legal/privacy-policy.md"), "utf8")),
+  terms: withEmail(readFileSync(path.join(root, "docs/legal/terms.md"), "utf8")),
 };
 
 /** Things that must be gone before anything legal goes public. */

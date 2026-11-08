@@ -28,7 +28,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | Task | Why |
 |------|-----|
 | **Admin page** for reports, hide, restore, ban and the metrics | Moderators currently call API routes by hand. |
-| **Scheduled clean-up** that erases requests deleted one by one after a fixed number of days | The privacy policy needs a retention period, and "hidden forever" is not one. |
+| **Scheduled clean-up** (done) | Deleted requests are erased after 30 days, edit history after 90 days, ended bans after one year, by the housekeeping job (`purgeExpiredData`, tested). |
 | **Attestation hook**: refuse API calls without a valid App Check or Play Integrity token when `AUTH_MODE=firebase` | Completes P0.2 once the accounts exist. |
 
 ### Engineering foundations (from the developer review)
@@ -104,7 +104,7 @@ The tagline is "Someone prayed for you." Today the author only learns it by open
 
 | Feature | Notes |
 |---------|-------|
-| **Edit my request** (done) | Authors can fix typos: name, text and contact only, never the language. Capped at 3 edits, same content checks as a new request, marked "Edited", previous versions stored in `request_edits`. Not allowed while a request is under review. |
+| **Edit my request** (done) | Authors can fix typos: name and text only, never the language. Capped at 3 edits, same content checks as a new request, marked "Edited", previous versions stored in `request_edits`. Not allowed while a request is under review. |
 
 | **Tabs and settings** (done) | Pray, My requests and Settings in a tab bar. The welcome screen shows on the first launch only. Settings holds language, a notifications switch and the guidelines. |
 | **UX review fixes** (done) | Relative times ("25 min ago") from our own localized strings, because the built-in formatter silently fell back to calendar dates. A darker teal (`tealText`, 5.3:1) for small text. |
@@ -136,6 +136,6 @@ The tagline is "Someone prayed for you." Today the author only learns it by open
 
 ## Open product questions
 
-- **Contact details:** the compose form can collect a phone or email, but the server never shows it to anyone except the author. Either define who uses it (for example moderator outreach in a crisis) or remove the field.
+- **Contact details:** removed (migration 006). Nothing needed them.
 - **Cross-language reading:** the feed is scoped to one language. Decide whether someone can opt in to a second language.
 - **Native review:** Ukrainian, Romanian and Russian copy needs review by native speakers before launch.

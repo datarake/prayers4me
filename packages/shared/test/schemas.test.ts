@@ -19,9 +19,9 @@ const valid = {
 };
 
 describe("createRequestSchema", () => {
-  it("accepts a normal request and defaults to no contact", () => {
-    const parsed = createRequestSchema.parse(valid);
-    expect(parsed.contactable).toBe(false);
+  it("accepts a normal request and keeps only a name, a message and a language", () => {
+    const parsed = createRequestSchema.parse({ ...valid, phone: "+40 700 000 000", email: "a@b.co", contactable: true });
+    expect(Object.keys(parsed).sort()).toEqual(["displayName", "language", "message"]);
   });
 
   it("trims whitespace", () => {
@@ -42,14 +42,7 @@ describe("createRequestSchema", () => {
     expect(createRequestSchema.safeParse({ ...valid, displayName: "x".repeat(NAME_MAX_LENGTH + 1) }).success).toBe(false);
   });
 
-  it("requires a phone or an email when contact is on", () => {
-    expect(createRequestSchema.safeParse({ ...valid, contactable: true }).success).toBe(false);
-    expect(createRequestSchema.safeParse({ ...valid, contactable: true, phone: "+40 700 000 000" }).success).toBe(true);
-    expect(createRequestSchema.safeParse({ ...valid, contactable: true, email: "a@b.co" }).success).toBe(true);
-  });
-
-  it("rejects an invalid email and an unknown language", () => {
-    expect(createRequestSchema.safeParse({ ...valid, contactable: true, email: "not-an-email" }).success).toBe(false);
+  it("rejects an unknown language", () => {
     expect(createRequestSchema.safeParse({ ...valid, language: "de" }).success).toBe(false);
   });
 });
@@ -60,8 +53,9 @@ describe("updateRequestSchema", () => {
     expect(parsed).not.toHaveProperty("language");
   });
 
-  it("applies the same contact rule as creating", () => {
-    expect(updateRequestSchema.safeParse({ displayName: "Ana", message: valid.message, contactable: true }).success).toBe(false);
+  it("drops any contact details sent by an older app", () => {
+    const parsed = updateRequestSchema.parse({ displayName: "Ana", message: valid.message, email: "a@b.co", phone: "1" });
+    expect(Object.keys(parsed).sort()).toEqual(["displayName", "message"]);
   });
 
   it("allows a small, fixed number of edits", () => {

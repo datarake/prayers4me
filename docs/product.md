@@ -23,7 +23,7 @@ That anonymity is intentional. The meaning is presence: knowing that somewhere i
 
 1. Choose language (if needed).
 2. Write a name (or how you want to be called) and a message.
-3. Optionally allow contact (phone / email).
+3. (There is no contact field: nothing in the product needed it, and collecting less is safer.)
 4. Send the request into the language feed.
 5. See your requests and the prayer count grow over time.
 

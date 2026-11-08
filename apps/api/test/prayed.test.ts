@@ -74,17 +74,6 @@ describe("requests I prayed for", () => {
     expect(new Set(seen).size).toBe(5);
   });
 
-  it("never exposes contact details of someone else's request", async () => {
-    const author = await makeUser(call, "author");
-    const me = await makeUser(call, "me");
-    const id = await insertRequest(author);
-    await sql`UPDATE prayer_requests SET contactable = true, phone = '+40123', email = 'a@b.co' WHERE id = ${id}`;
-    await prayAt(me, id, "2024-01-01 10:00:00+00");
-
-    const res = await call("GET", "/v1/requests/prayed", { user: "me" });
-    expect(res.json.items[0]).toMatchObject({ isMine: false, phone: null, email: null });
-  });
-
   it("rejects a bad limit with 400", async () => {
     await makeUser(call, "me");
     const res = await call("GET", "/v1/requests/prayed?limit=0", { user: "me" });

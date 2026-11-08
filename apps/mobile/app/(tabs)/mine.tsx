@@ -113,9 +113,6 @@ export default function ForMeScreen() {
         id: item.id,
         name: item.displayName,
         message: item.message,
-        contactable: item.contactable ? "1" : "0",
-        phone: item.phone ?? "",
-        email: item.email ?? "",
       },
     });
 

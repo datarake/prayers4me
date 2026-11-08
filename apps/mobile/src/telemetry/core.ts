@@ -34,7 +34,6 @@ export const EVENTS = {
   welcome_choice: { choice: ["ask", "pray"] },
   request_sent: {
     language: LANGUAGES,
-    contact: YES_NO,
     length: ["short", "medium", "long"],
     support_card: YES_NO,
   },

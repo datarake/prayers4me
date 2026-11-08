@@ -75,7 +75,6 @@ export const validRequest = {
   language: "en",
   displayName: "Ana",
   message: "Please pray for my mother, she is in the hospital.",
-  contactable: false,
 };
 
 export async function createRequest(

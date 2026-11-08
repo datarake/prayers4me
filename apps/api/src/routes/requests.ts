@@ -25,9 +25,6 @@ type RequestRow = {
   language: PrayerRequestPublic["language"];
   display_name: string;
   message: string;
-  contactable: boolean;
-  phone: string | null;
-  email: string | null;
   prayers_count: number;
   status: PrayerRequestPublic["status"];
   created_at: Date;
@@ -48,9 +45,6 @@ function mapRequest(row: RequestRow, viewerId: string): PrayerRequestPublic {
     prayersCount: row.prayers_count,
     prayedByMe: row.prayed_by_me,
     isMine,
-    contactable: isMine ? row.contactable : false,
-    phone: isMine && row.contactable ? row.phone : null,
-    email: isMine && row.contactable ? row.email : null,
     status: row.status,
     createdAt: row.created_at.toISOString(),
     editedAt: row.edited_at ? row.edited_at.toISOString() : null,
@@ -204,15 +198,12 @@ requestsRoutes.post("/", requireNotBanned(), async (c) => {
 
   const rows = await sql<RequestRow[]>`
     INSERT INTO prayer_requests (
-      author_id, language, display_name, message, contactable, phone, email
+      author_id, language, display_name, message
     ) VALUES (
       ${user.id},
       ${body.language},
       ${body.displayName},
-      ${body.message},
-      ${body.contactable},
-      ${body.contactable ? body.phone ?? null : null},
-      ${body.contactable ? body.email ?? null : null}
+      ${body.message}
     )
     RETURNING *, false AS prayed_by_me
   `;
@@ -387,9 +378,6 @@ requestsRoutes.patch("/:id", requireNotBanned(), async (c) => {
   // An edit must pass the same checks as a new request, or it would be a way around them.
   assertMessageLooksHuman(body.message);
 
-  const phone = body.contactable ? body.phone ?? null : null;
-  const email = body.contactable ? body.email ?? null : null;
-
   const row = await sql.begin(async (tx) => {
     const found = await tx<RequestRow[]>`
       SELECT *, false AS prayed_by_me
@@ -407,10 +395,7 @@ requestsRoutes.patch("/:id", requireNotBanned(), async (c) => {
 
     const unchanged =
       current.display_name === body.displayName &&
-      current.message === body.message &&
-      current.contactable === body.contactable &&
-      current.phone === phone &&
-      current.email === email;
+      current.message === body.message;
     if (unchanged) return current;
 
     if (current.edit_count >= MAX_EDITS_PER_REQUEST) {
@@ -418,20 +403,14 @@ requestsRoutes.patch("/:id", requireNotBanned(), async (c) => {
     }
 
     await tx`
-      INSERT INTO request_edits (request_id, display_name, message, contactable, phone, email)
-      VALUES (
-        ${requestId}, ${current.display_name}, ${current.message},
-        ${current.contactable}, ${current.phone}, ${current.email}
-      )
+      INSERT INTO request_edits (request_id, display_name, message)
+      VALUES (${requestId}, ${current.display_name}, ${current.message})
     `;
 
     const updated = await tx<RequestRow[]>`
       UPDATE prayer_requests
       SET display_name = ${body.displayName},
           message = ${body.message},
-          contactable = ${body.contactable},
-          phone = ${phone},
-          email = ${email},
           edit_count = edit_count + 1,
           edited_at = now(),
           updated_at = now()

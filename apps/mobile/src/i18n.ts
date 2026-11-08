@@ -25,9 +25,6 @@ type Dictionary = {
   composeIntro: string;
   nameLabel: string;
   messageLabel: string;
-  contactLabel: string;
-  phoneLabel: string;
-  emailLabel: string;
   send: string;
   prayersNone: string;
   prayersOne: string;
@@ -62,9 +59,6 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
     composeIntro: "Write in your own words. Please do not paste long texts.",
     nameLabel: "Your name",
     messageLabel: "What would you like prayer for?",
-    contactLabel: "Add contact details",
-    phoneLabel: "Phone",
-    emailLabel: "Email",
     send: "Send request",
     prayersNone: "Waiting for the first prayer",
     prayersOne: "1 person prayed",
@@ -97,9 +91,6 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
     composeIntro: "Escribe con tus propias palabras. Por favor, no pegues textos largos.",
     nameLabel: "Tu nombre",
     messageLabel: "¿Por qué te gustaría pedir oración?",
-    contactLabel: "Añadir datos de contacto",
-    phoneLabel: "Teléfono",
-    emailLabel: "Correo",
     send: "Enviar petición",
     prayersNone: "Esperando la primera oración",
     prayersOne: "1 persona oró",
@@ -132,9 +123,6 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
     composeIntro: "Écris avec tes propres mots. Merci de ne pas coller de longs textes.",
     nameLabel: "Ton prénom",
     messageLabel: "Pour quoi souhaites-tu une prière ?",
-    contactLabel: "Ajouter des coordonnées",
-    phoneLabel: "Téléphone",
-    emailLabel: "E-mail",
     send: "Envoyer la demande",
     prayersNone: "En attente de la première prière",
     prayersOne: "1 personne a prié",
@@ -167,9 +155,6 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
     composeIntro: "Scrie cu cuvintele tale. Te rugăm să nu lipești texte lungi.",
     nameLabel: "Numele tău",
     messageLabel: "Pentru ce ai vrea o rugăciune?",
-    contactLabel: "Adaugă date de contact",
-    phoneLabel: "Telefon",
-    emailLabel: "E-mail",
     send: "Trimite cererea",
     prayersNone: "Se așteaptă prima rugăciune",
     prayersOne: "1 persoană s-a rugat",
@@ -202,9 +187,6 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
     composeIntro: "Пиши своїми словами. Будь ласка, не вставляй довгі тексти.",
     nameLabel: "Твоє імʼя",
     messageLabel: "Про що ти хочеш попросити молитви?",
-    contactLabel: "Додати контактні дані",
-    phoneLabel: "Телефон",
-    emailLabel: "Ел. пошта",
     send: "Надіслати прохання",
     prayersNone: "Чекаємо на першу молитву",
     prayersOne: "Молилася 1 людина",
@@ -237,9 +219,6 @@ const dictionaries: Record<LanguageCode, Dictionary> = {
     composeIntro: "Пиши своими словами. Пожалуйста, не вставляй длинные тексты.",
     nameLabel: "Твоё имя",
     messageLabel: "О чём ты хочешь попросить молитвы?",
-    contactLabel: "Добавить контактные данные",
-    phoneLabel: "Телефон",
-    emailLabel: "Эл. почта",
     send: "Отправить просьбу",
     prayersNone: "Ждём первую молитву",
     prayersOne: "Молился 1 человек",

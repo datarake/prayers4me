@@ -57,7 +57,7 @@ Web (Next.js)  ──┘                                         │
 | Table | Role |
 |-------|------|
 | `users` | Identity (`firebase_uid`), language, role, push token |
-| `prayer_requests` | Asks: language, name, message, optional contact, `prayers_count`, `status` |
+| `prayer_requests` | Asks: language, name, message, `prayers_count`, `status` |
 | `prayers` | One row per user/request (`UNIQUE(request_id, user_id)`) |
 | `request_edits` | Previous versions of edited requests, kept for moderation |
 | `reports` | User reports with reason |
@@ -78,7 +78,7 @@ Feeds only show `active`. Hidden rows stay for audit.
 | POST | `/v1/requests` | Create ask (rate-limited + heuristics) |
 | POST | `/v1/requests/:id/pray` | Pray once (idempotent) |
 | POST | `/v1/requests/:id/report` | Report (may auto-hide) |
-| PATCH | `/v1/requests/:id` | Author edits name, text or contact (max 3 edits, content checks apply, not while under review) |
+| PATCH | `/v1/requests/:id` | Author edits name or text (max 3 edits, content checks apply, not while under review) |
 | DELETE | `/v1/session` | Delete the whole account: requests, prayers, reports, token (counts on other requests are corrected) |
 | DELETE | `/v1/requests/:id` | Author removes their own request (soft delete) |
 | PUT | `/v1/session/push-token` | Register or clear the device's Expo push token |

@@ -29,19 +29,32 @@ describe("creating a request", () => {
     ["a message that is too short", { message: "short" }],
     ["no name", { displayName: "  " }],
     ["an unknown language", { language: "xx" }],
-    ["contact enabled without a phone or email", { contactable: true }],
   ])("rejects %s", async (_label, change) => {
     const res = await createRequest(call, "ana", change);
     expect(res.status).toBe(400);
   });
 
-  it("hides contact details from everyone but the author", async () => {
-    const created = await createRequest(call, "ana", { contactable: true, email: "ana@example.com" });
-    expect(created.json.email).toBe("ana@example.com");
+  it("does not store or return contact details, even from an older app that still sends them", async () => {
+    const created = await createRequest(call, "ana", {
+      contactable: true,
+      email: "ana@example.com",
+      phone: "+40123",
+    });
+    expect(created.status).toBe(201);
+    expect(created.json).not.toHaveProperty("email");
+    expect(created.json).not.toHaveProperty("phone");
+    expect(created.json).not.toHaveProperty("contactable");
+
+    const columns = await sql`
+      SELECT column_name FROM information_schema.columns
+      WHERE table_name IN ('prayer_requests', 'request_edits')
+        AND column_name IN ('contactable', 'phone', 'email')
+    `;
+    expect(columns).toEqual([]);
 
     await makeUser(call, "reader");
     const feed = await call("GET", "/v1/requests?language=en", { user: "reader" });
-    expect(feed.json.items[0]).toMatchObject({ contactable: false, email: null, phone: null });
+    expect(feed.json.items[0]).not.toHaveProperty("email");
   });
 
   describe("content checks", () => {
