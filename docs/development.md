@@ -45,7 +45,7 @@ Firebase Analytics and Crashlytics are in the app, and **off until a person opts
 - `firebase.ts`: the Firebase adapter. It loads the native modules on demand, so **in Expo Go and on the web it quietly does nothing**.
 - `apps/mobile/firebase.json`: native settings that keep collection off until the app switches it on, and turn off advertising and device identifiers.
 
-**The Firebase project** is `prayers4me` (free Spark plan, owner: the Google account that created it). It has an iOS app and an Android app, both with the id `app.prayers4me.mobile`, and its own Google Analytics account called Prayers4me (these names date from before the app became Stillflame) with every optional Google data-sharing setting turned off. Analytics location: Romania (can be changed in Google Analytics settings). To get the config files again: Firebase console, Project settings, General, Your apps, download `GoogleService-Info.plist` and `google-services.json` into `apps/mobile/firebase/`.
+**The Firebase project** is `prayers4me` (free Spark plan, owner: the Google account that created it). It has an iOS app ("Stillflame iOS") and an Android app ("Stillflame Android"), both with the id `app.stillflame.mobile`. The two older apps (`app.prayers4me.mobile`) were removed on 2026-11-08 and are permanently deleted by Firebase after 30 days; until then they can be restored from "Pending delete apps" in Project settings, and its own Google Analytics account called Prayers4me (these names date from before the app became Stillflame) with every optional Google data-sharing setting turned off. Analytics location: Romania (can be changed in Google Analytics settings). To get the config files again: Firebase console, Project settings, General, Your apps, download `GoogleService-Info.plist` and `google-services.json` into `apps/mobile/firebase/`.
 
 To add an event: add it to `EVENTS` with the exact values it may take, then call `telemetry.track("name", { ... })`. A test fails if an event could carry free text or an identifier.
 
@@ -168,9 +168,9 @@ The app is called **Stillflame** (domain `stillflame.app`, bought). The name liv
 These still say `prayers4me` on purpose, because changing them costs more than it gives before launch:
 - the workspace package scope (`@prayers4me/shared`, `@prayers4me/api`), the repository folder and the local database name and user;
 - the on-device storage keys (`prayers4me.*`);
-- the Firebase project and the app ids `app.prayers4me.mobile` (they are tied to the downloaded config files).
+- the Firebase project id and name (a project id cannot be renamed).
 
-**Decide before the first store submission:** the iOS bundle id and Android package cannot change after a store listing exists. If you want `app.stillflame.mobile`, register new iOS and Android apps in the Firebase project, download the new config files into `apps/mobile/firebase/`, update `app.json`, and rebuild the development app.
+The iOS bundle id and Android package are `app.stillflame.mobile`. Set them before any store listing exists, because they cannot change afterwards.
 
 **Not set yet:** `EXPO_PUBLIC_SHARE_URL`. Point it at `https://stillflame.app` once a landing page is live, so the share message carries a working link.
 
