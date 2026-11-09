@@ -11,6 +11,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "app.stillflame.mobile",
       "appleTeamId": "HM348ZXGU4",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      },
       "entitlements": {
         "com.apple.developer.devicecheck.appattest-environment": "production"
       },
