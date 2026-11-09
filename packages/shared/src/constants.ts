@@ -11,6 +11,9 @@ export const NAME_MAX_LENGTH = 80;
 /** How many times an author can edit one request (typo fixes, not rewrites) */
 export const MAX_EDITS_PER_REQUEST = 3;
 
+/** How many people one account can block (stops the table growing without limit) */
+export const MAX_BLOCKS_PER_USER = 200;
+
 /** Moderation / anti-flood (the failure mode that killed v1) */
 export const RATE_LIMITS = {
   /** New prayer requests per user per rolling 24h */

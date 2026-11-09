@@ -15,6 +15,7 @@ A place to ask for prayer and to pray for others, anonymously. People who pray s
 | A proof from Apple or Google that the call comes from a genuine copy of the app (App Check: App Attest or DeviceCheck on iPhone, Play Integrity on Android) | To stop scripts and modified apps from flooding the service | Apple or Google, and the server, which only checks that the proof is valid |
 | Your requests: the name or nickname you choose, the text, the language | To show them to people who pray in that language | Everyone in that language |
 | Which device prayed for which request | To count prayers once per person | Only the server. You see counts, never who |
+| People you block (which anonymous account you blocked, never shown to anyone) | So you stop seeing their requests | Only the server. Deleted when you unblock or delete your data |
 | Reports you make about a request | Moderation | Moderators |
 | Your push notification token, only if you turn notifications on | To tell you when someone prays | Only the server and the push service |
 | Your language | To show you the right requests | Only the server |

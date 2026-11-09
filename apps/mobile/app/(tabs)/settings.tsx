@@ -33,6 +33,7 @@ export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(false);
   const [busy, setBusy] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [blocked, setBlocked] = useState(0);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: copy.tabSettings });
@@ -42,8 +43,28 @@ export default function SettingsScreen() {
     useCallback(() => {
       isNotificationsOn().then(setNotifications);
       telemetry.init().then((consent) => setSharing(consent === "granted"));
+      api.blockedCount().then((r) => setBlocked(r.count)).catch(() => undefined);
     }, []),
   );
+
+  const confirmUnblockAll = () => {
+    Alert.alert(copy.unblockAll, copy.unblockConfirmBody, [
+      { text: copy.cancel, style: "cancel" },
+      {
+        text: copy.unblockAll,
+        onPress: async () => {
+          try {
+            await api.unblockAll();
+            setBlocked(0);
+            telemetry.track("authors_unblocked");
+            toast.show(copy.unblockedToast);
+          } catch (err) {
+            toast.show(errorMessage(err, copy.errorNetwork), "error");
+          }
+        },
+      },
+    ]);
+  };
 
   const onToggleNotifications = async (next: boolean) => {
     setBusy(true);
@@ -179,6 +200,21 @@ export default function SettingsScreen() {
             <Icon name="chevronRight" size={18} color={colors.inkSoft} />
           </Pressable>
           <View style={styles.divider} />
+          {blocked > 0 ? (
+            <>
+              <Pressable
+                accessibilityRole="button"
+                onPress={confirmUnblockAll}
+                style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+              >
+                <View style={styles.textBlock}>
+                  <Text style={styles.label}>{copy.blockedPeopleLabel(blocked)}</Text>
+                  <Text style={styles.hint}>{copy.unblockAll}</Text>
+                </View>
+              </Pressable>
+              <View style={styles.divider} />
+            </>
+          ) : null}
           <Pressable
             accessibilityRole="button"
             onPress={onShare}

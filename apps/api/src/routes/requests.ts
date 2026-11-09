@@ -1,5 +1,6 @@
 import { Hono, type Context } from "hono";
 import {
+  MAX_BLOCKS_PER_USER,
   MAX_EDITS_PER_REQUEST,
   RATE_LIMITS,
   createRequestSchema,
@@ -107,6 +108,10 @@ requestsRoutes.get("/", async (c) => {
     FROM prayer_requests r
     WHERE r.language = ${query.language}
       AND r.status = 'active'
+      AND NOT EXISTS (
+        SELECT 1 FROM blocks b
+        WHERE b.blocker_id = ${user.id} AND b.blocked_id = r.author_id
+      )
       ${onlyWaiting}
       ${afterCursor}
     ORDER BY r.created_at DESC, r.id DESC
@@ -171,6 +176,10 @@ requestsRoutes.get("/prayed", async (c) => {
     JOIN prayer_requests r ON r.id = p.request_id
     WHERE p.user_id = ${user.id}
       AND r.status = 'active'
+      AND NOT EXISTS (
+        SELECT 1 FROM blocks b
+        WHERE b.blocker_id = ${user.id} AND b.blocked_id = r.author_id
+      )
       ${afterCursor}
     ORDER BY p.created_at DESC, p.id DESC
     LIMIT ${query.limit}
@@ -244,6 +253,10 @@ requestsRoutes.post("/:id/pray", requireNotBanned(), async (c) => {
     if (request.author_id === user.id) {
       throw new ApiError(400, "cannot_pray_own", "You cannot pray for your own request");
     }
+    const blocked = await tx`
+      SELECT 1 FROM blocks WHERE blocker_id = ${user.id} AND blocked_id = ${request.author_id}
+    `;
+    if (blocked.length > 0) throw new ApiError(404, "not_found", "Prayer request not found");
 
     const inserted = await tx<{ id: string }[]>`
       INSERT INTO prayers (request_id, user_id)
@@ -345,6 +358,44 @@ requestsRoutes.post("/:id/report", requireNotBanned(), async (c) => {
     reason: body.reason,
     autoHidden: result.autoHidden,
   });
+});
+
+/**
+ * Block the author of a request: their requests stop showing for the caller. The caller never
+ * learns who the author is, and the author is never told.
+ */
+requestsRoutes.post("/:id/block", async (c) => {
+  const sql = c.get("sql");
+  const user = c.get("user");
+  const requestId = requireUuid(c.req.param("id"));
+
+  await sql.begin(async (tx) => {
+    const found = await tx<{ author_id: string; status: string }[]>`
+      SELECT author_id, status FROM prayer_requests WHERE id = ${requestId}
+    `;
+    const request = found[0];
+    if (!request || request.status === "removed") {
+      throw new ApiError(404, "not_found", "Prayer request not found");
+    }
+    if (request.author_id === user.id) {
+      throw new ApiError(400, "cannot_block_self", "You cannot block yourself");
+    }
+
+    const counted = await tx<{ count: number }[]>`
+      SELECT COUNT(*)::int AS count FROM blocks WHERE blocker_id = ${user.id}
+    `;
+    if ((counted[0]?.count ?? 0) >= MAX_BLOCKS_PER_USER) {
+      throw new ApiError(409, "block_limit", "You have blocked the most people allowed");
+    }
+
+    await tx`
+      INSERT INTO blocks (blocker_id, blocked_id)
+      VALUES (${user.id}, ${request.author_id})
+      ON CONFLICT DO NOTHING
+    `;
+  });
+
+  return c.json({ blocked: true });
 });
 
 requestsRoutes.delete("/:id", requireNotBanned(), async (c) => {

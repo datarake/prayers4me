@@ -152,6 +152,13 @@ export const api = {
       method: "DELETE",
     }),
 
+  blockAuthor: (requestId: string) =>
+    request<{ blocked: boolean }>(`/v1/requests/${requestId}/block`, { method: "POST" }),
+
+  blockedCount: () => request<{ count: number }>("/v1/blocks"),
+
+  unblockAll: () => request<{ unblocked: number }>("/v1/blocks", { method: "DELETE" }),
+
   report: (id: string, reason: ReportReason) =>
     request<{ autoHidden: boolean }>(`/v1/requests/${id}/report`, {
       method: "POST",

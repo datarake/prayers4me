@@ -49,6 +49,8 @@ export const EVENTS = {
   app_shared: { outcome: ["shared", "dismissed"] },
   theme_changed: { theme: ["system", "light", "dark"] },
   prayed_history_opened: {},
+  author_blocked: {},
+  authors_unblocked: {},
 } as const satisfies Record<string, Record<string, readonly string[]>>;
 
 export type EventName = keyof typeof EVENTS;

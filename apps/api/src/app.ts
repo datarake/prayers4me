@@ -15,6 +15,7 @@ import { ApiError, jsonError } from "./errors.js";
 import { readJson } from "./validation.js";
 import { EXPO_TOKEN_RE } from "./notifications/push.js";
 import { adminRoutes } from "./routes/admin.js";
+import { blocksRoutes } from "./routes/blocks.js";
 import { requestsRoutes } from "./routes/requests.js";
 
 export function createApp(env: Env, sql: Sql, verifiers?: Verifiers) {
@@ -121,6 +122,7 @@ export function createApp(env: Env, sql: Sql, verifiers?: Verifiers) {
   });
 
   app.route("/v1/requests", requestsRoutes);
+  app.route("/v1/blocks", blocksRoutes);
   app.route("/v1/admin", adminRoutes);
 
   app.notFound(() => {

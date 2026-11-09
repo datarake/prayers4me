@@ -58,7 +58,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | P1.4 | **Gentle daily reminder** | A reason to come back and pray. | todo |
 | P1.5 | **Prayer mode**, one request at a time | Calmer than a list, equal exposure, and slower than tapping through cards. | todo |
 | P1.6 | **One-tap "Anonymous"** and remember the last name | A required name is a barrier in a crisis. | todo |
-| P1.7 | **Block** and the "answered" thank-you note | Store expectation (Apple guideline 1.2 for user-generated content), and closes the loop for people who prayed. Build Block before the first App Store review. | todo |
+| P1.7 | **Block** (done) and the "answered" thank-you note (todo) | Block is an Apple guideline 1.2 requirement for user-generated content. "Block this person" sits in the Report sheet, hides every request of that author from the feed and the prayed list, and Settings can unblock everyone (accounts are anonymous, so there is no per-person list). Migration `007_blocks.sql`, `POST /v1/requests/:id/block`, `GET/DELETE /v1/blocks`. | block done, answered note todo |
 
 ### P2: growth and sustainability
 

@@ -26,11 +26,14 @@ export function ReportSheet({
   visible,
   copy,
   onSelect,
+  onBlock,
   onClose,
 }: {
   visible: boolean;
   copy: Copy;
   onSelect: (reason: ReportReason) => void;
+  /** Offered below the reasons: stop seeing everything from this person. */
+  onBlock?: () => void;
   onClose: () => void;
 }) {
   const styles = useStyles(createStyles);
@@ -70,6 +73,17 @@ export function ReportSheet({
             <Text style={styles.rowLabel}>{reasonLabel(copy, reason)}</Text>
           </Pressable>
         ))}
+
+        {onBlock ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={onBlock}
+            style={({ pressed }) => [styles.block, pressed && styles.rowPressed]}
+          >
+            <Text style={styles.rowLabel}>{copy.blockPerson}</Text>
+            <Text style={styles.blockHint}>{copy.blockHint}</Text>
+          </Pressable>
+        ) : null}
 
         <Pressable
           accessibilityRole="button"
@@ -135,6 +149,21 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
       fontFamily: fonts.bodyMedium,
       fontSize: 16,
       color: colors.ink,
+    },
+    block: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginTop: 8,
+    },
+    blockHint: {
+      fontFamily: fonts.body,
+      fontSize: 14,
+      lineHeight: 20,
+      color: colors.inkSoft,
+      marginTop: 2,
     },
     cancel: {
       minHeight: 52,

@@ -320,7 +320,7 @@ Use the same **full description** as Google Play for each language (App Store li
 
 ## Review notes (paste into "Notes" for the reviewer)
 
-> No sign-in is needed. The app creates an anonymous account on first launch. People can post a short prayer request and others can tap "I prayed". Every request can be reported from the feed (Report), authors can edit or delete their own requests, and Settings has "Delete my data". Reports are reviewed by a moderator within 24 hours and harmful content is removed. Contact: support@stillflame.app.
+> No sign-in is needed. The app creates an anonymous account on first launch. People can post a short prayer request and others can tap "I prayed". Every request can be reported from the feed (Report), and the reporter can block the author ("Block this person" in the same sheet), authors can edit or delete their own requests, and Settings has "Delete my data". Reports are reviewed by a moderator within 24 hours and harmful content is removed. Contact: support@stillflame.app.
 
 ## Fields per language
 
@@ -335,5 +335,5 @@ Use the same **full description** as Google Play for each language (App Store li
 
 ## Before submitting to the App Store
 
-- **Block users.** Apple's rule for apps with user-generated content (guideline 1.2) expects a way to block abusive users, besides reporting and filtering. Stillflame has Report but not Block yet (roadmap P1.7). Build it before the first App Store review, or the review is likely to be rejected for it.
+- **Block users:** done (see roadmap P1.7). Deploy it first: the API needs migration `007_blocks.sql` and the new routes in production, or the Block button fails for the first reviewer.
 - Screenshots: 6.9-inch iPhone (1320 x 2868) are required; 13-inch iPad ones too, because the app supports tablets (`supportsTablet`).

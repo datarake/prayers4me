@@ -8,6 +8,7 @@ import {
 } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   LayoutAnimation,
   RefreshControl,
@@ -168,6 +169,32 @@ export default function ForOthersScreen() {
     }
   };
 
+  const onBlock = () => {
+    const id = reportId;
+    setReportId(null);
+    if (!id) return;
+    Alert.alert(copy.blockConfirmTitle, copy.blockConfirmBody, [
+      { text: copy.cancel, style: "cancel" },
+      {
+        text: copy.blockPerson,
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await api.blockAuthor(id);
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            // Everything else by the same person disappears with a fresh load.
+            setItems((prev) => prev.filter((item) => item.id !== id));
+            load("refresh");
+            telemetry.track("author_blocked");
+            toast.show(copy.blockedToast);
+          } catch (err) {
+            toast.show(errorMessage(err, copy.errorNetwork), "error");
+          }
+        },
+      },
+    ]);
+  };
+
   const retry = () => {
     setLoading(true);
     load("initial");
@@ -254,6 +281,7 @@ export default function ForOthersScreen() {
         visible={reportId !== null}
         copy={copy}
         onSelect={onReport}
+        onBlock={onBlock}
         onClose={() => setReportId(null)}
       />
     </Screen>

@@ -16,6 +16,15 @@ export type ExtraDictionary = {
   reasonOffTopic: string;
   reasonOther: string;
   reportThanks: string;
+  blockPerson: string;
+  blockHint: string;
+  blockConfirmTitle: string;
+  blockConfirmBody: string;
+  blockedToast: string;
+  blockedPeopleLabel: (n: number) => string;
+  unblockAll: string;
+  unblockConfirmBody: string;
+  unblockedToast: string;
   nameHelp: string;
   nameRequired: string;
   messageTooShort: (min: number) => string;
@@ -107,6 +116,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     reasonOffTopic: "Not a prayer request",
     reasonOther: "Something else",
     reportThanks: "Thank you. We will review it.",
+    blockPerson: "Block this person",
+    blockHint: "You will no longer see their requests. They are not told.",
+    blockConfirmTitle: "Block this person?",
+    blockConfirmBody: "You will no longer see anything they share, and you cannot pray for their requests. They are not told. You can unblock everyone in Settings.",
+    blockedToast: "Blocked. You will not see their requests.",
+    blockedPeopleLabel: (n) => (n === 1 ? "1 person blocked" : `${n} people blocked`),
+    unblockAll: "Unblock everyone",
+    unblockConfirmBody: "Their requests will show in your feed again.",
+    unblockedToast: "Everyone is unblocked.",
     nameHelp: "A first name or nickname is enough. It is shown with your request.",
     nameRequired: "Enter a name",
     messageTooShort: (min) => `Write at least ${min} characters`,
@@ -202,6 +220,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     reasonOffTopic: "No es una petición de oración",
     reasonOther: "Otro motivo",
     reportThanks: "Gracias. La revisaremos.",
+    blockPerson: "Bloquear a esta persona",
+    blockHint: "Dejarás de ver sus peticiones. No se le avisa.",
+    blockConfirmTitle: "¿Bloquear a esta persona?",
+    blockConfirmBody: "Dejarás de ver lo que comparta y no podrás orar por sus peticiones. No se le avisa. Puedes desbloquear a todos en Ajustes.",
+    blockedToast: "Bloqueada. No verás sus peticiones.",
+    blockedPeopleLabel: (n) => (n === 1 ? "1 persona bloqueada" : `${n} personas bloqueadas`),
+    unblockAll: "Desbloquear a todos",
+    unblockConfirmBody: "Sus peticiones volverán a aparecer en tu lista.",
+    unblockedToast: "Todos desbloqueados.",
     nameHelp: "Basta con un nombre o apodo. Se muestra con tu petición.",
     nameRequired: "Escribe un nombre",
     messageTooShort: (min) => `Escribe al menos ${min} caracteres`,
@@ -297,6 +324,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     reasonOffTopic: "Pas une demande de prière",
     reasonOther: "Autre raison",
     reportThanks: "Merci. Nous allons l’examiner.",
+    blockPerson: "Bloquer cette personne",
+    blockHint: "Vous ne verrez plus ses demandes. Elle n’est pas prévenue.",
+    blockConfirmTitle: "Bloquer cette personne ?",
+    blockConfirmBody: "Vous ne verrez plus rien de ce qu’elle partage et ne pourrez plus prier pour ses demandes. Elle n’est pas prévenue. Vous pouvez débloquer tout le monde dans les Réglages.",
+    blockedToast: "Bloquée. Vous ne verrez plus ses demandes.",
+    blockedPeopleLabel: (n) => (n === 1 ? "1 personne bloquée" : `${n} personnes bloquées`),
+    unblockAll: "Débloquer tout le monde",
+    unblockConfirmBody: "Ses demandes réapparaîtront dans votre fil.",
+    unblockedToast: "Tout le monde est débloqué.",
     nameHelp: "Un prénom ou un pseudo suffit. Il s’affiche avec ta demande.",
     nameRequired: "Entre un prénom",
     messageTooShort: (min) => `Écris au moins ${min} caractères`,
@@ -392,6 +428,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     reasonOffTopic: "Nu este o cerere de rugăciune",
     reasonOther: "Alt motiv",
     reportThanks: "Mulțumim. O vom verifica.",
+    blockPerson: "Blochează această persoană",
+    blockHint: "Nu îi vei mai vedea cererile. Ea nu este anunțată.",
+    blockConfirmTitle: "Blochezi această persoană?",
+    blockConfirmBody: "Nu vei mai vedea nimic din ce distribuie și nu te vei putea ruga pentru cererile ei. Ea nu este anunțată. Poți debloca pe toată lumea din Setări.",
+    blockedToast: "Blocată. Nu îi vei mai vedea cererile.",
+    blockedPeopleLabel: (n) => (n === 1 ? "1 persoană blocată" : `${n} persoane blocate`),
+    unblockAll: "Deblochează pe toată lumea",
+    unblockConfirmBody: "Cererile lor vor apărea din nou în lista ta.",
+    unblockedToast: "Toți sunt deblocați.",
     nameHelp: "Un prenume sau o poreclă este de ajuns. Apare împreună cu cererea ta.",
     nameRequired: "Scrie un nume",
     messageTooShort: (min) => `Scrie cel puțin ${min} caractere`,
@@ -487,6 +532,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     reasonOffTopic: "Це не прохання про молитву",
     reasonOther: "Інша причина",
     reportThanks: "Дякуємо. Ми перевіримо.",
+    blockPerson: "Заблокувати цю людину",
+    blockHint: "Ви більше не бачитимете її прохань. Її не повідомляють.",
+    blockConfirmTitle: "Заблокувати цю людину?",
+    blockConfirmBody: "Ви більше не бачитимете нічого, чим вона ділиться, і не зможете молитися за її прохання. Її не повідомляють. Розблокувати всіх можна в Налаштуваннях.",
+    blockedToast: "Заблоковано. Ви не бачитимете її прохань.",
+    blockedPeopleLabel: (n) => `Заблоковано: ${n}`,
+    unblockAll: "Розблокувати всіх",
+    unblockConfirmBody: "Їхні прохання знову з’являться у вашій стрічці.",
+    unblockedToast: "Усіх розблоковано.",
     nameHelp: "Достатньо імені чи псевдоніма. Воно показується з твоїм проханням.",
     nameRequired: "Введи імʼя",
     messageTooShort: (min) => `Напиши щонайменше ${min} символів`,
@@ -582,6 +636,15 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     reasonOffTopic: "Это не просьба о молитве",
     reasonOther: "Другая причина",
     reportThanks: "Спасибо. Мы проверим.",
+    blockPerson: "Заблокировать этого человека",
+    blockHint: "Вы больше не увидите его просьб. Его не уведомляют.",
+    blockConfirmTitle: "Заблокировать этого человека?",
+    blockConfirmBody: "Вы больше не будете видеть то, чем он делится, и не сможете молиться за его просьбы. Его не уведомляют. Разблокировать всех можно в Настройках.",
+    blockedToast: "Заблокировано. Вы не увидите его просьб.",
+    blockedPeopleLabel: (n) => `Заблокировано: ${n}`,
+    unblockAll: "Разблокировать всех",
+    unblockConfirmBody: "Их просьбы снова появятся в вашей ленте.",
+    unblockedToast: "Все разблокированы.",
     nameHelp: "Достаточно имени или псевдонима. Оно показывается с твоей просьбой.",
     nameRequired: "Введи имя",
     messageTooShort: (min) => `Напиши не меньше ${min} символов`,
