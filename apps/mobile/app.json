@@ -2,7 +2,8 @@
   "expo": {
     "name": "Stillflame",
     "slug": "stillflame",
-    "version": "0.1.0",
+    "owner": "burdibox",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "stillflame",
@@ -11,6 +12,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "app.stillflame.mobile",
       "appleTeamId": "HM348ZXGU4",
+      "buildNumber": "2",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -74,7 +76,15 @@
       "typedRoutes": true
     },
     "extra": {
-      "apiUrl": "http://localhost:8080"
+      "apiUrl": "http://localhost:8080",
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "9de2a3bf-8f5e-48d8-b11e-a778e5d4f215"
+      }
     }
   }
 }
