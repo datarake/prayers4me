@@ -44,13 +44,17 @@ How access works: a moderator signs in with Google in the browser; the page send
 
 Using it day to day is described in `docs/operations.md`. Locally, open `http://localhost:4173/admin/` (`node site/serve.mjs`) against a local dev API: a "Dev sign-in" box appears only on localhost.
 
-### Go-live checklist (not done yet)
+### Live since 2026-11-09
 
-1. **Deploy the API** with the new routes: build and push a new image, run the migration job (`008_moderation_workflow.sql`), deploy the service, and set `ADMIN_EMAILS` on it, for example `gcloud run services update stillflame-api --region=europe-west1 --update-env-vars=ADMIN_EMAILS=you@example.com`. See `docs/deployment.md`.
-2. **Firebase console, Authentication, Sign-in method:** enable **Google**.
-3. **Firebase console, Authentication, Settings, Authorized domains:** add `stillflame.app`.
-4. **Firebase console, Project settings, General, Your apps:** add a **Web app** (call it "Stillflame admin") and copy its config.
-5. Put `apiKey` and `appId` from that config into `site/config.json` under `admin.firebase`, then `cd site && pnpm build:release` and deploy hosting.
-6. Open `https://stillflame.app/admin/`, sign in with an address from `ADMIN_EMAILS`.
+The page is live at `https://stillflame.app/admin/`. What was done:
 
-Not tested yet: the real Google sign-in popup (it needs steps 2 to 5). Everything else was tested: the API with 170 automated tests, and the page in a browser against a local API (queue, dismiss with a note, ban, activity log, health, phone layout).
+1. API `v6` deployed with migration `008_moderation_workflow.sql`, and `ADMIN_EMAILS=burdibox@gmail.com` set on the Cloud Run service.
+2. Firebase Authentication: **Google** sign-in enabled (Anonymous stays on for the app), `stillflame.app` added to Authorized domains.
+3. Firebase web app `Stillflame admin` registered. Its `apiKey` and `appId` are in `site/config.json` under `admin.firebase` (public identifiers, not secrets).
+4. Site deployed. Signing in as `burdibox@gmail.com` opens the queue; Health answers from production.
+
+To add a moderator: add the Google address to `ADMIN_EMAILS` (`gcloud run services update stillflame-api --region=europe-west1 --update-env-vars=^@^ADMIN_EMAILS=a@x.com,b@y.com`, the `^@^` makes gcloud accept the comma). To remove one, do the same without it.
+
+The homepage hero was left as it was on purpose: the committed tweak in `6bb3cb2` is not in this deployment (the built `style.css` kept the old hero line). Decide about it separately.
+
+Tested by hand on the live site: Google sign-in popup, empty queue, Health. Not yet tried on live data: the review actions (nothing has been reported yet). They were tested in a browser against a local API and by the automated tests.

@@ -11,10 +11,10 @@
     "apiUrl": "https://api.stillflame.app",
     "localApiUrl": "http://localhost:8080",
     "firebase": {
-      "apiKey": "",
+      "apiKey": "AIzaSyCA_qvlBJrk4WG6D5WPnwylGV-ihXYaHk4",
       "authDomain": "prayers4me.firebaseapp.com",
       "projectId": "prayers4me",
-      "appId": ""
+      "appId": "1:799342684788:web:e020e4360f1163fdc33f21"
     }
   }
 }
