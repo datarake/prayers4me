@@ -76,6 +76,7 @@ It was tested locally: migrations apply, a weak production configuration is refu
 | `APP_CHECK` | `enforce`. Production refuses anything else. Real phones can only pass it once App Check is set up with the Apple and Google developer accounts (see `docs/development.md`), so until then a production deploy is reachable but the app cannot use it |
 | `CORS_ORIGIN` | `https://stillflame.app` |
 | `TRUSTED_PROXY_HOPS` | `1` (Cloud Run puts one proxy in front) |
+| `ADMIN_EMAILS` | comma separated Google addresses allowed on `/admin` (empty means nobody) |
 | `IP_HASH_SECRET` | long random value, from Secret Manager |
 | `DATABASE_URL` | Cloud SQL socket URL, from Secret Manager |
 | `PUSH_MODE` | `expo` |

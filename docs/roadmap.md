@@ -19,7 +19,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | P0.3 | **Account and data deletion** in Settings and `DELETE /v1/session` | Required by the app stores and by GDPR. | done (one gap: requests deleted one by one are only hidden, see `docs/operations.md`) |
 | P0.4 | **Privacy policy, terms and consent for sensitive data** (health and religion are special category data in the EU) | Legal requirement. Drafts live in `docs/legal`. | draft written, needs a lawyer |
 | P0.5 | **Support contact** shown in the app and the store listing | Apple requires one for apps with user-generated content. | needs you (an address) |
-| P0.6 | **Moderation tooling and a response rule**: a queue someone can actually use, a named owner, and a target to act on reports within 24 hours | Stores expect action on abusive content within about a day. Today reports exist only as raw API calls. | partly done (rules written in `docs/operations.md`, report weighting done, an admin page is still todo) |
+| P0.6 | **Moderation tooling and a response rule**: a queue someone can actually use, a named owner, and a target to act on reports within 24 hours | Stores expect action on abusive content within about a day. | built (rules in `docs/operations.md`, report weighting, review queue, audit log and the moderation page at `/admin`). Needs the go-live steps in `docs/website.md` |
 | P0.7 | **Measurement without tracking people**: server-side metrics from the database (first-prayer rate, time to first prayer, retention proxies). No client analytics, no request text. | You cannot tell if the product works without it, and this keeps the anonymity promise. | done (`GET /v1/admin/metrics`) |
 | P0.8 | **Crash reporting and usage statistics** | Needed before real users, without sending content. | built with Firebase (Crashlytics and Analytics), off until a person opts in. Needs the Firebase project and config files, and a first run on a development build to verify. |
 
@@ -27,7 +27,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 
 | Task | Why |
 |------|-----|
-| **Admin page** for reports, hide, restore, ban and the metrics | Moderators currently call API routes by hand. |
+| **Admin page** (built, not live yet) for reports, hide, restore, remove, ban and the metrics | Google sign-in with an email allowlist, at `stillflame.app/admin`. See `docs/website.md` for the go-live steps. |
 | **Scheduled clean-up** (done) | Deleted requests are erased after 30 days, edit history after 90 days, ended bans after one year, by the housekeeping job (`purgeExpiredData`, tested). |
 | **Attestation hook**: refuse API calls without a valid App Check or Play Integrity token when `AUTH_MODE=firebase` | Completes P0.2 once the accounts exist. |
 

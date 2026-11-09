@@ -13,8 +13,11 @@ export type KeyResolvers = {
 };
 
 export interface Verifiers {
-  /** Returns the Firebase user id of a valid ID token. */
-  verifyIdToken(token: string): Promise<{ uid: string }>;
+  /**
+   * Returns the Firebase user id of a valid ID token, plus the email when the person signed in
+   * with one (anonymous app users have none). `emailVerified` comes from the token, not the client.
+   */
+  verifyIdToken(token: string): Promise<{ uid: string; email?: string; emailVerified: boolean }>;
   /** Throws unless the token proves the call comes from a genuine copy of the app. */
   verifyAppCheck(token: string): Promise<void>;
 }
@@ -43,7 +46,8 @@ export function createVerifiers(env: Env, keys: KeyResolvers = {}): Verifiers {
         if (typeof payload.sub !== "string" || payload.sub.length === 0 || payload.sub.length > 128) {
           throw new Error("missing subject");
         }
-        return { uid: payload.sub };
+        const email = typeof payload.email === "string" ? payload.email.toLowerCase() : undefined;
+        return { uid: payload.sub, email, emailVerified: payload.email_verified === true };
       } catch {
         throw new ApiError(401, "unauthorized", "Invalid or expired sign-in token");
       }

@@ -100,6 +100,7 @@ Anonymous sign-in is enabled in the Firebase console. **Leave "Auto clean-up" of
 |----------|---------|-------|
 | `IP_LIMITS` | `on` | Per-network limits. The local `.env.example` turns it off because everything shares one address. |
 | `NEW_ACCOUNT_PROBATION` | `on` | Stricter limits for accounts under 24 hours old. Off locally so test accounts are not throttled. |
+| `ADMIN_EMAILS` | empty | Google addresses (comma separated) that count as admin in `AUTH_MODE=firebase`. In dev mode the database `role` column decides instead: `UPDATE users SET role='admin' WHERE firebase_uid='dev:mod'`. |
 | `TRUSTED_PROXY_HOPS` | `0` | Set to `1` behind Cloud Run. The client address is the Nth entry from the right of `X-Forwarded-For`, so a client cannot choose its own. |
 | `IP_HASH_SECRET` | dev value | Set a long random value in production. |
 

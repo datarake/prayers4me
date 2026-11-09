@@ -1,4 +1,5 @@
 // Builds the Stillflame website into ./dist (plain HTML, CSS and self-hosted fonts, no scripts).
+// The one exception is the moderation page under /admin, which has its own script and config.
 //   node build.mjs             preview build: drafts are allowed and clearly marked
 //   node build.mjs --release   refuses to build while the legal text still has placeholders
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -163,8 +164,17 @@ write("guidelines/index.html", guidelinesPage);
 write("privacy/index.html", legalPage("privacy", "Privacy policy", "What Stillflame collects, why, and how you can delete it."));
 write("terms/index.html", legalPage("terms", "Terms of use", "The terms for using Stillflame."));
 write("404.html", page({ title: "Page not found", description: "This page does not exist.", body: `<main id="main" class="doc"><div class="wrap narrow"><h1>Page not found</h1><p>That page does not exist. <a href="/">Back to the start</a>.</p></div></main>` }));
-write("robots.txt", release ? `User-agent: *\nAllow: /\n` : `User-agent: *\nDisallow: /\n`);
+write("robots.txt", release ? `User-agent: *\nAllow: /\nDisallow: /admin/\n` : `User-agent: *\nDisallow: /\n`);
 cpSync(path.join(here, "src/style.css"), path.join(dist, "style.css"));
+
+// ---- Moderation page (/admin) ---------------------------------------------------------------
+// Static files plus a small config script. The Firebase web settings are identifiers, not secrets.
+cpSync(path.join(here, "src/admin"), path.join(dist, "admin"), { recursive: true });
+const admin = config.admin || {};
+write("admin/config.js", `window.STILLFLAME_ADMIN = ${JSON.stringify({ apiUrl: admin.apiUrl, localApiUrl: admin.localApiUrl, firebase: admin.firebase }, null, 2)};\n`);
+if (release && (!admin.firebase?.apiKey || !admin.firebase?.appId)) {
+  console.warn("Note: config.json admin.firebase.apiKey/appId are empty, so Google sign-in on /admin will say it is not set up.");
+}
 
 const fonts = path.join(root, "apps/mobile/node_modules/@expo-google-fonts");
 const fontFiles = [

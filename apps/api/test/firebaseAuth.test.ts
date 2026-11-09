@@ -22,9 +22,22 @@ beforeAll(async () => {
 });
 
 function idToken(
-  over: { uid?: string; iss?: string; aud?: string; exp?: string; key?: CryptoKey } = {},
+  over: {
+    uid?: string;
+    iss?: string;
+    aud?: string;
+    exp?: string;
+    key?: CryptoKey;
+    email?: string;
+    emailVerified?: boolean;
+  } = {},
 ) {
-  return new SignJWT({ firebase: { sign_in_provider: "anonymous" } })
+  const claims: Record<string, unknown> = { firebase: { sign_in_provider: over.email ? "google.com" : "anonymous" } };
+  if (over.email) {
+    claims.email = over.email;
+    claims.email_verified = over.emailVerified ?? true;
+  }
+  return new SignJWT(claims)
     .setProtectedHeader({ alg: "RS256", kid: "k1" })
     .setSubject(over.uid ?? "firebase-user-1")
     .setIssuer(over.iss ?? `https://securetoken.google.com/${PROJECT_ID}`)
@@ -171,5 +184,52 @@ describe("device attestation (App Check)", () => {
     const app = makeFirebaseApp({ APP_CHECK: "enforce" });
     const res = await call(app, "/v1/session", { "X-Firebase-AppCheck": await appCheckToken() });
     expect(res.status).toBe(401);
+  });
+});
+
+describe("admin access from a Google sign-in", () => {
+  beforeEach(resetDb);
+
+  const admin = { ADMIN_EMAILS: "Boss@Example.com, second@example.com" };
+
+  async function role(app: ReturnType<typeof makeFirebaseApp>, token: Promise<string>) {
+    return (await call(app, "/v1/admin/me", { Authorization: `Bearer ${await token}` })).status;
+  }
+
+  it("lets a verified email on the allowlist in, whatever its case", async () => {
+    const app = makeFirebaseApp(admin);
+    expect(await role(app, idToken({ uid: "g1", email: "boss@example.com" }))).toBe(200);
+    expect(await role(app, idToken({ uid: "g2", email: "SECOND@example.com" }))).toBe(200);
+  });
+
+  it("refuses an email that is not on the list", async () => {
+    const app = makeFirebaseApp(admin);
+    expect(await role(app, idToken({ uid: "g3", email: "someone@example.com" }))).toBe(403);
+  });
+
+  it("refuses an allowlisted address whose email is not verified", async () => {
+    const app = makeFirebaseApp(admin);
+    expect(await role(app, idToken({ uid: "g4", email: "boss@example.com", emailVerified: false }))).toBe(403);
+  });
+
+  it("refuses an anonymous app user, even if the database says admin", async () => {
+    const app = makeFirebaseApp(admin);
+    await call(app, "/v1/session", { Authorization: `Bearer ${await idToken({ uid: "anon" })}` });
+    await sql`UPDATE users SET role = 'admin' WHERE firebase_uid = 'anon'`;
+    expect(await role(app, idToken({ uid: "anon" }))).toBe(403);
+  });
+
+  it("refuses everyone when the allowlist is empty", async () => {
+    const app = makeFirebaseApp();
+    expect(await role(app, idToken({ uid: "g5", email: "boss@example.com" }))).toBe(403);
+  });
+
+  it("does not need App Check for the admin page, but the app routes still do", async () => {
+    const app = makeFirebaseApp({ ...admin, APP_CHECK: "enforce" });
+    expect(await role(app, idToken({ uid: "g6", email: "boss@example.com" }))).toBe(200);
+    const feed = await call(app, "/v1/requests?language=en", {
+      Authorization: `Bearer ${await idToken({ uid: "g6", email: "boss@example.com" })}`,
+    });
+    expect(feed.status).toBe(401);
   });
 });

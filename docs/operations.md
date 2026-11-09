@@ -18,8 +18,14 @@ How the service is run once real people use it. Fill in the [brackets] before a 
 How reports flow today:
 - A person reports a request with a reason. It is recorded either way.
 - A request is hidden automatically when **three established accounts on three different networks** report it. Reports from accounts under 24 hours old, and several accounts on one network, never count toward that, so a handful of throwaway accounts cannot silence a request.
-- Moderators see reports through `GET /v1/admin/reports` and act with `POST /v1/admin/requests/:id/hide`, `.../restore` and `POST /v1/admin/users/:id/ban`.
-- **Known gap:** there is no admin page yet. Until there is, moderation means calling these routes. Building a small admin page is the next moderation task.
+- Moderators use the **moderation page at `https://stillflame.app/admin/`** (sign in with Google; only emails on the `ADMIN_EMAILS` list get in).
+  - **To review:** requests with reports nobody has looked at, newest report first, with reasons counted, the reporters' notes and how many networks reported. Each decision closes the reports: **Keep visible** (nothing wrong), **Hide**, **Remove** (for good; erased after 30 days), or **Ban author** (7 days, 30 days or permanent; hides all their requests).
+  - **Hidden:** everything out of the feed, with **Restore** and **Lift ban**.
+  - **Health:** the numbers from `/v1/admin/metrics` (see below).
+  - **Activity:** every decision is logged with who, what and an optional note. The log holds ids only, never request text.
+- The same actions exist as API routes (`GET /v1/admin/queue`, `hidden`, `actions`, `metrics`; `POST /v1/admin/requests/:id/{hide,restore,dismiss,remove}`; `POST` and `DELETE /v1/admin/users/:id/ban`) for scripts.
+- A request its author deleted can never be restored by a moderator.
+- To add or remove a moderator, change `ADMIN_EMAILS` on the Cloud Run service (comma separated Google addresses, verified email only). Access follows the list at once; nothing in the database grants admin in production.
 
 Decisions to write down before a beta:
 - What gets removed at once and what gets a second look (hate, threats, self-harm, personal details, advertising, copied scripture, political content).

@@ -31,6 +31,19 @@ const envSchema = z
     NEW_ACCOUNT_PROBATION: z.enum(["on", "off"]).default("on"),
     /** Salt for network fingerprints. Set a long random value in production. */
     IP_HASH_SECRET: z.string().min(8).default(DEV_HASH_SECRET),
+    /**
+     * Comma separated emails allowed to use the admin page. Only a verified Google sign-in with
+     * one of these addresses is an admin; the database role is ignored in firebase mode.
+     */
+    ADMIN_EMAILS: z
+      .string()
+      .default("")
+      .transform((value) =>
+        value
+          .split(",")
+          .map((email) => email.trim().toLowerCase())
+          .filter(Boolean),
+      ),
     /** "log" prints notifications instead of sending them (safe default for development). */
     PUSH_MODE: z.enum(["log", "expo"]).default("log"),
   })

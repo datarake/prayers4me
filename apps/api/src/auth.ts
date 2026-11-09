@@ -119,8 +119,11 @@ export function createAuthMiddleware(
 
     // A Firebase ID token proves which install is calling. The uid is stable per install.
     shared ??= createVerifiers(env);
-    const { uid } = await shared.verifyIdToken(token);
+    const { uid, email, emailVerified } = await shared.verifyIdToken(token);
     const user = await upsertUser(sql, uid);
+    // Admin is decided by a verified email on the allowlist, never by anything in the database,
+    // so removing an address from ADMIN_EMAILS ends that person's access at once.
+    user.role = emailVerified && email && env.ADMIN_EMAILS.includes(email) ? "admin" : "user";
     c.set("user", user);
     await next();
   };
