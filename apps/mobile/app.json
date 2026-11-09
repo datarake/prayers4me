@@ -10,6 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.stillflame.mobile",
+      "appleTeamId": "HM348ZXGU4",
       "entitlements": {
         "com.apple.developer.devicecheck.appattest-environment": "production"
       },

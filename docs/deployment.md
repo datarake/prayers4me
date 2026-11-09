@@ -1,6 +1,6 @@
 # Deployment (Google Cloud)
 
-**Status (2026-11-08):** deployed in `europe-west1` (Belgium). The API answers at `https://api.stillflame.app` (also `https://stillflame-api-799342684788.europe-west1.run.app`). Real phones cannot use it yet, because App Check is enforced and needs the Apple and Google developer accounts.
+**Status (2026-11-09):** running image `v5` (revision `stillflame-api-00003-zqk`) in `europe-west1` (Belgium), with migrations up to 007 (Block). The API answers at `https://api.stillflame.app` (also `https://stillflame-api-799342684788.europe-west1.run.app`). Real phones cannot use it yet, because App Check is enforced and needs the Apple and Google developer accounts.
 
 ## What exists
 
@@ -24,7 +24,7 @@ Use the account `burdibox@gmail.com` and the project `prayers4me` explicitly (th
 
 ```bash
 export CLOUDSDK_CORE_ACCOUNT=burdibox@gmail.com CLOUDSDK_CORE_PROJECT=prayers4me
-TAG=v4   # a new tag each time
+TAG=v6   # a new tag each time (v5 is live)
 IMG=europe-west1-docker.pkg.dev/prayers4me/stillflame/api:$TAG
 gcloud builds submit . --tag $IMG --region=europe-west1
 gcloud run jobs update stillflame-migrate --image=$IMG --region=europe-west1
