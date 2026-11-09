@@ -8,6 +8,7 @@ Stillflame is a quiet place to ask for prayer and to pray for others. Someone in
 | [Architecture](./architecture.md) | System design, data model, API, GCP hosting |
 | [Development](./development.md) | Local setup, scripts, auth for development |
 | [Android release](./android-release.md) | Upload key, building the signed bundle, Play Console order of work |
+| [iOS release](./ios-release.md) | Apple team, build steps, what is needed before TestFlight |
 | [Store listing](./store-listing.md) | Store texts in six languages, data safety answers, graphics list |
 
 **Brand:** Stillflame · **Domain:** [stillflame.app](https://stillflame.app)
