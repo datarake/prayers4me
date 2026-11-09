@@ -13,10 +13,12 @@ How to build Stillflame for TestFlight and the App Store. Store texts are in [st
 
 ## State on 2026-11-09
 
-- An **unsigned release build for a real device compiles** (Xcode 26.6, `-configuration Release -sdk iphoneos`, 61 MB). It holds the production API address, the App Check header and the Firebase config. It cannot be installed or uploaded, because it is not signed.
-- **A signed archive is not possible yet:** Xcode on this Mac does not list the `HM348ZXGU4` team, and there is no distribution certificate for it. Sign in with `burdibox@gmail.com` under Xcode, Settings, Accounts, and wait for the team to appear.
+- **A signed App Store build exists:** `apps/mobile/dist/stillflame-0.1.0-1.ipa` (24 MB, version 0.1.0, build 1). It is signed with `Apple Distribution: Bogdan Burdalescu (HM348ZXGU4)` and the profile `iOS Team Store Provisioning Profile: app.stillflame.mobile` (valid to 2027-11-09). Its entitlements are `aps-environment: production`, App Attest `production`, `get-task-allow: false`. It holds the production API address.
+- **Not uploaded:** the app record does not exist in App Store Connect yet, and uploading is a separate step (see below).
+- Xcode's preferences file does not list the new account, but signing with `-allowProvisioningUpdates` works. Do not trust `defaults read com.apple.dt.Xcode` for accounts.
+- Exporting for the first time created an **Apple Distribution certificate** for the team (visible under Certificates in the developer portal).
 
-## Build steps (once the team shows in Xcode)
+## Build steps
 
 ```bash
 cd apps/mobile
@@ -26,17 +28,21 @@ pnpm exec expo prebuild --platform ios --no-install   # entitlements and team co
 cd ios && pod install
 ```
 
-Then either open `Stillflame.xcworkspace` in Xcode (target Stillflame, Signing and Capabilities, Automatically manage signing, Team `HM348ZXGU4`), choose **Any iOS Device**, and use Product, Archive, then Distribute App, App Store Connect. Or from the command line:
+Then archive and export for App Store Connect from the command line (this is how the current `.ipa` was made; the `ExportOptions.plist` uses method `app-store-connect`, team `HM348ZXGU4`, automatic signing, destination `export`):
 
 ```bash
 xcodebuild -workspace Stillflame.xcworkspace -scheme Stillflame -configuration Release \
   -destination 'generic/platform=iOS' -archivePath build/Stillflame.xcarchive \
-  -allowProvisioningUpdates archive
+  -allowProvisioningUpdates DEVELOPMENT_TEAM=HM348ZXGU4 CODE_SIGN_STYLE=Automatic archive
+xcodebuild -exportArchive -archivePath build/Stillflame.xcarchive -exportPath build/export \
+  -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates
 ```
+
+You can also do it in Xcode: open `Stillflame.xcworkspace`, target Stillflame, Signing and Capabilities, Automatically manage signing, Team `HM348ZXGU4`, choose **Any iOS Device**, then Product, Archive, Distribute App.
 
 Raise `ios.buildNumber` in `app.json` before every upload (App Store Connect refuses a build number it has seen). `version` is the number people see.
 
-`aps-environment` is written as `development` in the generated project. Distribution signing replaces it with `production`. Check this in the archive's entitlements before the first upload.
+`aps-environment` is `development` in the generated project and in the development-signed archive. The exported App Store build has it as `production` (checked on 2026-11-09 with `codesign -d --entitlements :-`). Check it again after any change to the push setup.
 
 ## Before the first TestFlight upload
 
