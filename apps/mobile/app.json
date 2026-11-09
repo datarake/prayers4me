@@ -50,9 +50,13 @@
       "@react-native-firebase/analytics",
       "@react-native-firebase/crashlytics",
       "@react-native-firebase/app-check",
+      "./plugins/withUploadSigning",
       [
         "expo-build-properties",
         {
+          "android": {
+            "kotlinVersion": "2.4.0"
+          },
           "ios": {
             "useFrameworks": "dynamic"
           }

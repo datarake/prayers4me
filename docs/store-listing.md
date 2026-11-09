@@ -1,0 +1,297 @@
+# Store listings
+
+Texts for Google Play (and the same wording for the App Store). Limits for Google Play: title 30 characters, short description 80, full description 4000. Every text below fits. Have a native speaker read the Spanish, French, Romanian, Ukrainian and Russian versions before launch (see `docs/roadmap.md`).
+
+Default language of the listing: English (United States). Add the other five as translations.
+
+## Facts for the forms
+
+| Field | Value |
+|-------|-------|
+| App name | Stillflame |
+| Package | `app.stillflame.mobile` |
+| Category | Lifestyle (alternative: Social) |
+| Price | Free, no ads, no in-app purchases |
+| Contact email | support@stillflame.app |
+| Website | https://stillflame.app |
+| Privacy policy | https://stillflame.app/privacy |
+| Terms | https://stillflame.app/terms |
+| Content rating | Contains user-generated content that people can report. Mentions of health problems and grief. No violence, no gambling. Expect a "Teen" level. |
+| Target audience | 16 and over (the terms set the minimum age at 16) |
+| User-generated content | Yes: reporting is in the app, requests can be deleted by their author, moderators act on reports within 24 hours |
+
+## Data safety answers (Google Play)
+
+| Question | Answer |
+|----------|--------|
+| Does the app collect data? | Yes |
+| Is it encrypted in transit? | Yes (HTTPS only) |
+| Can people ask for deletion? | Yes, in the app (Settings, delete my data) |
+| Personal info | None asked. The name on a request is a free text the person chooses, shown to others. Collected, shared (visible in the feed), optional-by-nature, for app functionality. |
+| Health info and religious beliefs | Possible inside request text the person writes. Collected, shared (visible in the feed), for app functionality. |
+| Messages / user content | Request text. Collected and shared, for app functionality. |
+| App activity | Prayer actions and reports. Collected, not shared, for app functionality and safety. |
+| Device or other IDs | Anonymous Firebase user ID and an App Check attestation. Collected, not shared, for security and fraud prevention. |
+| Crash logs and diagnostics | Collected only if the person opts in (Crashlytics). Not shared. |
+| App interactions (analytics) | Collected only if the person opts in (Firebase Analytics). Not shared. |
+| Location, contacts, photos, financial info | Not collected |
+| Data sold or used for ads | No |
+
+## Release notes (first release)
+
+- **en:** First public version of Stillflame.
+- **es:** Primera versión pública de Stillflame.
+- **fr:** Première version publique de Stillflame.
+- **ro:** Prima versiune publică Stillflame.
+- **uk:** Перша публічна версія Stillflame.
+- **ru:** Первая публичная версия Stillflame.
+
+---
+
+## English (en-US)
+
+**Title:** Stillflame
+
+**Short description:** Ask for prayer, or pray for someone. Anonymous. Free.
+
+**Full description:**
+
+Someone prayed for you.
+
+Stillflame is a quiet place to ask for prayer when life is heavy, and to pray for someone else when you have a moment.
+
+HOW IT WORKS
+• Write a short note about what you are going through. Use any name you like, or just a first name.
+• Other people read it and pray. When they do, they tap "I prayed".
+• You see how many people prayed for you. You never see who. That is on purpose: you are not alone, and nobody has to know you.
+
+WHAT YOU CAN DO
+• Ask for prayer in the language you pray in. Your request is shown to people who chose the same language.
+• Pray for others, one person at a time, and tap "I prayed" once for each.
+• See your own requests and how many people have prayed for each one.
+• Look back at the requests you prayed for.
+• Get a gentle notification when someone prays for you (optional).
+• Edit or delete your request whenever you want.
+
+KEPT SIMPLE AND SAFE
+• No account, no email, no phone number, no contact details.
+• No ads and no tracking of what you write. Usage statistics and crash reports are off until you allow them.
+• No comments, no chat, no followers. Just requests and prayers.
+• Every request can be reported. Reports are reviewed, and harmful content is removed.
+• Delete everything you shared from Settings, at any time.
+
+Available in English, Spanish, French, Romanian, Ukrainian and Russian. Light and dark mode.
+
+Stillflame is for people aged 16 and over. It is a place for support and does not replace professional help. If you are in danger, please contact your local emergency number or a crisis line.
+
+Questions: support@stillflame.app
+
+---
+
+## Español (es-419 and es-ES)
+
+**Título:** Stillflame
+
+**Descripción breve:** Pide oración o ora por alguien. Anónimo. Gratis.
+
+**Descripción completa:**
+
+Alguien oró por ti.
+
+Stillflame es un lugar tranquilo para pedir oración cuando la vida pesa, y para orar por otra persona cuando tienes un momento.
+
+CÓMO FUNCIONA
+• Escribe una nota breve sobre lo que estás viviendo. Usa el nombre que quieras, o solo tu nombre de pila.
+• Otras personas la leen y oran. Cuando lo hacen, tocan "Oré".
+• Ves cuántas personas oraron por ti. Nunca ves quiénes. Es a propósito: no estás solo o sola, y nadie tiene que conocerte.
+
+QUÉ PUEDES HACER
+• Pedir oración en el idioma en el que oras. Tu petición se muestra a quienes eligieron el mismo idioma.
+• Orar por otras personas, una por una, y tocar "Oré" una vez por cada una.
+• Ver tus propias peticiones y cuántas personas han orado por cada una.
+• Repasar las peticiones por las que has orado.
+• Recibir una notificación suave cuando alguien ora por ti (opcional).
+• Editar o eliminar tu petición cuando quieras.
+
+SENCILLO Y SEGURO
+• Sin cuenta, sin correo, sin teléfono, sin datos de contacto.
+• Sin anuncios y sin rastrear lo que escribes. Las estadísticas de uso y los informes de fallos están desactivados hasta que los permitas.
+• Sin comentarios, sin chat, sin seguidores. Solo peticiones y oraciones.
+• Cualquier petición se puede denunciar. Las denuncias se revisan y el contenido dañino se elimina.
+• Elimina todo lo que compartiste desde Ajustes, cuando quieras.
+
+Disponible en inglés, español, francés, rumano, ucraniano y ruso. Modo claro y oscuro.
+
+Stillflame es para personas de 16 años o más. Es un lugar de apoyo y no sustituye la ayuda profesional. Si estás en peligro, llama a tu número de emergencias local o a una línea de crisis.
+
+Preguntas: support@stillflame.app
+
+---
+
+## Français (fr-FR)
+
+**Titre :** Stillflame
+
+**Description courte :** Demandez une prière ou priez pour quelqu'un. Anonyme. Gratuit.
+
+**Description complète :**
+
+Quelqu'un a prié pour vous.
+
+Stillflame est un lieu calme pour demander une prière quand la vie est lourde, et pour prier pour quelqu'un d'autre quand vous avez un moment.
+
+COMMENT ÇA MARCHE
+• Écrivez un court message sur ce que vous traversez. Utilisez le nom que vous voulez, ou seulement un prénom.
+• D'autres personnes le lisent et prient. Quand elles l'ont fait, elles touchent « J'ai prié ».
+• Vous voyez combien de personnes ont prié pour vous. Jamais lesquelles. C'est voulu : vous n'êtes pas seul(e), et personne n'a besoin de vous connaître.
+
+CE QUE VOUS POUVEZ FAIRE
+• Demander une prière dans la langue dans laquelle vous priez. Votre demande est montrée aux personnes qui ont choisi la même langue.
+• Prier pour les autres, une personne à la fois, et toucher « J'ai prié » une fois pour chacune.
+• Voir vos propres demandes et combien de personnes ont prié pour chacune.
+• Revoir les demandes pour lesquelles vous avez prié.
+• Recevoir une notification discrète quand quelqu'un prie pour vous (facultatif).
+• Modifier ou supprimer votre demande quand vous le voulez.
+
+SIMPLE ET SÛR
+• Pas de compte, pas d'e-mail, pas de téléphone, pas de coordonnées.
+• Pas de publicité et aucun suivi de ce que vous écrivez. Les statistiques d'usage et les rapports de plantage sont désactivés tant que vous ne les autorisez pas.
+• Pas de commentaires, pas de messagerie, pas d'abonnés. Seulement des demandes et des prières.
+• Chaque demande peut être signalée. Les signalements sont examinés et les contenus nuisibles sont retirés.
+• Supprimez tout ce que vous avez partagé depuis les Réglages, à tout moment.
+
+Disponible en anglais, espagnol, français, roumain, ukrainien et russe. Mode clair et mode sombre.
+
+Stillflame s'adresse aux personnes de 16 ans et plus. C'est un lieu de soutien qui ne remplace pas une aide professionnelle. Si vous êtes en danger, appelez le numéro d'urgence de votre pays ou une ligne d'écoute.
+
+Questions : support@stillflame.app
+
+---
+
+## Română (ro)
+
+**Titlu:** Stillflame
+
+**Descriere scurtă:** Cere rugăciune sau roagă-te pentru cineva. Anonim. Gratuit.
+
+**Descriere completă:**
+
+Cineva s-a rugat pentru tine.
+
+Stillflame este un loc liniștit unde poți cere rugăciune când viața e grea și te poți ruga pentru altcineva când ai un moment.
+
+CUM FUNCȚIONEAZĂ
+• Scrie un mesaj scurt despre ce treci. Folosește orice nume vrei, sau doar prenumele.
+• Alți oameni îl citesc și se roagă. Când au făcut-o, apasă „M-am rugat”.
+• Vezi câți oameni s-au rugat pentru tine. Nu vezi niciodată cine. E intenționat: nu ești singur(ă) și nimeni nu trebuie să te cunoască.
+
+CE POȚI FACE
+• Cere rugăciune în limba în care te rogi. Cererea ta e arătată celor care au ales aceeași limbă.
+• Roagă-te pentru alții, pe rând, și apasă „M-am rugat” o dată pentru fiecare.
+• Vezi cererile tale și câți oameni s-au rugat pentru fiecare.
+• Revezi cererile pentru care te-ai rugat.
+• Primești o notificare discretă când cineva se roagă pentru tine (opțional).
+• Modifică sau șterge cererea oricând vrei.
+
+SIMPLU ȘI SIGUR
+• Fără cont, fără e-mail, fără telefon, fără date de contact.
+• Fără reclame și fără urmărirea a ceea ce scrii. Statisticile de utilizare și rapoartele de erori sunt dezactivate până când le permiți.
+• Fără comentarii, fără chat, fără urmăritori. Doar cereri și rugăciuni.
+• Orice cerere poate fi raportată. Rapoartele sunt verificate, iar conținutul dăunător este eliminat.
+• Șterge tot ce ai distribuit din Setări, oricând.
+
+Disponibilă în engleză, spaniolă, franceză, română, ucraineană și rusă. Mod luminos și mod întunecat.
+
+Stillflame este pentru persoane de 16 ani și peste. Este un loc de sprijin și nu înlocuiește ajutorul profesionist. Dacă ești în pericol, sună la numărul local de urgență sau la o linie de criză.
+
+Întrebări: support@stillflame.app
+
+---
+
+## Українська (uk)
+
+**Назва:** Stillflame
+
+**Короткий опис:** Попросіть молитви або помоліться за когось. Анонімно. Безкоштовно.
+
+**Повний опис:**
+
+Хтось молився за вас.
+
+Stillflame — тихе місце, де можна попросити молитви, коли на серці важко, і помолитися за іншого, коли випадає хвилина.
+
+ЯК ЦЕ ПРАЦЮЄ
+• Напишіть коротко про те, що ви переживаєте. Підпишіться як завгодно — навіть лише ім'ям.
+• Інші люди читають і моляться. Помолившись, вони натискають «Я помолився(-лась)».
+• Ви бачите, скільки людей помолилося за вас, але ніколи не бачите, хто саме. Це навмисно: ви не самотні, і нікому не потрібно вас знати.
+
+ЩО МОЖНА РОБИТИ
+• Просити молитви мовою, якою ви молитесь. Ваше прохання бачать ті, хто обрав ту саму мову.
+• Молитися за інших, за одним разом, і натискати «Я помолився(-лась)» один раз за кожного.
+• Бачити свої прохання та скільки людей помолилося за кожне.
+• Переглядати прохання, за які ви молилися.
+• Отримувати лагідне сповіщення, коли хтось молиться за вас (за бажанням).
+• Змінювати або видаляти своє прохання будь-коли.
+
+ПРОСТО І БЕЗПЕЧНО
+• Без облікового запису, без електронної пошти, без телефону, без контактних даних.
+• Без реклами і без стеження за тим, що ви пишете. Статистика використання та звіти про збої вимкнені, доки ви їх не дозволите.
+• Без коментарів, без чату, без підписників. Лише прохання та молитви.
+• На кожне прохання можна поскаржитися. Скарги розглядаються, а шкідливий вміст видаляється.
+• Видаліть усе, чим ви поділилися, у Налаштуваннях у будь-який час.
+
+Доступно англійською, іспанською, французькою, румунською, українською та російською. Світла і темна тема.
+
+Stillflame призначений для людей від 16 років. Це місце підтримки, і воно не замінює професійної допомоги. Якщо вам загрожує небезпека, зателефонуйте на місцевий номер екстреної допомоги або на лінію кризової підтримки.
+
+Питання: support@stillflame.app
+
+---
+
+## Русский (ru)
+
+**Название:** Stillflame
+
+**Краткое описание:** Попросите молитвы или помолитесь за кого-то. Анонимно. Бесплатно.
+
+**Полное описание:**
+
+Кто-то молился за вас.
+
+Stillflame — тихое место, где можно попросить молитвы, когда на душе тяжело, и помолиться за другого, когда появилась минута.
+
+КАК ЭТО РАБОТАЕТ
+• Коротко напишите о том, что вы переживаете. Подпишитесь как угодно — хоть одним именем.
+• Другие люди читают и молятся. Помолившись, они нажимают «Я помолился(-лась)».
+• Вы видите, сколько людей помолилось за вас, но никогда не видите, кто именно. Это сделано намеренно: вы не одиноки, и никому не нужно вас знать.
+
+ЧТО МОЖНО ДЕЛАТЬ
+• Просить молитвы на том языке, на котором вы молитесь. Вашу просьбу видят те, кто выбрал тот же язык.
+• Молиться за других, по одному, и нажимать «Я помолился(-лась)» один раз за каждого.
+• Видеть свои просьбы и сколько людей помолилось за каждую.
+• Просматривать просьбы, за которые вы молились.
+• Получать мягкое уведомление, когда кто-то молится за вас (по желанию).
+• Изменять или удалять свою просьбу в любой момент.
+
+ПРОСТО И БЕЗОПАСНО
+• Без учётной записи, без электронной почты, без телефона, без контактных данных.
+• Без рекламы и без слежки за тем, что вы пишете. Статистика использования и отчёты о сбоях выключены, пока вы их не разрешите.
+• Без комментариев, без чата, без подписчиков. Только просьбы и молитвы.
+• На любую просьбу можно пожаловаться. Жалобы рассматриваются, а вредный контент удаляется.
+• Удалите всё, чем вы поделились, в Настройках в любой момент.
+
+Доступно на английском, испанском, французском, румынском, украинском и русском. Светлая и тёмная тема.
+
+Stillflame предназначен для людей от 16 лет. Это место поддержки, оно не заменяет профессиональную помощь. Если вам грозит опасность, позвоните по местному номеру экстренной помощи или на линию кризисной поддержки.
+
+Вопросы: support@stillflame.app
+
+---
+
+## Graphics to prepare
+
+| Asset | Size | Note |
+|-------|------|------|
+| App icon | 512 x 512 PNG | From `apps/mobile/assets/images/icon.png` |
+| Feature graphic | 1024 x 500 | The wide hero scene from `tools/hero` (`node generate.mjs wide`) with the name, or a licensed photo |
+| Phone screenshots | 2 to 8, 9:16 | Feed, compose, my requests, dark mode. Take them in each language once the app runs on a device |
