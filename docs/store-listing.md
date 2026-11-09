@@ -292,9 +292,10 @@ Stillflame предназначен для людей от 16 лет. Это м�
 
 | Asset | Size | Note |
 |-------|------|------|
-| App icon | 512 x 512 PNG | From `apps/mobile/assets/images/icon.png` |
-| Feature graphic | 1024 x 500 | The wide hero scene from `tools/hero` (`node generate.mjs wide`) with the name, or a licensed photo |
-| Phone screenshots | 2 to 8, 9:16 | Feed, compose, my requests, dark mode. Take them in each language once the app runs on a device |
+| App icon | 512 x 512 PNG | Done: `store-assets/google-play/icon-512.png` (from `apps/mobile/assets/images/icon.png`) |
+| Feature graphic | 1024 x 500 | Done: `store-assets/google-play/feature-graphic-1024x500.png`. The wide hero scene from `tools/hero` (`node generate.mjs wide`), cropped, with the name and tagline in Fraunces |
+| Phone screenshots | 2 to 8, 9:16 | Done in English: `store-assets/google-play/phone-en/` (ask, pray, prayed, wait, dark; 1080 x 1920). Captured on a Pixel in Android demo mode (clean status bar) against the local dev API with sample requests, framed on the brand teal with a caption. Play falls back to these for the other languages. A Pixel screenshot is 1080 x 2410, more than 2:1, which Play rejects, so each one is scaled into a 9:16 frame |
+| Tablet screenshots | optional | Not made. Needed only to be listed on tablets with a tablet layout |
 
 ---
 
