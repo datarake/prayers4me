@@ -15,7 +15,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | # | Task | Why | Status |
 |---|------|-----|--------|
 | P0.1 | **Abuse limits that survive free identities**: per-IP limits next to per-user limits, stricter limits for accounts under 24 hours old, and auto-hide that counts only reports from established accounts on distinct IPs | A new install is a new identity, so per-user limits alone allow flooding, brigading and ban evasion. This is the failure that killed v1. | done (the network and account limits are in place and tested) |
-| P0.2 | **Device attestation** (Firebase App Check, Apple DeviceCheck, Play Integrity) and real Firebase auth (`AUTH_MODE=firebase`) | Only real installs of the app should reach the API. | code done and tested; anonymous sign-in enabled. Needs you: Apple and Google developer accounts to turn on App Check for real devices |
+| P0.2 | **Device attestation** (Firebase App Check, Apple DeviceCheck, Play Integrity) and real Firebase auth (`AUTH_MODE=firebase`) | Only real installs of the app should reach the API. | code done and tested; anonymous sign-in enabled; App Attest entitlement in the config; Play Integrity registered for Android. Needs you: Apple and Google developer accounts to turn on App Check for real devices |
 | P0.3 | **Account and data deletion** in Settings and `DELETE /v1/session` | Required by the app stores and by GDPR. | done (one gap: requests deleted one by one are only hidden, see `docs/operations.md`) |
 | P0.4 | **Privacy policy, terms and consent for sensitive data** (health and religion are special category data in the EU) | Legal requirement. Drafts live in `docs/legal`. | draft written, needs a lawyer |
 | P0.5 | **Support contact** shown in the app and the store listing | Apple requires one for apps with user-generated content. | needs you (an address) |
@@ -58,7 +58,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | P1.4 | **Gentle daily reminder** | A reason to come back and pray. | todo |
 | P1.5 | **Prayer mode**, one request at a time | Calmer than a list, equal exposure, and slower than tapping through cards. | todo |
 | P1.6 | **One-tap "Anonymous"** and remember the last name | A required name is a barrier in a crisis. | todo |
-| P1.7 | **Block** and the "answered" thank-you note | Store expectation, and closes the loop for people who prayed. | todo |
+| P1.7 | **Block** and the "answered" thank-you note | Store expectation (Apple guideline 1.2 for user-generated content), and closes the loop for people who prayed. Build Block before the first App Store review. | todo |
 
 ### P2: growth and sustainability
 

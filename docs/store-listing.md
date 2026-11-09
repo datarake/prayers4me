@@ -295,3 +295,45 @@ Stillflame предназначен для людей от 16 лет. Это м�
 | App icon | 512 x 512 PNG | From `apps/mobile/assets/images/icon.png` |
 | Feature graphic | 1024 x 500 | The wide hero scene from `tools/hero` (`node generate.mjs wide`) with the name, or a licensed photo |
 | Phone screenshots | 2 to 8, 9:16 | Feed, compose, my requests, dark mode. Take them in each language once the app runs on a device |
+
+---
+
+# App Store (iOS)
+
+Use the same **full description** as Google Play for each language (App Store limit: 4000 characters). Limits for the other fields: name 30, subtitle 30, promotional text 170, keywords 100 (comma separated, no spaces, the app name is not repeated).
+
+## Facts for App Store Connect
+
+| Field | Value |
+|-------|-------|
+| Name | Stillflame |
+| Bundle ID | `app.stillflame.mobile` |
+| Primary category | Lifestyle (secondary: Social Networking) |
+| Price | Free, no in-app purchases |
+| Support URL | https://stillflame.app |
+| Marketing URL | https://stillflame.app |
+| Privacy policy URL | https://stillflame.app/privacy |
+| Copyright | the name of the seller account |
+| Age rating | Answer the questionnaire honestly: user-generated content is shown to others, and health topics appear. Expect 12+ or 17+, set by Apple. |
+| App Privacy ("nutrition label") | Same answers as the Google Play Data safety table above. Not used for tracking. |
+| Export compliance | Uses only standard HTTPS encryption (exempt) |
+
+## Review notes (paste into "Notes" for the reviewer)
+
+> No sign-in is needed. The app creates an anonymous account on first launch. People can post a short prayer request and others can tap "I prayed". Every request can be reported from the feed (Report), authors can edit or delete their own requests, and Settings has "Delete my data". Reports are reviewed by a moderator within 24 hours and harmful content is removed. Contact: support@stillflame.app.
+
+## Fields per language
+
+| | Subtitle | Promotional text | Keywords |
+|---|----------|------------------|----------|
+| **en-US** | Anonymous prayer requests | Someone prayed for you. Share what you are going through, and see how many people prayed. Never who. No account, no ads. | prayer,pray,anonymous,faith,support,christian,hope,intercession,request,community |
+| **es** | Peticiones de oración anónimas | Alguien oró por ti. Comparte lo que estás viviendo y mira cuántas personas oraron, nunca quiénes. Sin cuenta, sin anuncios. | oración,orar,anónimo,fe,apoyo,cristiano,esperanza,intercesión,petición,comunidad |
+| **fr** | Demandes de prière anonymes | Quelqu'un a prié pour vous. Partagez ce que vous traversez et voyez combien de personnes ont prié, jamais lesquelles. Sans compte, sans pub. | prière,prier,anonyme,foi,soutien,chrétien,espoir,intercession,demande,communauté |
+| **ro** | Cereri de rugăciune anonime | Cineva s-a rugat pentru tine. Spune ce treci și vezi câți oameni s-au rugat, niciodată cine. Fără cont, fără reclame. | rugăciune,rugă,anonim,credință,sprijin,creștin,speranță,mijlocire,cerere,comunitate |
+| **uk** | Анонімні молитовні прохання | Хтось молився за вас. Поділіться тим, що переживаєте, і побачте, скільки людей помолилося, але не хто. Без акаунта, без реклами. | молитва,молитися,анонімно,віра,підтримка,християнський,надія,прохання,спільнота |
+| **ru** | Анонимные молитвенные просьбы | Кто-то молился за вас. Поделитесь тем, что переживаете, и увидите, сколько людей помолилось, но не кто. Без аккаунта, без рекламы. | молитва,молиться,анонимно,вера,поддержка,христианский,надежда,просьба,сообщество |
+
+## Before submitting to the App Store
+
+- **Block users.** Apple's rule for apps with user-generated content (guideline 1.2) expects a way to block abusive users, besides reporting and filtering. Stillflame has Report but not Block yet (roadmap P1.7). Build it before the first App Store review, or the review is likely to be rejected for it.
+- Screenshots: 6.9-inch iPhone (1320 x 2868) are required; 13-inch iPad ones too, because the app supports tablets (`supportsTablet`).

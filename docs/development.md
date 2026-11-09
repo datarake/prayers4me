@@ -88,7 +88,7 @@ To try it locally, run a second API with `AUTH_MODE=firebase FIREBASE_PROJECT_ID
 
 Anonymous sign-in is enabled in the Firebase console. **Leave "Auto clean-up" off**: it deletes anonymous accounts older than 30 days, and people would lose their requests. Deleting data in Settings deletes the server account first and then the Firebase one.
 
-**Still to do in the console:** register both apps under App Check (App Attest and Play Integrity), which needs the Apple and Google developer accounts. The iOS App Attest entitlement (`com.apple.developer.devicecheck.appattest-environment`) must be added to the app when that account exists. Until then, simulators and development builds use the debug provider.
+**Still to do in the console:** register both apps under App Check (App Attest and Play Integrity), which needs the Apple and Google developer accounts. The iOS App Attest entitlement (`com.apple.developer.devicecheck.appattest-environment`, set in `app.json` under `ios.entitlements`) is already in the config. When the paid Apple account is active, also register the App ID `app.stillflame.mobile` with the App Attest capability. Until then, simulators and development builds use the debug provider. Run `expo prebuild` again to put the entitlement into the native project.
 
 ## Configuration that fails safe
 
