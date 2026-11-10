@@ -27,6 +27,8 @@ Needs Node 22, JDK 17 or newer, and the Android SDK. It:
 
 Before each upload to Play, raise `versionCode`: add `"versionCode": N` under `expo.android` in `app.json` (Play refuses a code it has already seen). `version` is the number people see.
 
+**Push on Android (2026-11-10):** the Firebase service-account key (`firebase-adminsdk-fbsvc@prayers4me.iam.gserviceaccount.com`) is stored in Expo for `app.stillflame.mobile` as the FCM V1 key (`eas credentials --platform android`, production). The JSON file is kept outside git at `~/.stillflame/fcm-service-account.json`. No rebuild is needed for it. To rotate, generate a new key in Firebase (Project settings, Service accounts) and upload it again the same way.
+
 Kotlin is pinned to 2.4.0 (`expo-build-properties` in `app.json`), because the Firebase Auth library is built with it. Remove the pin when Expo's default catches up.
 
 ## Put the app on your own phone
