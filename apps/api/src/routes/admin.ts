@@ -44,6 +44,7 @@ adminRoutes.get("/metrics", async (c) => {
       SELECT r.id, r.created_at
       FROM prayer_requests r, win
       WHERE r.created_at >= win.since AND r.created_at <= now() - interval '24 hours'
+        AND NOT r.is_seed
     ),
     first_prayer AS (
       SELECT p.request_id, MIN(p.created_at) AS at
@@ -51,7 +52,8 @@ adminRoutes.get("/metrics", async (c) => {
       GROUP BY p.request_id
     ),
     askers AS (
-      SELECT DISTINCT author_id AS id FROM prayer_requests r, win WHERE r.created_at >= win.since
+      SELECT DISTINCT author_id AS id FROM prayer_requests r, win
+      WHERE r.created_at >= win.since AND NOT r.is_seed
     ),
     prayers_in_window AS (
       SELECT user_id FROM prayers p, win WHERE p.created_at >= win.since
@@ -63,7 +65,8 @@ adminRoutes.get("/metrics", async (c) => {
       (SELECT percentile_cont(0.5) WITHIN GROUP (
          ORDER BY EXTRACT(EPOCH FROM (f.at - m.created_at)) / 60)
          FROM matured m JOIN first_prayer f ON f.request_id = m.id) AS median_minutes_to_first_prayer,
-      (SELECT COUNT(*) FROM prayer_requests r, win WHERE r.created_at >= win.since)::int AS requests_created,
+      (SELECT COUNT(*) FROM prayer_requests r, win
+         WHERE r.created_at >= win.since AND NOT r.is_seed)::int AS requests_created,
       (SELECT COUNT(*) FROM prayers_in_window)::int AS prayers,
       (SELECT COUNT(*) FROM askers)::int AS people_who_asked,
       (SELECT COUNT(DISTINCT user_id) FROM prayers_in_window)::int AS people_who_prayed,
@@ -71,7 +74,7 @@ adminRoutes.get("/metrics", async (c) => {
          SELECT 1 FROM prayers_in_window w WHERE w.user_id = a.id))::int AS askers_who_also_prayed,
       (SELECT COUNT(*) FROM reports rp, win WHERE rp.created_at >= win.since)::int AS reports,
       (SELECT COUNT(*) FROM prayer_requests r, win
-         WHERE r.status = 'hidden' AND r.updated_at >= win.since)::int AS requests_hidden
+         WHERE r.status = 'hidden' AND r.updated_at >= win.since AND NOT r.is_seed)::int AS requests_hidden
   `;
   if (!m) throw new ApiError(500, "metrics_failed", "Could not compute metrics");
 

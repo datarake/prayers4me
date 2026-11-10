@@ -10,6 +10,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
     "db:migrate": "tsx --env-file=.env src/db/migrate.ts",
     "db:maintain": "tsx --env-file=.env src/db/maintain.ts",
+    "db:seed": "tsx --env-file=.env src/seed/run.ts",
+    "db:seed:remove": "tsx --env-file=.env src/seed/run.ts --remove",
     "test": "vitest run",
     "test:watch": "vitest"
   },

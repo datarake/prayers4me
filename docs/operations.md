@@ -61,6 +61,16 @@ If the first-prayer rate falls, people who ask are leaving disappointed. Act on 
 - Requests deleted one by one are hidden and kept. **Known gap:** add a scheduled clean-up that erases hidden-for-deletion rows after [N] days, and state the period in the privacy policy.
 - Requests for a copy of data come to [support email]. [Write the procedure.]
 
+## Starter content (seed requests)
+
+So the first visitors do not see an empty feed, the database can hold a small set of example requests: ten per language, with names that fit the language's region, varied lengths and topics, posting times spread over the last nine days at plausible local hours, and a few prayers already counted (some posts start at zero). The texts are in `apps/api/src/seed/content.ts`.
+
+- **Product decision (2026-11-10):** these look like ordinary requests to the apps. Every one is marked `is_seed` (on the request and on its own author account), so it can be counted, is left out of the admin metrics, and can be removed at once.
+- **Add:** run the migration (`009_seed_content.sql`), then `pnpm --filter @prayers4me/api db:seed` with `DATABASE_URL` set. Running it again changes nothing. On Cloud Run, use a job with the command `node apps/api/dist/seed/run.js`.
+- **Remove:** `pnpm --filter @prayers4me/api db:seed:remove` (or add `--remove` to the job). It deletes only rows marked `is_seed`; real requests are never touched. A real person who prays for a seed post adds to its count like any other.
+- **Plan to remove them** once real requests fill each language's feed. Store reviewers and users can notice invented content, and the privacy policy and store texts say requests come from people.
+- **Not done yet:** a schedule that keeps adding posts over time, with an on/off switch and a daily limit per language in the admin page. This is the planned follow-up.
+
 ## Infrastructure to put in place before a beta
 
 - [x] Code for production auth and device attestation (see "Sign-in and attestation" in `docs/development.md`)
