@@ -1,13 +1,13 @@
 # Deployment (Google Cloud)
 
-**Status (2026-11-09):** running image `v6` (revision `stillflame-api-00004-mzp`) in `europe-west1` (Belgium), with migrations up to 008 (Block, moderation workflow) and the admin page's `ADMIN_EMAILS` set. The API answers at `https://api.stillflame.app` (also `https://stillflame-api-799342684788.europe-west1.run.app`). Real phones cannot use it yet, because App Check is enforced and needs the Apple and Google developer accounts.
+**Status (2026-11-10):** running image `v7` (revision `stillflame-api-00005-qpd`) in `europe-west1` (Belgium), with migrations up to 009 (starter content marker); the 60 starter requests were added with the `stillflame-seed` job and the admin page's `ADMIN_EMAILS` set. The API answers at `https://api.stillflame.app` (also `https://stillflame-api-799342684788.europe-west1.run.app`). Real phones cannot use it yet, because App Check is enforced and needs the Apple and Google developer accounts.
 
 ## What exists
 
 | Resource | Name |
 |----------|------|
 | Cloud Run service | `stillflame-api` (public invoker, max 3 instances, scales to zero, 512 MiB) |
-| Cloud Run jobs | `stillflame-migrate`, `stillflame-maintain` |
+| Cloud Run jobs | `stillflame-migrate`, `stillflame-maintain`, `stillflame-seed` (runs `node apps/api/dist/seed/run.js`; add `--remove` as an argument to delete the starter requests) |
 | Cloud Scheduler | `stillflame-maintain-every-6h` (europe-west1) |
 | Cloud SQL | `stillflame-db`, Postgres 16, `db-f1-micro`, 10 GB SSD, daily backup 03:00, deletion protection on; database and user `stillflame` |
 | Secrets | `database-url`, `ip-hash-secret` (Secret Manager) |
@@ -24,12 +24,13 @@ Use the account `burdibox@gmail.com` and the project `prayers4me` explicitly (th
 
 ```bash
 export CLOUDSDK_CORE_ACCOUNT=burdibox@gmail.com CLOUDSDK_CORE_PROJECT=prayers4me
-TAG=v7   # a new tag each time (v6 is live)
+TAG=v8   # a new tag each time (v7 is live)
 IMG=europe-west1-docker.pkg.dev/prayers4me/stillflame/api:$TAG
 gcloud builds submit . --tag $IMG --region=europe-west1
 gcloud run jobs update stillflame-migrate --image=$IMG --region=europe-west1
 gcloud run jobs execute stillflame-migrate --region=europe-west1 --wait      # before the new code runs
 gcloud run jobs update stillflame-maintain --image=$IMG --region=europe-west1
+gcloud run jobs update stillflame-seed --image=$IMG --region=europe-west1
 gcloud run deploy stillflame-api --image=$IMG --region=europe-west1          # keeps the existing settings
 ```
 
