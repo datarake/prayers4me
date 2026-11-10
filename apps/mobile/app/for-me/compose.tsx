@@ -244,6 +244,31 @@ export default function ComposeScreen() {
             </Text>
           </Field>
 
+          {isEditing || body.length > 0 ? null : (
+            <View style={styles.examples}>
+              <Text style={styles.examplesTitle}>{copy.examplesTitle}</Text>
+              <Text style={styles.help}>{copy.examplesHint}</Text>
+              {copy.examples.map((text) => (
+                <Pressable
+                  key={text}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${copy.examplesBadge}: ${text}`}
+                  onPress={() => {
+                    setMessage(text);
+                    messageRef.current?.focus();
+                  }}
+                  style={({ pressed }) => [
+                    styles.exampleCard,
+                    pressed && { opacity: 0.8 },
+                  ]}
+                >
+                  <Text style={styles.exampleBadge}>{copy.examplesBadge}</Text>
+                  <Text style={styles.exampleText}>{text}</Text>
+                </Pressable>
+              ))}
+            </View>
+          )}
+
           {showSupport ? (
             <View style={styles.supportCard} accessibilityLiveRegion="polite">
               <Text style={styles.supportTitle}>{copy.crisisTitle}</Text>
@@ -371,6 +396,37 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
       fontSize: 13,
       lineHeight: 19,
       color: colors.danger,
+    },
+    examples: {
+      gap: 10,
+    },
+    examplesTitle: {
+      fontFamily: fonts.display,
+      fontSize: 20,
+      lineHeight: 26,
+      color: colors.ink,
+    },
+    exampleCard: {
+      borderRadius: 14,
+      borderWidth: 1,
+      borderStyle: "dashed",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: 14,
+      gap: 6,
+    },
+    exampleBadge: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 12,
+      letterSpacing: 0.6,
+      textTransform: "uppercase",
+      color: colors.inkSoft,
+    },
+    exampleText: {
+      fontFamily: fonts.body,
+      fontSize: 15,
+      lineHeight: 22,
+      color: colors.ink,
     },
     supportCard: {
       backgroundColor: colors.noteBg,

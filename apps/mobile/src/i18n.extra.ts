@@ -97,6 +97,10 @@ export type ExtraDictionary = {
   filterWaiting: string;
   waitingEmptyTitle: string;
   waitingEmptyBody: string;
+  examplesTitle: string;
+  examplesHint: string;
+  examplesBadge: string;
+  examples: string[];
 };
 
 export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
@@ -203,6 +207,17 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     filterWaiting: "Needs prayer",
     waitingEmptyTitle: "Every request has a prayer",
     waitingEmptyBody: "Thank you for praying. New requests will appear here.",
+    examplesTitle: "Need ideas?",
+    examplesHint: "These examples are not real requests. Tap one to use it as a starting point, then make it your own.",
+    examplesBadge: "Example",
+    examples: [
+      "My dad has surgery on Thursday. Please pray for steady hands for the surgeons and for peace in our family while we wait.",
+      "I lost my job last month and I am worried about rent. I would be grateful for prayer that a new door opens, and for patience while I wait.",
+      "Thankful today. My daughter's test results came back clear. Please join me in saying thank you.",
+      "Please pray for my friend Marta. She moved far from home and feels very alone. May she know that someone is thinking of her.",
+      "I have carried a quarrel with my brother for two years. Neither of us wants to call first. I would love prayer for humility on both sides, and for the right words when I finally pick up the phone.",
+      "Exams start Monday and my mind keeps racing. Pray for calm and clear thinking, please.",
+    ],
   },
   es: {
     cancel: "Cancelar",
@@ -307,6 +322,17 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     filterWaiting: "Esperan oración",
     waitingEmptyTitle: "Todas tienen una oración",
     waitingEmptyBody: "Gracias por orar. Las nuevas peticiones aparecerán aquí.",
+    examplesTitle: "¿Necesitas ideas?",
+    examplesHint: "Estos ejemplos no son peticiones reales. Toca uno para usarlo como punto de partida y hazlo tuyo.",
+    examplesBadge: "Ejemplo",
+    examples: [
+      "Mi papá se opera el jueves. Por favor, oren por el pulso firme de los cirujanos y por paz en nuestra familia mientras esperamos.",
+      "Perdí mi trabajo el mes pasado y me preocupa el alquiler. Les agradecería una oración para que se abra una nueva puerta, y para tener paciencia mientras espero.",
+      "Hoy doy gracias. Los resultados de mi hija salieron bien. Acompáñenme a dar gracias, por favor.",
+      "Oren por mi amiga Marta, por favor. Se mudó lejos de casa y se siente muy sola. Que sepa que alguien piensa en ella.",
+      "Llevo dos años peleado con mi hermano. Ninguno de los dos quiere llamar primero. Me haría mucho bien una oración por humildad de ambas partes, y por las palabras justas cuando por fin tome el teléfono.",
+      "Los exámenes empiezan el lunes y mi mente no para. Oren por calma y claridad, por favor.",
+    ],
   },
   fr: {
     cancel: "Annuler",
@@ -411,6 +437,17 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     filterWaiting: "Attendent une prière",
     waitingEmptyTitle: "Chaque demande a une prière",
     waitingEmptyBody: "Merci de prier. Les nouvelles demandes apparaîtront ici.",
+    examplesTitle: "Besoin d'idées ?",
+    examplesHint: "Ces exemples ne sont pas de vraies demandes. Touche-en un pour t'en servir comme point de départ, puis fais-le tien.",
+    examplesBadge: "Exemple",
+    examples: [
+      "Mon père est opéré jeudi. Priez pour que les chirurgiens aient la main sûre et pour la paix de notre famille pendant l'attente, s'il vous plaît.",
+      "J'ai perdu mon travail le mois dernier et je m'inquiète pour le loyer. Je serais reconnaissant pour une prière afin qu'une porte s'ouvre, et pour la patience dans l'attente.",
+      "Merci pour aujourd'hui. Les résultats de ma fille sont bons. Joignez-vous à moi pour dire merci.",
+      "Priez pour mon amie Marta, s'il vous plaît. Elle vit loin de chez elle et se sent très seule. Qu'elle sache que quelqu'un pense à elle.",
+      "Je suis fâché avec mon frère depuis deux ans. Ni lui ni moi ne veut appeler le premier. J'aimerais une prière pour l'humilité des deux côtés, et pour les bons mots quand je décrocherai enfin le téléphone.",
+      "Les examens commencent lundi et mon esprit s'emballe. Priez pour le calme et la clarté, s'il vous plaît.",
+    ],
   },
   ro: {
     cancel: "Anulează",
@@ -515,6 +552,17 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     filterWaiting: "Așteaptă rugăciune",
     waitingEmptyTitle: "Fiecare cerere are o rugăciune",
     waitingEmptyBody: "Mulțumim că te rogi. Cererile noi vor apărea aici.",
+    examplesTitle: "Ai nevoie de idei?",
+    examplesHint: "Aceste exemple nu sunt cereri reale. Atinge unul ca să pornești de la el, apoi fă-l al tău.",
+    examplesBadge: "Exemplu",
+    examples: [
+      "Tatăl meu are operație joi. Vă rog să vă rugați pentru mâna sigură a chirurgilor și pentru pace în familia noastră cât așteptăm.",
+      "Mi-am pierdut slujba luna trecută și mă îngrijorează chiria. Aș fi recunoscător pentru o rugăciune ca să se deschidă o ușă nouă și pentru răbdare cât aștept.",
+      "Mulțumesc astăzi. Rezultatele fiicei mele au ieșit bine. Vă rog să mulțumiți împreună cu mine.",
+      "Rugați-vă pentru prietena mea Marta, vă rog. S-a mutat departe de casă și se simte foarte singură. Să știe că cineva se gândește la ea.",
+      "Sunt certat cu fratele meu de doi ani. Niciunul dintre noi nu vrea să sune primul. Mi-ar prinde bine o rugăciune pentru smerenie de ambele părți și pentru cuvintele potrivite când voi lua în sfârșit telefonul.",
+      "Examenele încep luni și mintea mea nu se oprește. Rugați-vă pentru liniște și claritate, vă rog.",
+    ],
   },
   uk: {
     cancel: "Скасувати",
@@ -619,6 +667,17 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     filterWaiting: "Чекають молитви",
     waitingEmptyTitle: "Кожне прохання має молитву",
     waitingEmptyBody: "Дякуємо, що молишся. Нові прохання зʼявляться тут.",
+    examplesTitle: "Потрібні ідеї?",
+    examplesHint: "Ці приклади не є справжніми проханнями. Торкнися одного, щоб почати з нього, а потім зроби його своїм.",
+    examplesBadge: "Приклад",
+    examples: [
+      "У четвер моєму татові роблять операцію. Будь ласка, помоліться за твердість рук хірургів і за мир у нашій родині, поки ми чекаємо.",
+      "Минулого місяця я втратив роботу і хвилююся за оренду. Буду вдячний за молитву, щоб відчинилися нові двері, і за терпіння в очікуванні.",
+      "Сьогодні дякую. Результати аналізів моєї доньки добрі. Будь ласка, подякуйте разом зі мною.",
+      "Помоліться за мою подругу Марту, будь ласка. Вона переїхала далеко від дому і почувається дуже самотньою. Нехай знає, що хтось думає про неї.",
+      "Уже два роки я посварений з братом. Жоден із нас не хоче телефонувати першим. Мені потрібна молитва про смирення з обох боків і про потрібні слова, коли я нарешті візьму телефон.",
+      "У понеділок починаються іспити, а думки не вгамовуються. Помоліться, будь ласка, за спокій і ясність розуму.",
+    ],
   },
   ru: {
     cancel: "Отмена",
@@ -723,5 +782,16 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     filterWaiting: "Ждут молитвы",
     waitingEmptyTitle: "У каждой просьбы есть молитва",
     waitingEmptyBody: "Спасибо, что молишься. Новые просьбы появятся здесь.",
+    examplesTitle: "Нужны идеи?",
+    examplesHint: "Эти примеры не настоящие просьбы. Коснись одного, чтобы начать с него, а потом сделай его своим.",
+    examplesBadge: "Пример",
+    examples: [
+      "В четверг моему папе делают операцию. Пожалуйста, помолитесь о твёрдой руке хирургов и о мире в нашей семье, пока мы ждём.",
+      "В прошлом месяце я потерял работу и переживаю из-за аренды. Буду благодарен за молитву, чтобы открылась новая дверь, и о терпении в ожидании.",
+      "Сегодня благодарю. Анализы моей дочери оказались хорошими. Пожалуйста, поблагодарите вместе со мной.",
+      "Помолитесь о моей подруге Марте, пожалуйста. Она уехала далеко от дома и чувствует себя очень одинокой. Пусть знает, что кто-то думает о ней.",
+      "Уже два года я в ссоре с братом. Никто из нас не хочет звонить первым. Мне нужна молитва о смирении с обеих сторон и о нужных словах, когда я наконец возьму телефон.",
+      "В понедельник начинаются экзамены, а мысли не успокаиваются. Помолитесь, пожалуйста, о спокойствии и ясности ума.",
+    ],
   },
 };
