@@ -52,7 +52,7 @@ Default language of the listing: English (United States). Add the other five as 
 
 **Title:** Stillflame
 
-**Short description:** Ask for prayer, or pray for someone. Anonymous. Free.
+**Short description:** Ask for prayer, or pray for someone. Anonymous.
 
 **Full description:**
 
@@ -92,7 +92,7 @@ Questions: support@stillflame.app
 
 **Título:** Stillflame
 
-**Descripción breve:** Pide oración o ora por alguien. Anónimo. Gratis.
+**Descripción breve:** Pide oración o ora por alguien. Anónimo.
 
 **Descripción completa:**
 
@@ -132,7 +132,7 @@ Preguntas: support@stillflame.app
 
 **Titre :** Stillflame
 
-**Description courte :** Demandez une prière ou priez pour quelqu'un. Anonyme. Gratuit.
+**Description courte :** Demandez une prière ou priez pour quelqu'un. Anonyme.
 
 **Description complète :**
 
@@ -172,7 +172,7 @@ Questions : support@stillflame.app
 
 **Titlu:** Stillflame
 
-**Descriere scurtă:** Cere rugăciune sau roagă-te pentru cineva. Anonim. Gratuit.
+**Descriere scurtă:** Cere rugăciune sau roagă-te pentru cineva. Anonim.
 
 **Descriere completă:**
 
@@ -212,7 +212,7 @@ Stillflame este pentru persoane de 16 ani și peste. Este un loc de sprijin și 
 
 **Назва:** Stillflame
 
-**Короткий опис:** Попросіть молитви або помоліться за когось. Анонімно. Безкоштовно.
+**Короткий опис:** Попросіть молитви або помоліться за когось. Анонімно.
 
 **Повний опис:**
 
@@ -252,7 +252,7 @@ Stillflame призначений для людей від 16 років. Це �
 
 **Название:** Stillflame
 
-**Краткое описание:** Попросите молитвы или помолитесь за кого-то. Анонимно. Бесплатно.
+**Краткое описание:** Попросите молитвы или помолитесь за кого-то. Анонимно.
 
 **Полное описание:**
 
