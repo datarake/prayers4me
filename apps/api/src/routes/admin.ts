@@ -4,6 +4,8 @@ import { z } from "zod";
 import type { AppVariables } from "../auth.js";
 import { requireAdmin } from "../auth.js";
 import { ApiError } from "../errors.js";
+import { isLanguageCode } from "@prayers4me/shared";
+import { MAX_DAILY_POSTS, autopostStatus, updateAutopostSetting } from "../seed/autopost.js";
 import { readJson, requireUuid } from "../validation.js";
 
 export const adminRoutes = new Hono<{ Variables: AppVariables }>();
@@ -329,4 +331,29 @@ adminRoutes.delete("/users/:id/ban", async (c) => {
   });
 
   return c.json({ userId, banned: false });
+});
+
+// ---- scheduled starter posts -------------------------------------------------------------
+// A switch and a daily limit for each language. Posts are published by the scheduled job.
+
+adminRoutes.get("/autopost", async (c) => {
+  return c.json({ maxDailyPosts: MAX_DAILY_POSTS, items: await autopostStatus(c.get("sql")) });
+});
+
+const autopostSchema = z.object({
+  enabled: z.boolean(),
+  dailyMax: z.number().int().min(0).max(MAX_DAILY_POSTS),
+});
+
+adminRoutes.put("/autopost/:language", async (c) => {
+  const language = c.req.param("language");
+  if (!isLanguageCode(language)) throw new ApiError(404, "not_found", "Not found");
+  const parsed = autopostSchema.safeParse(await readJson(c));
+  if (!parsed.success) {
+    throw new ApiError(400, "invalid_body", `Use enabled (true or false) and dailyMax (0 to ${MAX_DAILY_POSTS})`);
+  }
+  const sql = c.get("sql");
+  await updateAutopostSetting(sql, language, parsed.data);
+  const items = await autopostStatus(sql);
+  return c.json({ item: items.find((i) => i.language === language) });
 });

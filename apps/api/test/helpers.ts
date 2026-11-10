@@ -59,6 +59,7 @@ export function client(app: ReturnType<typeof makeApp>["app"]): Call {
 export async function resetDb() {
   await sql`TRUNCATE users CASCADE`;
   await sql`TRUNCATE rate_limit_buckets`;
+  await sql`UPDATE autopost_settings SET enabled = false, daily_max = 2`;
 }
 
 /** Creates the account (the first call does) and optionally makes it older than 24 hours. */

@@ -3,7 +3,7 @@ import type { Sql } from "../db/client.js";
 import { SEED_POSTS } from "./content.js";
 
 /** Hours from UTC for the main region of each language, used to make posting times look local. */
-const LOCAL_UTC_OFFSET_HOURS: Record<LanguageCode, number> = {
+export const LOCAL_UTC_OFFSET_HOURS: Record<LanguageCode, number> = {
   en: -5,
   es: -5,
   fr: 1,
@@ -22,7 +22,7 @@ const MAX_AGE_DAYS = 9;
 const MIN_AGE_MINUTES = 25;
 
 /** Small deterministic generator, so the same post always gets the same shape. */
-function mulberry32(seed: number): () => number {
+export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -33,7 +33,7 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-function hashString(text: string): number {
+export function hashString(text: string): number {
   let h = 2166136261;
   for (let i = 0; i < text.length; i++) {
     h ^= text.charCodeAt(i);
@@ -42,7 +42,7 @@ function hashString(text: string): number {
   return h >>> 0;
 }
 
-function pickHour(rand: () => number): number {
+export function pickHour(rand: () => number): number {
   const total = HOUR_WEIGHTS.reduce((sum, [, w]) => sum + w, 0);
   let roll = rand() * total;
   for (const [hour, weight] of HOUR_WEIGHTS) {

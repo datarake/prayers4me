@@ -137,6 +137,7 @@ const TABS = [
   ["hidden", "Hidden"],
   ["metrics", "Health"],
   ["actions", "Activity"],
+  ["autopost", "Auto posts"],
 ];
 
 function render() {
@@ -158,7 +159,7 @@ function render() {
     ),
     el("div", { class: "adm-wrap" }, tabs, el("section", { class: "adm-panel", id: "panel", role: "tabpanel", "aria-labelledby": `tab-${state.tab}` })),
   );
-  ({ queue: renderQueue, hidden: renderHidden, metrics: renderMetrics, actions: renderActions })[state.tab]();
+  ({ queue: renderQueue, hidden: renderHidden, metrics: renderMetrics, actions: renderActions, autopost: renderAutopost })[state.tab]();
 }
 
 const panel = () => document.getElementById("panel");
@@ -334,6 +335,49 @@ function renderActions() {
         el("td", {}, a.note || ""),
       ))),
     ));
+  });
+}
+
+// ---- auto posts --------------------------------------------------------------------------
+const LANGUAGE_NAME = { en: "English", es: "Spanish", fr: "French", ro: "Romanian", uk: "Ukrainian", ru: "Russian" };
+
+function renderAutopost() {
+  const p = panel();
+  p.append(
+    el("h1", {}, "Auto posts"),
+    el("p", { class: "adm-sub" }, "Starter requests that the system publishes by itself, so a language does not look empty. Switch a language on, set how many it may publish per day, and save. Posts come out at irregular, plausible times of day, one at a time, from a fixed list, until the list is used up. They are marked as starter content and are left out of the Health numbers."),
+  );
+  load("/v1/admin/autopost", panel, (target, data) => {
+    const rows = data.items.map((item) => {
+      const on = el("input", { type: "checkbox", checked: item.enabled, "aria-label": `${LANGUAGE_NAME[item.language]} on or off` });
+      const max = el("input", { class: "num-input", type: "number", min: 0, max: data.maxDailyPosts, value: item.dailyMax, "aria-label": `${LANGUAGE_NAME[item.language]} posts per day at most` });
+      const save = el("button", { class: "btn primary", type: "button", onclick: async () => {
+        const dailyMax = Number(max.value);
+        if (!Number.isInteger(dailyMax) || dailyMax < 0 || dailyMax > data.maxDailyPosts) return toast(`Use a whole number from 0 to ${data.maxDailyPosts}`);
+        save.disabled = true;
+        try {
+          await api(`/v1/admin/autopost/${item.language}`, { method: "PUT", body: { enabled: on.checked, dailyMax } });
+          toast(`${LANGUAGE_NAME[item.language]} saved`);
+        } catch (err) {
+          toast(err.message);
+        } finally {
+          save.disabled = false;
+        }
+      } }, "Save");
+      return el("tr", {},
+        el("td", {}, LANGUAGE_NAME[item.language]),
+        el("td", {}, el("label", { class: "switch" }, on, " On")),
+        el("td", {}, max),
+        el("td", { class: "num" }, `${item.postedToday} today`),
+        el("td", { class: "num" }, item.queueLeft ? `${item.queueLeft} left` : "List used up"),
+        el("td", { class: "hint" }, item.lastPostedAt ? `Last ${ago(item.lastPostedAt)}` : "Nothing yet"),
+        el("td", {}, save),
+      );
+    });
+    target.append(el("div", { class: "adm-scroll" }, el("table", { class: "adm-table nowrap" },
+      el("thead", {}, el("tr", {}, ["Language", "Auto posting", "Most per day", "Today", "Posts in the list", "Last post", ""].map((h) => el("th", {}, h)))),
+      el("tbody", {}, rows),
+    )));
   });
 }
 
