@@ -29,6 +29,8 @@ Before each upload to Play, raise `versionCode`: add `"versionCode": N` under `e
 
 **Push on Android (2026-11-10):** the Firebase service-account key (`firebase-adminsdk-fbsvc@prayers4me.iam.gserviceaccount.com`) is stored in Expo for `app.stillflame.mobile` as the FCM V1 key (`eas credentials --platform android`, production). The JSON file is kept outside git at `~/.stillflame/fcm-service-account.json`. No rebuild is needed for it. To rotate, generate a new key in Firebase (Project settings, Service accounts) and upload it again the same way.
 
+**No advertising ID (2026-11-13):** the app shows no ads, but Firebase Analytics adds the `AD_ID` permission, which forces Google Play's advertising ID declaration to say "Yes". `plugins/withoutAdId.js` removes `com.google.android.gms.permission.AD_ID` and the ad-services permissions at prebuild and sets `google_analytics_adid_collection_enabled` to false, so the declaration says "No". Check the built bundle after a dependency change: `unzip -p dist/<file>.aab base/manifest/AndroidManifest.xml | strings | grep -i AD_ID` must print nothing. Build 1.0.0 (3) is the first one without it, and the closed-test release uses it.
+
 Kotlin is pinned to 2.4.0 (`expo-build-properties` in `app.json`), because the Firebase Auth library is built with it. Remove the pin when Expo's default catches up.
 
 ## Put the app on your own phone
