@@ -23,7 +23,7 @@
     },
     "android": {
       "package": "app.stillflame.mobile",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "backgroundColor": "#0F3D3A",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -61,6 +61,7 @@
       "@react-native-firebase/crashlytics",
       "@react-native-firebase/app-check",
       "./plugins/withUploadSigning",
+      "./plugins/withoutAdId",
       [
         "expo-build-properties",
         {
