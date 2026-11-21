@@ -21,7 +21,7 @@ import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { LanguageProvider, useLanguage } from "@/src/LanguageContext";
-import { syncPushRegistration } from "@/src/notifications";
+import { syncPushRegistration, watchPushToken } from "@/src/notifications";
 import { telemetry } from "@/src/telemetry";
 import { ToastProvider } from "@/src/components/Toast";
 import { fontsFor } from "@/src/theme";
@@ -82,6 +82,7 @@ function RootStack() {
   useEffect(() => {
     syncPushRegistration();
     telemetry.init();
+    return watchPushToken();
   }, []);
 
   // Which screens people use, by route name only. Never an id, a name or a piece of text.

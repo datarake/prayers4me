@@ -30,6 +30,7 @@ import { PrimaryButton, Screen } from "@/src/components/ui";
 import { type FontSet, type Palette } from "@/src/theme";
 import { useTheme } from "@/src/ThemeContext";
 import { useStyles } from "@/src/useStyles";
+import { explainEnableResult } from "@/src/notifyFeedback";
 
 export default function ForMeScreen() {
   const styles = useStyles(createStyles);
@@ -84,13 +85,13 @@ export default function ForMeScreen() {
       telemetry.track("notifications_changed", { enabled: "yes" });
       toast.show(copy.notifyOn);
       setPromptState("enabled");
-    } else if (result === "denied") {
-      toast.show(copy.notifyDenied, "error");
-      setPromptState("dismissed");
     } else {
-      toast.show(copy.notifyUnavailable, "error");
-      await dismissPrompt();
-      setPromptState("dismissed");
+      explainEnableResult(result, copy, toast.show);
+      // Offline is worth another try later; anything else would only nag.
+      if (result !== "offline") {
+        await dismissPrompt();
+        setPromptState("dismissed");
+      }
     }
   };
 

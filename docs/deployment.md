@@ -49,7 +49,7 @@ Everything runs in the Firebase project `prayers4me` (it is also a Google Cloud 
 | API | Cloud Run service `stillflame-api` | scales to zero, one container image |
 | Database | Cloud SQL for PostgreSQL 16 | smallest shared-core instance, daily backups, no high availability for the beta |
 | Migrations | Cloud Run job `stillflame-migrate` | same image, run before each release |
-| Housekeeping | Cloud Run job `stillflame-maintain` + Cloud Scheduler (every 6 hours) | prunes old rate-limit counters. A service that scales to zero cannot rely on an in-process timer |
+| Housekeeping | Cloud Run job `stillflame-maintain` + Cloud Scheduler (should run every 30 minutes, see below) | prunes old rate-limit counters, purges expired data, sends held "someone prayed" notifications and reads Expo push receipts to forget dead tokens. A service that scales to zero cannot rely on an in-process timer |
 | Secrets | Secret Manager | `DATABASE_URL`, `IP_HASH_SECRET` |
 | Domain | `api.stillflame.app` mapped to the service | DNS records are added at GoDaddy |
 | Images | Artifact Registry | built with Cloud Build |
@@ -92,3 +92,18 @@ It was tested locally: migrations apply, a weak production configuration is refu
 5. Map `api.stillflame.app`, add the DNS records at GoDaddy, wait for the certificate.
 6. Create the housekeeping job and its schedule.
 7. Build the app with `EXPO_PUBLIC_API_URL=https://api.stillflame.app` and `EXPO_PUBLIC_AUTH_MODE=firebase`.
+
+## Push notifications (2026-11-22)
+
+- The "prayed" endpoint now waits for the push before answering (at most 5 seconds for Expo), because Cloud Run can pause work left running after a response.
+- Prayers held back by the 3-hour throttle are sent by the `stillflame-maintain` job, so it must run often and send for real:
+  - set `PUSH_MODE=expo` on the job (it defaults to `log`, which only prints);
+  - run it every 30 minutes instead of every 6 hours.
+- Migration `011_push_receipts.sql` adds the `push_tickets` table: run `stillflame-migrate` before deploying the new image.
+
+```bash
+gcloud run jobs update stillflame-maintain --region=europe-west1 --update-env-vars=PUSH_MODE=expo
+gcloud scheduler jobs update http stillflame-maintain-every-6h --location=europe-west1 --schedule="*/30 * * * *"
+```
+
+The scheduler keeps its old name (`-every-6h`); renaming means creating a new one.

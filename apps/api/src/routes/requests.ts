@@ -285,9 +285,11 @@ requestsRoutes.post("/:id/pray", requireNotBanned(), async (c) => {
     };
   });
 
-  // Fire and forget: the prayer is already saved, a failed push must never fail it.
+  // Awaited on purpose: Cloud Run may pause work left running after the response, so a push
+  // started in the background could arrive late or never. It never throws, and the send to
+  // Expo is limited to a few seconds.
   if (!result.alreadyPrayed) {
-    void notifyPrayerReceived(sql, c.get("env"), requestId);
+    await notifyPrayerReceived(sql, c.get("env"), requestId);
   }
 
   return c.json({

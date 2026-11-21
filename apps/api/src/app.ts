@@ -89,10 +89,20 @@ export function createApp(env: Env, sql: Sql, verifiers?: Verifiers) {
       })
       .parse(await readJson(c));
 
-    await sql`
-      UPDATE users SET push_token = ${body.token}, updated_at = now()
-      WHERE id = ${user.id}
-    `;
+    await sql.begin(async (tx) => {
+      // One phone, one owner. After a reinstall the app signs in as a new person, and the
+      // old account must not keep sending this phone pushes for requests it can no longer see.
+      if (body.token) {
+        await tx`
+          UPDATE users SET push_token = NULL, updated_at = now()
+          WHERE push_token = ${body.token} AND id <> ${user.id}
+        `;
+      }
+      await tx`
+        UPDATE users SET push_token = ${body.token}, updated_at = now()
+        WHERE id = ${user.id}
+      `;
+    });
     return c.json({ registered: body.token !== null });
   });
 

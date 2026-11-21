@@ -5,6 +5,8 @@ import { Platform } from "react-native";
 import { api } from "./api";
 
 const STATE_KEY = "prayers4me.notifications";
+/** Set when turning notifications off could not reach the server; the next launch retries. */
+const CLEAR_PENDING_KEY = "prayers4me.notifications.clearPending";
 
 /** Banner while the app is open too, but silent: this is a quiet app. */
 Notifications.setNotificationHandler({
@@ -55,7 +57,20 @@ async function registerToken(): Promise<boolean> {
   return true;
 }
 
-export type EnableResult = "enabled" | "denied" | "unavailable";
+/**
+ * enabled: done. denied: the person said no in the system dialog. blocked: the system will not
+ * ask again, only the phone's settings can turn it on. offline: allowed, but the server could
+ * not be reached. unavailable: this device or build cannot receive pushes.
+ */
+export type EnableResult = "enabled" | "denied" | "blocked" | "offline" | "unavailable";
+
+async function ensureAndroidChannel() {
+  if (Platform.OS !== "android") return;
+  await Notifications.setNotificationChannelAsync("default", {
+    name: "Prayers",
+    importance: Notifications.AndroidImportance.DEFAULT,
+  });
+}
 
 /**
  * Called only when the person taps "Turn on" in our own prompt, never at launch.
@@ -64,14 +79,13 @@ export type EnableResult = "enabled" | "denied" | "unavailable";
 export async function enableNotifications(): Promise<EnableResult> {
   try {
     // Android 13+ shows the permission dialog only once a channel exists.
-    if (Platform.OS === "android") {
-      await Notifications.setNotificationChannelAsync("default", {
-        name: "Prayers",
-        importance: Notifications.AndroidImportance.DEFAULT,
-      });
-    }
+    await ensureAndroidChannel();
 
     const current = await Notifications.getPermissionsAsync();
+    if (!current.granted && !current.canAskAgain) {
+      await setPromptState("dismissed");
+      return "blocked";
+    }
     const result = current.granted
       ? current
       : await Notifications.requestPermissionsAsync({
@@ -80,14 +94,25 @@ export async function enableNotifications(): Promise<EnableResult> {
 
     if (!result.granted) {
       await setPromptState("dismissed");
-      return "denied";
+      return result.canAskAgain ? "denied" : "blocked";
     }
 
-    await registerToken();
+    let token: string;
+    try {
+      token = (await Notifications.getExpoPushTokenAsync({ projectId: projectId() })).data;
+    } catch {
+      // Simulators and Expo Go on Android cannot get a push token.
+      return "unavailable";
+    }
+    try {
+      await api.registerPushToken(token);
+    } catch {
+      return "offline";
+    }
+    await clearPendingClear();
     await setPromptState("enabled");
     return "enabled";
   } catch {
-    // Simulators and Expo Go on Android cannot get a push token. Try again another time.
     return "unavailable";
   }
 }
@@ -98,7 +123,13 @@ export async function enableNotifications(): Promise<EnableResult> {
  */
 export async function syncPushRegistration() {
   try {
+    if (await AsyncStorage.getItem(CLEAR_PENDING_KEY)) {
+      // Turning off earlier happened offline: tell the server now.
+      await api.registerPushToken(null);
+      await clearPendingClear();
+    }
     if ((await getPromptState()) !== "enabled") return;
+    await ensureAndroidChannel();
     const { granted } = await Notifications.getPermissionsAsync();
     if (granted) await registerToken();
     else await api.registerPushToken(null);
@@ -122,7 +153,29 @@ export async function disableNotifications(): Promise<void> {
   await setPromptState("dismissed");
   try {
     await api.registerPushToken(null);
+    await clearPendingClear();
   } catch {
-    // Offline: the server keeps the token until the next launch syncs it.
+    // Offline: remember it, so the next launch tells the server.
+    try {
+      await AsyncStorage.setItem(CLEAR_PENDING_KEY, "1");
+    } catch {
+      // Not critical.
+    }
   }
+}
+
+async function clearPendingClear() {
+  try {
+    await AsyncStorage.removeItem(CLEAR_PENDING_KEY);
+  } catch {
+    // Not critical.
+  }
+}
+
+/** Push tokens can change while the app runs (rare, mostly after an FCM reset). Keeps the server in step. */
+export function watchPushToken(): () => void {
+  const subscription = Notifications.addPushTokenListener(() => {
+    syncPushRegistration();
+  });
+  return () => subscription.remove();
 }

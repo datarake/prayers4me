@@ -9,6 +9,7 @@ import { Icon } from "@/src/components/Icon";
 import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
 import { telemetry } from "@/src/telemetry";
+import { explainEnableResult } from "@/src/notifyFeedback";
 import { forgetIdentity } from "@/src/identity";
 import { resetLocalData } from "@/src/session";
 import { Screen } from "@/src/components/ui";
@@ -77,10 +78,7 @@ export default function SettingsScreen() {
         telemetry.track("notifications_changed", { enabled: "yes" });
         toast.show(copy.notifyOn);
       } else {
-        toast.show(
-          result === "denied" ? copy.notifyDenied : copy.notifyUnavailable,
-          "error",
-        );
+        explainEnableResult(result, copy, toast.show);
       }
     }
     setBusy(false);
