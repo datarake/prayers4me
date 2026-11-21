@@ -8,7 +8,6 @@ function fakeBackend() {
     screens: [] as string[],
     properties: [] as Array<[string, string]>,
     errors: [] as Array<{ error: Error; context: string }>,
-    resets: 0,
   };
   const backend: Backend = {
     setCollectionEnabled: async (enabled) => void calls.collection.push(enabled),
@@ -16,66 +15,21 @@ function fakeBackend() {
     logScreen: (name) => void calls.screens.push(name),
     setUserProperty: (name, value) => void calls.properties.push([name, value]),
     recordError: (error, context) => void calls.errors.push({ error, context }),
-    resetData: async () => void (calls.resets += 1),
   };
   return { backend, calls };
 }
 
-function memoryStorage(initial: Record<string, string> = {}) {
-  const data = { ...initial };
-  return {
-    data,
-    storage: {
-      get: async (key: string) => data[key] ?? null,
-      set: async (key: string, value: string) => void (data[key] = value),
-    },
-  };
-}
-
-const KEY = "prayers4me.telemetryConsent";
-
-async function started(initial: Record<string, string> = {}) {
+async function started() {
   const { backend, calls } = fakeBackend();
-  const store = memoryStorage(initial);
-  const telemetry = createTelemetry({ loadBackend: () => backend, storage: store.storage });
+  const telemetry = createTelemetry({ loadBackend: () => backend });
   await telemetry.init();
-  return { telemetry, calls, store };
+  return { telemetry, calls };
 }
 
-describe("before the person agrees", () => {
-  it("starts with collection switched off and sends nothing", async () => {
+describe("at start-up", () => {
+  it("switches collection on and reports events, screens and the language", async () => {
     const { telemetry, calls } = await started();
-    expect(telemetry.getConsent()).toBe("unset");
-    expect(calls.collection).toEqual([false]);
-
-    telemetry.track("request_deleted");
-    telemetry.screen("/pray");
-    telemetry.setLanguage("en");
-    telemetry.error(new Error("boom"), "test");
-
-    expect(calls.events).toEqual([]);
-    expect(calls.screens).toEqual([]);
-    expect(calls.properties).toEqual([]);
-    expect(calls.errors).toEqual([]);
-  });
-
-  it("stays silent after the person said no", async () => {
-    const { telemetry, calls } = await started({ [KEY]: "denied" });
-    telemetry.track("request_deleted");
-    telemetry.error(new Error("boom"), "test");
-    expect(calls.events).toEqual([]);
-    expect(calls.errors).toEqual([]);
-    expect(calls.collection).toEqual([false]);
-  });
-});
-
-describe("after the person agrees", () => {
-  it("switches collection on, remembers the choice and reports events and screens", async () => {
-    const { telemetry, calls, store } = await started();
-    await telemetry.setConsent(true);
-
-    expect(calls.collection).toEqual([false, true]);
-    expect(store.data[KEY]).toBe("granted");
+    expect(calls.collection).toEqual([true]);
 
     telemetry.track("prayed", { filter: "waiting" });
     telemetry.screen("/pray");
@@ -84,29 +38,11 @@ describe("after the person agrees", () => {
     expect(calls.screens).toEqual(["pray"]);
     expect(calls.properties).toEqual([["language", "ro"]]);
   });
-
-  it("restores the choice on the next launch", async () => {
-    const { telemetry, calls } = await started({ [KEY]: "granted" });
-    expect(telemetry.getConsent()).toBe("granted");
-    expect(calls.collection).toEqual([true]);
-  });
-
-  it("stops everything and clears the data when the person changes their mind", async () => {
-    const { telemetry, calls, store } = await started({ [KEY]: "granted" });
-    await telemetry.setConsent(false);
-
-    expect(calls.collection).toEqual([true, false]);
-    expect(calls.resets).toBe(1);
-    expect(store.data[KEY]).toBe("denied");
-
-    telemetry.track("request_deleted");
-    expect(calls.events).toEqual([]);
-  });
 });
 
 describe("what an event may contain", () => {
   it("drops any parameter that is not on the list, and any value that is not an allowed choice", async () => {
-    const { telemetry, calls } = await started({ [KEY]: "granted" });
+    const { telemetry, calls } = await started();
     telemetry.track("request_sent", {
       language: "en",
       length: "short",
@@ -126,7 +62,7 @@ describe("what an event may contain", () => {
   });
 
   it("ignores an event that is not in the catalogue", async () => {
-    const { telemetry, calls } = await started({ [KEY]: "granted" });
+    const { telemetry, calls } = await started();
     telemetry.track("typed_the_whole_request" as never, { text: "hello" } as never);
     expect(calls.events).toEqual([]);
   });
@@ -143,7 +79,7 @@ describe("what an event may contain", () => {
   });
 
   it("only reports a language it knows", async () => {
-    const { telemetry, calls } = await started({ [KEY]: "granted" });
+    const { telemetry, calls } = await started();
     telemetry.setLanguage("klingon");
     expect(calls.properties).toEqual([]);
   });
@@ -151,7 +87,7 @@ describe("what an event may contain", () => {
 
 describe("errors", () => {
   it("scrubs ids, emails and phone numbers but keeps the shape of the error", async () => {
-    const { telemetry, calls } = await started({ [KEY]: "granted" });
+    const { telemetry, calls } = await started();
     const err = new TypeError("failed for ana@example.com on 8083dda2-ad22-4cce-b9ca-826714335590 call +40 700 123 456");
     telemetry.error(err, "api");
 
@@ -162,7 +98,7 @@ describe("errors", () => {
   });
 
   it("accepts things that are not Error objects", async () => {
-    const { telemetry, calls } = await started({ [KEY]: "granted" });
+    const { telemetry, calls } = await started();
     telemetry.error("just a string", "boundary");
     expect(calls.errors[0]!.error.message).toBe("just a string");
   });
@@ -170,62 +106,35 @@ describe("errors", () => {
 
 describe("when monitoring is not available or fails", () => {
   it("does nothing, quietly, in a build without the native module", async () => {
-    const store = memoryStorage({ [KEY]: "granted" });
-    const telemetry = createTelemetry({ loadBackend: () => null, storage: store.storage });
-    await expect(telemetry.init()).resolves.toBe("granted");
+    const telemetry = createTelemetry({ loadBackend: () => null });
+    await expect(telemetry.init()).resolves.toBeUndefined();
     expect(telemetry.isAvailable()).toBe(false);
     expect(() => {
       telemetry.track("request_deleted");
       telemetry.screen("/pray");
       telemetry.error(new Error("x"), "t");
     }).not.toThrow();
-    await expect(telemetry.setConsent(false)).resolves.toBeUndefined();
   });
 
   it("never lets a failing backend reach the person", async () => {
     const { backend } = fakeBackend();
+    const boom = () => {
+      throw new Error("native crash");
+    };
     const failing: Backend = {
       ...backend,
-      logEvent: vi.fn(() => {
-        throw new Error("native crash");
-      }),
-      logScreen: vi.fn(() => {
-        throw new Error("native crash");
-      }),
-      recordError: vi.fn(() => {
-        throw new Error("native crash");
-      }),
-      setCollectionEnabled: vi.fn(async () => {
-        throw new Error("native crash");
-      }),
+      logEvent: vi.fn(boom),
+      logScreen: vi.fn(boom),
+      recordError: vi.fn(boom),
+      setCollectionEnabled: vi.fn(async () => boom()),
     };
-    const store = memoryStorage({ [KEY]: "granted" });
-    const telemetry = createTelemetry({ loadBackend: () => failing, storage: store.storage });
-    await expect(telemetry.init()).resolves.toBe("granted");
+    const telemetry = createTelemetry({ loadBackend: () => failing });
+    await expect(telemetry.init()).resolves.toBeUndefined();
     expect(() => {
       telemetry.track("request_deleted");
       telemetry.screen("/pray");
       telemetry.error(new Error("x"), "t");
     }).not.toThrow();
-    await expect(telemetry.setConsent(true)).resolves.toBeUndefined();
-  });
-
-  it("copes with unreadable storage", async () => {
-    const { backend } = fakeBackend();
-    const telemetry = createTelemetry({
-      loadBackend: () => backend,
-      storage: {
-        get: async () => {
-          throw new Error("disk");
-        },
-        set: async () => {
-          throw new Error("disk");
-        },
-      },
-    });
-    await expect(telemetry.init()).resolves.toBe("unset");
-    await expect(telemetry.setConsent(true)).resolves.toBeUndefined();
-    expect(telemetry.getConsent()).toBe("granted");
   });
 });
 

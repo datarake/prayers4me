@@ -39,11 +39,11 @@ curl -H "Authorization: Bearer dev:alice" http://localhost:8080/v1/session
 
 ## Analytics and crash reporting (Firebase)
 
-Firebase Analytics and Crashlytics are in the app, and **off until a person opts in** under Settings, "Help improve the app". The code is in `apps/mobile/src/telemetry`:
+Firebase Analytics and Crashlytics are in the app, and **on for everyone from launch**: there is no opt-in or toggle in Settings (removed 2026-11-21; the privacy policy says so). The code is in `apps/mobile/src/telemetry`:
 
-- `core.ts`: the rules. Nothing is sent without consent. Events come from a fixed list with fixed values (`EVENTS`), so no free text, name or id can leave the phone. Errors are scrubbed of ids, emails and phone numbers. It has no Firebase dependency and is fully tested.
+- `core.ts`: the rules. Collection is switched on in `init()` at start-up. Events come from a fixed list with fixed values (`EVENTS`), so no free text, name or id can leave the phone. Errors are scrubbed of ids, emails and phone numbers. It has no Firebase dependency and is fully tested.
 - `firebase.ts`: the Firebase adapter. It loads the native modules on demand, so **in Expo Go and on the web it quietly does nothing**.
-- `apps/mobile/firebase.json`: native settings that keep collection off until the app switches it on, and turn off advertising and device identifiers.
+- `apps/mobile/firebase.json`: native settings that keep collection off until `init()` switches it on, and turn off advertising and device identifiers.
 
 **The Firebase project** is `prayers4me` (free Spark plan, owner: the Google account that created it). It has an iOS app ("Stillflame iOS") and an Android app ("Stillflame Android"), both with the id `app.stillflame.mobile`. The two older apps (`app.prayers4me.mobile`) were removed on 2026-11-08 and are permanently deleted by Firebase after 30 days; until then they can be restored from "Pending delete apps" in Project settings, and its own Google Analytics account called Prayers4me (these names date from before the app became Stillflame) with every optional Google data-sharing setting turned off. Analytics location: Romania (can be changed in Google Analytics settings). To get the config files again: Firebase console, Project settings, General, Your apps, download `GoogleService-Info.plist` and `google-services.json` into `apps/mobile/firebase/`.
 

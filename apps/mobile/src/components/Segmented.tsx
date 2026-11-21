@@ -36,7 +36,12 @@ export function Segmented<T extends string>({
               pressed && { opacity: 0.8 },
             ]}
           >
-            <Text style={[styles.label, selected && styles.labelSelected]}>
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.8}
+              style={[styles.label, selected && styles.labelSelected]}
+            >
               {option.label}
             </Text>
           </Pressable>
@@ -54,7 +59,11 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
       marginTop: 12,
     },
     segment: {
-      flex: 1,
+      // Size to content (then share leftover space) so a longer label such as
+      // "Întunecat" is not squeezed into an equal-width third and wrapped.
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: "auto",
       minHeight: 44,
       alignItems: "center",
       justifyContent: "center",

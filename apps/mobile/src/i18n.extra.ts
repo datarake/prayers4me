@@ -4,6 +4,7 @@ export type ExtraDictionary = {
   cancel: string;
   retry: string;
   errorNetwork: string;
+  loadingSlow: string;
   yourRequest: string;
   underReview: string;
   prayerSent: string;
@@ -70,8 +71,6 @@ export type ExtraDictionary = {
   settingsNotifications: string;
   settingsNotificationsHint: string;
   settingsVersion: string;
-  telemetryLabel: string;
-  telemetryHint: string;
   appearanceLabel: string;
   appearanceSystem: string;
   appearanceLight: string;
@@ -108,6 +107,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     cancel: "Cancel",
     retry: "Try again",
     errorNetwork: "We cannot connect right now. Check your connection and try again.",
+    loadingSlow: "Still trying. The connection looks slow.",
     yourRequest: "Your request",
     underReview: "Under review",
     prayerSent: "Prayer sent",
@@ -180,8 +180,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Prayer notifications",
     settingsNotificationsHint: "One quiet notification when someone prays for you.",
     settingsVersion: "Version",
-    telemetryLabel: "Help improve the app",
-    telemetryHint: "Share anonymous usage and crash reports. Never your requests, names or anything you write.",
     appearanceLabel: "Appearance",
     appearanceSystem: "Automatic",
     appearanceLight: "Light",
@@ -223,6 +221,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     cancel: "Cancelar",
     retry: "Reintentar",
     errorNetwork: "No podemos conectar ahora. Revisa tu conexión e inténtalo de nuevo.",
+    loadingSlow: "Seguimos intentándolo. La conexión parece lenta.",
     yourRequest: "Tu petición",
     underReview: "En revisión",
     prayerSent: "Oración enviada",
@@ -295,8 +294,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notificaciones de oración",
     settingsNotificationsHint: "Una notificación discreta cuando alguien ore por ti.",
     settingsVersion: "Versión",
-    telemetryLabel: "Ayuda a mejorar la app",
-    telemetryHint: "Comparte datos de uso anónimos e informes de fallos. Nunca tus peticiones, nombres ni nada de lo que escribes.",
     appearanceLabel: "Apariencia",
     appearanceSystem: "Automático",
     appearanceLight: "Claro",
@@ -338,6 +335,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     cancel: "Annuler",
     retry: "Réessayer",
     errorNetwork: "Connexion impossible. Vérifie ton réseau et réessaie.",
+    loadingSlow: "On réessaie encore. La connexion semble lente.",
     yourRequest: "Ta demande",
     underReview: "En cours d’examen",
     prayerSent: "Prière envoyée",
@@ -410,8 +408,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notifications de prière",
     settingsNotificationsHint: "Une notification discrète quand quelqu’un prie pour toi.",
     settingsVersion: "Version",
-    telemetryLabel: "Aide à améliorer l’app",
-    telemetryHint: "Partage des statistiques d’usage anonymes et des rapports de plantage. Jamais tes demandes, tes noms ni rien de ce que tu écris.",
     appearanceLabel: "Apparence",
     appearanceSystem: "Automatique",
     appearanceLight: "Clair",
@@ -453,6 +449,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     cancel: "Anulează",
     retry: "Încearcă din nou",
     errorNetwork: "Nu ne putem conecta acum. Verifică conexiunea și încearcă din nou.",
+    loadingSlow: "Încercăm în continuare. Conexiunea pare lentă.",
     yourRequest: "Cererea ta",
     underReview: "În verificare",
     prayerSent: "Rugăciune trimisă",
@@ -525,8 +522,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Notificări de rugăciune",
     settingsNotificationsHint: "O notificare discretă când cineva se roagă pentru tine.",
     settingsVersion: "Versiune",
-    telemetryLabel: "Ajută la îmbunătățirea aplicației",
-    telemetryHint: "Trimite date anonime de utilizare și rapoarte de erori. Niciodată cererile, numele tale sau ce scrii.",
     appearanceLabel: "Aspect",
     appearanceSystem: "Automat",
     appearanceLight: "Luminos",
@@ -568,6 +563,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     cancel: "Скасувати",
     retry: "Спробувати знову",
     errorNetwork: "Немає зʼєднання. Перевір інтернет і спробуй знову.",
+    loadingSlow: "Ще пробуємо. Зʼєднання, схоже, повільне.",
     yourRequest: "Твоє прохання",
     underReview: "На перевірці",
     prayerSent: "Молитву надіслано",
@@ -640,8 +636,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Сповіщення про молитву",
     settingsNotificationsHint: "Одне тихе сповіщення, коли хтось помолиться за тебе.",
     settingsVersion: "Версія",
-    telemetryLabel: "Допоможи покращити застосунок",
-    telemetryHint: "Надсилай анонімну статистику використання та звіти про збої. Ніколи не твої прохання, імена чи те, що ти пишеш.",
     appearanceLabel: "Вигляд",
     appearanceSystem: "Автоматично",
     appearanceLight: "Світла",
@@ -683,6 +677,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     cancel: "Отмена",
     retry: "Повторить",
     errorNetwork: "Нет соединения. Проверь интернет и попробуй снова.",
+    loadingSlow: "Всё ещё пробуем. Соединение, похоже, медленное.",
     yourRequest: "Твоя просьба",
     underReview: "На проверке",
     prayerSent: "Молитва отправлена",
@@ -755,8 +750,6 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     settingsNotifications: "Уведомления о молитве",
     settingsNotificationsHint: "Одно тихое уведомление, когда кто-то помолится за тебя.",
     settingsVersion: "Версия",
-    telemetryLabel: "Помоги улучшить приложение",
-    telemetryHint: "Отправляй анонимную статистику использования и отчёты о сбоях. Никогда не твои просьбы, имена или то, что ты пишешь.",
     appearanceLabel: "Оформление",
     appearanceSystem: "Автоматически",
     appearanceLight: "Светлая",

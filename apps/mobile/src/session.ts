@@ -45,23 +45,6 @@ export async function setStoredLanguage(language: LanguageCode): Promise<void> {
   await AsyncStorage.setItem(LANGUAGE_KEY, language);
 }
 
-/** The welcome screen is for the first launch only. After that the app opens on the feed. */
-export async function hasSeenWelcome(): Promise<boolean> {
-  try {
-    return (await AsyncStorage.getItem(WELCOME_KEY)) === "1";
-  } catch {
-    return false;
-  }
-}
-
-export async function markWelcomeSeen(): Promise<void> {
-  try {
-    await AsyncStorage.setItem(WELCOME_KEY, "1");
-  } catch {
-    // Not critical: the welcome screen would just show once more.
-  }
-}
-
 const JUST_SENT_KEY = "prayers4me.justSent";
 const JUST_SENT_WINDOW_MS = 60 * 60 * 1000;
 

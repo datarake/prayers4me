@@ -1,14 +1,12 @@
 /**
  * Privacy-first telemetry. Three rules, enforced here rather than left to each call site:
  *
- * 1. Nothing is sent until the person opts in, and turning it off stops everything and clears
- *    what the analytics service holds for this device.
+ * 1. Collection is switched off in the native config and switched on here at start-up, for
+ *    everyone. There is no opt-in or opt-out in the app.
  * 2. Events come from a fixed list and their values from fixed choices. There is no free text,
  *    so a name, a request or an id can never end up in a report by accident.
  * 3. Errors are scrubbed of anything that looks like an id, an email or a phone number.
  */
-
-export type Consent = "granted" | "denied" | "unset";
 
 /** What a monitoring service must be able to do. Firebase is one implementation. */
 export interface Backend {
@@ -17,12 +15,6 @@ export interface Backend {
   logScreen(name: string): void;
   setUserProperty(name: string, value: string): void;
   recordError(error: Error, context: string): void;
-  resetData(): Promise<void>;
-}
-
-export interface Storage {
-  get(key: string): Promise<string | null>;
-  set(key: string, value: string): Promise<void>;
 }
 
 const LANGUAGES = ["en", "es", "fr", "ro", "uk", "ru"] as const;
@@ -58,8 +50,6 @@ export type EventParams<E extends EventName> = {
   [K in keyof (typeof EVENTS)[E]]?: (typeof EVENTS)[E][K] extends readonly (infer V)[] ? V : never;
 };
 
-const CONSENT_KEY = "prayers4me.telemetryConsent";
-
 /** Removes what could identify a person or a request from text that leaves the device. */
 export function scrub(text: string, max = 300): string {
   return text
@@ -75,42 +65,18 @@ export function safeScreenName(path: string): string | null {
   return /^[a-z0-9/_-]{1,40}$/i.test(name) ? name : null;
 }
 
-export function createTelemetry(deps: { loadBackend: () => Backend | null; storage: Storage }) {
+export function createTelemetry(deps: { loadBackend: () => Backend | null }) {
   let backend: Backend | null = null;
-  let consent: Consent = "unset";
   let started = false;
 
-  const active = () => consent === "granted" && backend !== null;
+  const active = () => backend !== null;
 
-  async function init(): Promise<Consent> {
-    if (started) return consent;
+  async function init(): Promise<void> {
+    if (started) return;
     started = true;
     backend = deps.loadBackend();
-    try {
-      const stored = await deps.storage.get(CONSENT_KEY);
-      consent = stored === "granted" || stored === "denied" ? stored : "unset";
-    } catch {
-      consent = "unset";
-    }
-    // Collection is off in the native config. Switch it on only for someone who agreed.
-    await backend?.setCollectionEnabled(consent === "granted").catch(() => undefined);
-    return consent;
-  }
-
-  async function setConsent(granted: boolean): Promise<void> {
-    consent = granted ? "granted" : "denied";
-    try {
-      await deps.storage.set(CONSENT_KEY, consent);
-    } catch {
-      // The choice still applies for this session.
-    }
-    if (!backend) return;
-    try {
-      await backend.setCollectionEnabled(granted);
-      if (!granted) await backend.resetData();
-    } catch {
-      // A monitoring problem must never reach the person.
-    }
+    // Collection is off in the native config. Switch it on for everyone.
+    await backend?.setCollectionEnabled(true).catch(() => undefined);
   }
 
   function track<E extends EventName>(event: E, params?: EventParams<E>): void {
@@ -162,8 +128,6 @@ export function createTelemetry(deps: { loadBackend: () => Backend | null; stora
 
   return {
     init,
-    setConsent,
-    getConsent: () => consent,
     /** True when this build can report at all (not Expo Go, not the web). */
     isAvailable: () => backend !== null,
     track,

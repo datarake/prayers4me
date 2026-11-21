@@ -104,12 +104,12 @@ Configured in `@prayers4me/shared` (`RATE_LIMITS`) and enforced in the API:
 
 ### Mobile
 
-- **First launch:** a welcome screen (brand, the tagline, ask or pray, language). After that the app opens on the feed
+- **Every launch:** a welcome screen (brand, the tagline, ask or pray, language)
 - **Tabs:** Pray (feed with Newest and Needs prayer), My requests (own requests, edit, delete), Settings (language, notifications, guidelines)
 - **Modals and pushes:** compose and edit form, language picker, community guidelines
 - Device id stored locally for stable dev sessions
 
-Routes live in `apps/mobile/app`: `index` (welcome gate), `(tabs)/pray`, `(tabs)/mine`, `(tabs)/settings`, `for-me/compose`, `languages`, `guidelines`.
+Routes live in `apps/mobile/app`: `index` (welcome screen), `(tabs)/pray`, `(tabs)/mine`, `(tabs)/settings`, `for-me/compose`, `languages`, `guidelines`.
 
 ### Web (planned)
 

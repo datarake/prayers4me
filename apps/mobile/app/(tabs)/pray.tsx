@@ -11,6 +11,7 @@ import {
   Alert,
   FlatList,
   LayoutAnimation,
+  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -43,6 +44,7 @@ export default function ForOthersScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [moreFailed, setMoreFailed] = useState(false);
   const [failed, setFailed] = useState(false);
   const [reportId, setReportId] = useState<string | null>(null);
   const [filter, setFilter] = useState<FeedFilter>("newest");
@@ -50,6 +52,17 @@ export default function ForOthersScreen() {
   // Ignore responses that arrive after the language changed or a newer load started.
   const generation = useRef(0);
   const lastLoaded = useRef(0);
+  const loadingRef = useRef(true);
+  loadingRef.current = loading;
+  const [slow, setSlow] = useState(false);
+
+  // After a few seconds of loading, say so: a bare skeleton looks frozen on a weak connection.
+  useEffect(() => {
+    setSlow(false);
+    if (!loading) return;
+    const timer = setTimeout(() => setSlow(true), 7000);
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: copy.forOthersTitle });
@@ -59,6 +72,7 @@ export default function ForOthersScreen() {
     async (mode: "initial" | "refresh") => {
       const current = ++generation.current;
       setFailed(false);
+      setMoreFailed(false);
       try {
         const page = await api.feed(language, undefined, filter);
         if (current !== generation.current) return;
@@ -94,14 +108,19 @@ export default function ForOthersScreen() {
     useCallback(() => {
       if (lastLoaded.current && Date.now() - lastLoaded.current > 60_000) {
         load("refresh");
+      } else if (!lastLoaded.current && !loadingRef.current) {
+        // Nothing ever loaded (a weak connection at launch): try again instead of staying empty.
+        setLoading(true);
+        load("initial");
       }
     }, [load]),
   );
 
-  const loadMore = useCallback(async () => {
-    if (!cursor || loadingMore || loading || refreshing) return;
+  const loadMore = useCallback(async (retrying = false) => {
+    if (!cursor || loadingMore || (moreFailed && !retrying) || loading || refreshing) return;
     const current = generation.current;
     setLoadingMore(true);
+    setMoreFailed(false);
     try {
       const page = await api.feed(language, cursor, filter);
       if (current !== generation.current) return;
@@ -110,12 +129,13 @@ export default function ForOthersScreen() {
         return [...prev, ...page.items.filter((p) => !seen.has(p.id))];
       });
       setCursor(page.nextCursor);
-    } catch (err) {
-      toast.show(errorMessage(err, copy.errorNetwork), "error");
+    } catch {
+      // Show a "try again" row instead of retrying on every scroll event.
+      if (current === generation.current) setMoreFailed(true);
     } finally {
       setLoadingMore(false);
     }
-  }, [cursor, loadingMore, loading, refreshing, language, filter, copy.errorNetwork, toast]);
+  }, [cursor, loadingMore, moreFailed, loading, refreshing, language, filter]);
 
   const patch = (id: string, change: Partial<PrayerRequestPublic>) =>
     setItems((prev) =>
@@ -206,7 +226,7 @@ export default function ForOthersScreen() {
         data={items}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
-        onEndReached={loadMore}
+        onEndReached={() => loadMore()}
         onEndReachedThreshold={0.6}
         refreshControl={
           <RefreshControl
@@ -236,7 +256,10 @@ export default function ForOthersScreen() {
         }
         ListEmptyComponent={
           loading ? (
-            <SkeletonList />
+            <>
+              <SkeletonList />
+              {slow ? <Text style={[styles.footer, styles.end]}>{copy.loadingSlow}</Text> : null}
+            </>
           ) : failed ? (
             <EmptyState
               title={copy.errorGeneric}
@@ -262,6 +285,16 @@ export default function ForOthersScreen() {
         ListFooterComponent={
           loadingMore ? (
             <ActivityIndicator color={colors.teal} style={styles.footer} />
+          ) : moreFailed ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => loadMore(true)}
+              style={({ pressed }) => [styles.footer, pressed && { opacity: 0.6 }]}
+            >
+              <Text style={[styles.end, styles.retryLink]}>
+                {copy.errorNetwork} {copy.retry}
+              </Text>
+            </Pressable>
           ) : items.length > 0 && !cursor ? (
             <Text style={[styles.footer, styles.end]}>{copy.feedEnd}</Text>
           ) : undefined
@@ -309,6 +342,10 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
     },
     footer: {
       paddingVertical: 28,
+    },
+    retryLink: {
+      textDecorationLine: "underline",
+      paddingHorizontal: 22,
     },
     end: {
       textAlign: "center",

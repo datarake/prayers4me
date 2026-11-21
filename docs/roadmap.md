@@ -21,7 +21,7 @@ Status: `done`, `in progress`, `todo`, or `needs you` (needs an account, a decis
 | P0.5 | **Support contact** shown in the app and the store listing | Apple requires one for apps with user-generated content. | needs you (an address) |
 | P0.6 | **Moderation tooling and a response rule**: a queue someone can actually use, a named owner, and a target to act on reports within 24 hours | Stores expect action on abusive content within about a day. | done (rules in `docs/operations.md`, report weighting, review queue, audit log, and the moderation page live at `stillflame.app/admin`) |
 | P0.7 | **Measurement without tracking people**: server-side metrics from the database (first-prayer rate, time to first prayer, retention proxies). No client analytics, no request text. | You cannot tell if the product works without it, and this keeps the anonymity promise. | done (`GET /v1/admin/metrics`) |
-| P0.8 | **Crash reporting and usage statistics** | Needed before real users, without sending content. | built with Firebase (Crashlytics and Analytics), off until a person opts in. Needs the Firebase project and config files, and a first run on a development build to verify. |
+| P0.8 | **Crash reporting and usage statistics** | Needed before real users, without sending content. | built with Firebase (Crashlytics and Analytics), on for everyone from launch, no toggle. Needs the Firebase project and config files, and a first run on a development build to verify. |
 
 ### Follow-ups found while building P0
 
@@ -106,7 +106,7 @@ The tagline is "Someone prayed for you." Today the author only learns it by open
 |---------|-------|
 | **Edit my request** (done) | Authors can fix typos: name and text only, never the language. Capped at 3 edits, same content checks as a new request, marked "Edited", previous versions stored in `request_edits`. Not allowed while a request is under review. |
 
-| **Tabs and settings** (done) | Pray, My requests and Settings in a tab bar. The welcome screen shows on the first launch only. Settings holds language, a notifications switch and the guidelines. |
+| **Tabs and settings** (done) | Pray, My requests and Settings in a tab bar. The welcome screen shows on every launch. Settings holds language, a notifications switch and the guidelines. |
 | **UX review fixes** (done) | Relative times ("25 min ago") from our own localized strings, because the built-in formatter silently fell back to calendar dates. A darker teal (`tealText`, 5.3:1) for small text. |
 | **Feed readability** (done) | Long requests are clamped to 5 lines with "Read more". A "Needs prayer" filter lists requests nobody has prayed for yet. Prayed-for cards step back, and the pray button is outlined until pressed. |
 

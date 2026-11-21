@@ -23,11 +23,9 @@ A place to ask for prayer and to pray for others, anonymously. People who pray s
 
 Your requests can describe health, family and faith. That is sensitive information. We ask for your agreement when you send one, and we use it only to show your request to the community and to keep the community safe.
 
-## Usage and crash reports (only if you agree)
+## Usage and crash reports
 
-Under Settings, "Help improve the app" is **off until you turn it on**. Nothing is collected before that, and turning it off again stops collection and asks Google to clear the analytics data held for your device.
-
-If you turn it on, the app uses Firebase Analytics and Firebase Crashlytics (Google) to send:
+The app uses Firebase Analytics and Firebase Crashlytics (Google) to send, automatically and for everyone:
 
 - which screens are opened and a short list of anonymous actions, for example "a request was sent" with its language, "someone prayed", "the language was changed";
 - reports when the app crashes or the server fails, with the technical details needed to fix it.
@@ -36,7 +34,7 @@ These reports never contain what you write, names, contact details, ids of reque
 
 ## What we do not collect
 
-No advertising identifier, no location from your phone, no contacts. Without your agreement above, no usage tracking or crash reporting at all. We measure whether the service works with counts computed on the server (for example how many requests received a prayer within a day). Request text is not used for that.
+No advertising identifier, no location from your phone, no contacts. Apart from the anonymous usage and crash reports described above, no tracking. We measure whether the service works with counts computed on the server (for example how many requests received a prayer within a day). Request text is not used for that.
 
 ## How long we keep it
 
@@ -46,7 +44,7 @@ No advertising identifier, no location from your phone, no contacts. Without you
 - Deleting your data in Settings erases your account, your requests, your prayers and your reports straight away.
 - A ban is kept on record for as long as it is in force, and for **one year** after it ends.
 - Network fingerprints and daily counters used to stop abuse are erased after 7 days.
-- Usage and crash reports, only if you agreed to them: Google keeps event-level usage data for 2 months and crash reports for 90 days.
+- Usage and crash reports: Google keeps event-level usage data for 2 months and crash reports for 90 days.
 
 These periods are enforced by an automatic job that runs every few hours.
 
@@ -56,11 +54,11 @@ You can delete everything in the app under Settings, Delete my data. Under the E
 
 If you are not satisfied with our answer you can complain to the data protection authority of your country. In Romania this is the National Supervisory Authority for Personal Data Processing (ANSPDCP, www.dataprotection.ro).
 
-We process your data because it is needed to provide the service you ask for, because you agree to it (your requests, and usage and crash reports), and because we have a legitimate interest in keeping the community safe and the service secure.
+We process your data because it is needed to provide the service you ask for, because you agree to it (your requests), and because we have a legitimate interest in keeping the community safe and the service secure, and in finding and fixing errors and understanding how the app is used (usage and crash reports).
 
 ## Who helps us run it
 
-Google Cloud, which hosts the server and the database in Belgium (European Union), the push service (Expo and Apple or Google), and Google (Firebase Authentication and App Check, always; Firebase Analytics and Crashlytics, only if you agree to usage and crash reports), and Apple or Google for the attestation. We do not sell data and we show no ads.
+Google Cloud, which hosts the server and the database in Belgium (European Union), the push service (Expo and Apple or Google), and Google (Firebase Authentication and App Check, always; Firebase Analytics and Crashlytics, always), and Apple or Google for the attestation. We do not sell data and we show no ads.
 
 ## Children
 

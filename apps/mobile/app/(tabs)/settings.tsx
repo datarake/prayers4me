@@ -32,7 +32,6 @@ export default function SettingsScreen() {
   const { language, copy } = useLanguage();
   const [notifications, setNotifications] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [sharing, setSharing] = useState(false);
   const [blocked, setBlocked] = useState(0);
 
   useLayoutEffect(() => {
@@ -42,7 +41,6 @@ export default function SettingsScreen() {
   useFocusEffect(
     useCallback(() => {
       isNotificationsOn().then(setNotifications);
-      telemetry.init().then((consent) => setSharing(consent === "granted"));
       api.blockedCount().then((r) => setBlocked(r.count)).catch(() => undefined);
     }, []),
   );
@@ -86,11 +84,6 @@ export default function SettingsScreen() {
       }
     }
     setBusy(false);
-  };
-
-  const onToggleSharing = async (next: boolean) => {
-    setSharing(next);
-    await telemetry.setConsent(next);
   };
 
   const onChangeTheme = (next: ThemePreference) => {
@@ -226,21 +219,6 @@ export default function SettingsScreen() {
             </View>
             <Icon name="share" size={20} color={colors.inkSoft} />
           </Pressable>
-        </View>
-
-        <View style={styles.group}>
-          <View style={styles.row}>
-            <View style={styles.textBlock}>
-              <Text style={styles.label}>{copy.telemetryLabel}</Text>
-              <Text style={styles.hint}>{copy.telemetryHint}</Text>
-            </View>
-            <Switch
-              value={sharing}
-              onValueChange={onToggleSharing}
-              trackColor={{ true: colors.tealBright, false: colors.mistDeep }}
-              accessibilityLabel={copy.telemetryLabel}
-            />
-          </View>
         </View>
 
         <View style={styles.group}>

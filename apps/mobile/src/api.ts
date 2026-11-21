@@ -32,38 +32,90 @@ export function errorMessage(err: unknown, fallback: string): string {
   return err instanceof ApiError ? err.message : fallback;
 }
 
-async function send(path: string, init: RequestInit | undefined, forceRefresh: boolean) {
-  const headers = await authHeaders(forceRefresh);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 12000);
-  try {
-    const res = await fetch(`${apiBaseUrl()}${path}`, {
-      ...init,
-      signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        ...headers,
-        ...(init?.headers ?? {}),
+const TIMEOUT_MS = 15000;
+
+class TimeoutError extends Error {
+  constructor() {
+    super("Server connection timed out");
+  }
+}
+
+/**
+ * Rejects when the work takes too long. Signing in and the App Check token can hang on a weak
+ * connection, and they cannot be aborted, so the whole call (not only the fetch) races a timer.
+ */
+function withDeadline<T>(work: Promise<T>, ms: number, onTimeout: () => void): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      onTimeout();
+      reject(new TimeoutError());
+    }, ms);
+    work.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
       },
-    });
-    const body = await res.json().catch(() => ({}));
-    return { res, body };
-  } catch (err) {
-    if (err instanceof Error && err.name === "AbortError") {
-      throw new Error("Server connection timed out");
+      (err: unknown) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
+
+async function send(path: string, init: RequestInit | undefined, forceRefresh: boolean) {
+  const controller = new AbortController();
+  return withDeadline(
+    (async () => {
+      const headers = await authHeaders(forceRefresh);
+      try {
+        const res = await fetch(`${apiBaseUrl()}${path}`, {
+          ...init,
+          signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+            ...headers,
+            ...(init?.headers ?? {}),
+          },
+        });
+        const body = await res.json().catch(() => ({}));
+        return { res, body };
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") throw new TimeoutError();
+        throw err;
+      }
+    })(),
+    TIMEOUT_MS,
+    () => controller.abort(),
+  );
+}
+
+const isGet = (init?: RequestInit) => !init?.method || init.method === "GET";
+
+/** A weak connection often fails once and works a moment later. Only reads are repeated. */
+async function sendWithRetry(path: string, init: RequestInit | undefined, forceRefresh: boolean) {
+  const attempts = isGet(init) ? 3 : 1;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const result = await send(path, init, forceRefresh);
+      if (attempt < attempts && [502, 503, 504].includes(result.res.status)) {
+        await new Promise((r) => setTimeout(r, 700 * attempt));
+        continue;
+      }
+      return result;
+    } catch (err) {
+      if (attempt >= attempts) throw err;
+      await new Promise((r) => setTimeout(r, 700 * attempt));
     }
-    throw err;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  let { res, body } = await send(path, init, false);
+  let { res, body } = await sendWithRetry(path, init, false);
 
   // An expired or revoked sign-in token: get a fresh one from Firebase and try once more.
   if (res.status === 401 && AUTH_MODE === "firebase") {
-    ({ res, body } = await send(path, init, true));
+    ({ res, body } = await sendWithRetry(path, init, true));
   }
 
   if (!res.ok) {

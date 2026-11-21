@@ -61,9 +61,6 @@ export function loadFirebaseBackend(): Backend | null {
         crashlyticsModule.log(crashlytics, context);
         crashlyticsModule.recordError(crashlytics, error);
       },
-      async resetData() {
-        await analyticsModule.resetAnalyticsData(analytics);
-      },
     };
   } catch {
     return null;
