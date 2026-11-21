@@ -104,11 +104,11 @@ export default function ForMeScreen() {
     [items],
   );
 
-  const compose = () => router.push("/for-me/compose");
+  const compose = () => router.push("/mine/compose");
 
   const startEdit = (item: PrayerRequestPublic) =>
     router.push({
-      pathname: "/for-me/compose",
+      pathname: "/mine/compose",
       params: {
         id: item.id,
         name: item.displayName,

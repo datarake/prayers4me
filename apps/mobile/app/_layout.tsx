@@ -128,10 +128,6 @@ function RootStack() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="languages" options={{ title: "Language" }} />
         <Stack.Screen name="guidelines" options={{ title: "Guidelines" }} />
-        <Stack.Screen
-          name="for-me/compose"
-          options={{ title: "Ask for prayer", presentation: "modal" }}
-        />
       </Stack>
     </>
   );

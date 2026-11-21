@@ -26,10 +26,11 @@ import {
   View,
 } from "react-native";
 import { useLanguage } from "@/src/LanguageContext";
+import { Icon } from "@/src/components/Icon";
 import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
 import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
-import { markJustSent } from "@/src/session";
+import { clearDraft, loadDraft, markJustSent, saveDraft } from "@/src/session";
 import { telemetry } from "@/src/telemetry";
 import { PrimaryButton, Screen } from "@/src/components/ui";
 import { type FontSet, type Palette } from "@/src/theme";
@@ -68,14 +69,37 @@ export default function ComposeScreen() {
   const messageRef = useRef<ElementRef<typeof TextInput>>(null);
   const nameRef = useRef<ElementRef<typeof TextInput>>(null);
   const done = useRef(false);
+  const draftReady = useRef(false);
+
+  // A new request starts from the saved draft, so leaving the form never loses what was typed.
+  useEffect(() => {
+    if (isEditing) return;
+    let cancelled = false;
+    loadDraft().then((draft) => {
+      if (cancelled) return;
+      if (draft) {
+        setDisplayName((current) => current || draft.name);
+        setMessage((current) => current || draft.message);
+      }
+      draftReady.current = true;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (isEditing || !draftReady.current || done.current) return;
+    saveDraft({ name: displayName, message });
+  }, [isEditing, displayName, message]);
 
   const name = displayName.trim();
   const body = message.trim();
   const changed =
     name !== initial.name.trim() ||
     body !== initial.message.trim();
-  // A new request is "dirty" once anything is typed. An edit only once something changed.
-  const dirty = isEditing ? changed : name.length > 0 || body.length > 0;
+  // Only an edit asks before leaving: a new request is saved as a draft instead.
+  const dirty = isEditing && changed;
 
   const errors = {
     name: name.length === 0 ? copy.nameRequired : null,
@@ -94,15 +118,16 @@ export default function ComposeScreen() {
       headerLeft: () => (
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel={copy.leaveCompose}
           onPress={() => router.back()}
           hitSlop={12}
           style={styles.headerBtn}
         >
-          <Text style={styles.headerBtnLabel}>{copy.cancel}</Text>
+          <Icon name="close" size={24} color={colors.heading} />
         </Pressable>
       ),
     });
-  }, [navigation, router, isEditing, copy.composeTitle, copy.editTitle, copy.cancel]);
+  }, [navigation, router, isEditing, copy.composeTitle, copy.editTitle, copy.leaveCompose, colors.heading, styles.headerBtn]);
 
   // Never lose a heartfelt, half-written request to a stray swipe-down.
   useEffect(() => {
@@ -160,6 +185,7 @@ export default function ComposeScreen() {
         message: body,
       });
       done.current = true;
+      await clearDraft();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
         () => undefined,
       );
@@ -179,6 +205,23 @@ export default function ComposeScreen() {
   };
 
   const remaining = MESSAGE_MAX_LENGTH - message.length;
+
+  const confirmReset = () =>
+    Alert.alert(copy.discardTitle, copy.discardBody, [
+      { text: copy.keepWriting, style: "cancel" },
+      {
+        text: copy.resetForm,
+        style: "destructive",
+        onPress: () => {
+          setDisplayName("");
+          setMessage("");
+          setAttempted(false);
+          setTouched({});
+          clearDraft();
+          nameRef.current?.focus();
+        },
+      },
+    ]);
 
   return (
     <Screen>
@@ -236,12 +279,21 @@ export default function ComposeScreen() {
               maxLength={MESSAGE_MAX_LENGTH}
               accessibilityLabel={copy.messageLabel}
             />
-            <Text
-              style={[styles.counter, remaining < 100 && styles.counterWarn]}
-              accessibilityLiveRegion="polite"
-            >
-              {message.length}/{MESSAGE_MAX_LENGTH}
-            </Text>
+            <View style={styles.counterRow}>
+              {!isEditing && (name.length > 0 || body.length > 0) ? (
+                <Pressable accessibilityRole="button" onPress={confirmReset} hitSlop={10}>
+                  <Text style={styles.resetLink}>{copy.resetForm}</Text>
+                </Pressable>
+              ) : (
+                <View />
+              )}
+              <Text
+                style={[styles.counter, remaining < 100 && styles.counterWarn]}
+                accessibilityLiveRegion="polite"
+              >
+                {message.length}/{MESSAGE_MAX_LENGTH}
+              </Text>
+            </View>
           </Field>
 
           {isEditing || body.length > 0 ? null : (
@@ -302,6 +354,12 @@ export default function ComposeScreen() {
             label={submitting ? copy.sending : isEditing ? copy.saveChanges : copy.send}
             onPress={onSubmit}
             loading={submitting}
+          />
+          <PrimaryButton
+            label={copy.leaveCompose}
+            variant="ghost"
+            onPress={() => router.back()}
+            disabled={submitting}
           />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -376,8 +434,18 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
       minHeight: 160,
       lineHeight: 25,
     },
+    counterRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    resetLink: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 14,
+      color: colors.heading,
+      textDecorationLine: "underline",
+    },
     counter: {
-      alignSelf: "flex-end",
       fontFamily: fonts.body,
       fontSize: 13,
       color: colors.inkSoft,
@@ -471,12 +539,8 @@ const createStyles = (fonts: FontSet, colors: Palette) =>
     },
     headerBtn: {
       minHeight: 44,
+      minWidth: 44,
       justifyContent: "center",
-      paddingHorizontal: 4,
-    },
-    headerBtnLabel: {
-      fontFamily: fonts.bodyMedium,
-      fontSize: 16,
-      color: colors.heading,
+      alignItems: "center",
     },
   });

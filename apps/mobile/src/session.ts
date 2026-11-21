@@ -75,6 +75,39 @@ export async function clearJustSent(): Promise<void> {
   }
 }
 
+const DRAFT_KEY = "prayers4me.draft";
+
+export type Draft = { name: string; message: string };
+
+/** A half-written new request, kept so leaving the form never loses it. */
+export async function loadDraft(): Promise<Draft | null> {
+  try {
+    const raw = await AsyncStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<Draft>;
+    return { name: String(parsed.name ?? ""), message: String(parsed.message ?? "") };
+  } catch {
+    return null;
+  }
+}
+
+export async function saveDraft(draft: Draft): Promise<void> {
+  try {
+    if (!draft.name && !draft.message) await AsyncStorage.removeItem(DRAFT_KEY);
+    else await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch {
+    // Not critical.
+  }
+}
+
+export async function clearDraft(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // Not critical.
+  }
+}
+
 /**
  * After the server has deleted the account, forget this phone too: the next launch starts
  * as a new person, with a fresh device id and the welcome screen. The language stays.
@@ -85,6 +118,7 @@ export async function resetLocalData(): Promise<void> {
       DEVICE_KEY,
       WELCOME_KEY,
       JUST_SENT_KEY,
+      DRAFT_KEY,
       "prayers4me.notifications",
     ]);
   } catch {

@@ -2,6 +2,10 @@ import type { LanguageCode } from "@prayers4me/shared";
 
 export type ExtraDictionary = {
   cancel: string;
+  /** The button that leaves the compose screen (not a dialog button). */
+  leaveCompose: string;
+  /** Clears the compose form. */
+  resetForm: string;
   retry: string;
   errorNetwork: string;
   loadingSlow: string;
@@ -105,6 +109,8 @@ export type ExtraDictionary = {
 export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
   en: {
     cancel: "Cancel",
+    leaveCompose: "Cancel",
+    resetForm: "Clear all",
     retry: "Try again",
     errorNetwork: "We cannot connect right now. Check your connection and try again.",
     loadingSlow: "Still trying. The connection looks slow.",
@@ -219,6 +225,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
   },
   es: {
     cancel: "Cancelar",
+    leaveCompose: "Cancelar",
+    resetForm: "Borrar todo",
     retry: "Reintentar",
     errorNetwork: "No podemos conectar ahora. Revisa tu conexión e inténtalo de nuevo.",
     loadingSlow: "Seguimos intentándolo. La conexión parece lenta.",
@@ -333,6 +341,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
   },
   fr: {
     cancel: "Annuler",
+    leaveCompose: "Annuler",
+    resetForm: "Tout effacer",
     retry: "Réessayer",
     errorNetwork: "Connexion impossible. Vérifie ton réseau et réessaie.",
     loadingSlow: "On réessaie encore. La connexion semble lente.",
@@ -447,6 +457,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
   },
   ro: {
     cancel: "Anulează",
+    leaveCompose: "Renunță",
+    resetForm: "Șterge tot",
     retry: "Încearcă din nou",
     errorNetwork: "Nu ne putem conecta acum. Verifică conexiunea și încearcă din nou.",
     loadingSlow: "Încercăm în continuare. Conexiunea pare lentă.",
@@ -471,7 +483,7 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     unblockAll: "Deblochează pe toată lumea",
     unblockConfirmBody: "Cererile lor vor apărea din nou în lista ta.",
     unblockedToast: "Toți sunt deblocați.",
-    nameHelp: "Un prenume sau o poreclă este de ajuns. Apare împreună cu cererea ta.",
+    nameHelp: "Este de ajuns doar prenumele. Apare împreună cu cererea ta.",
     nameRequired: "Scrie un nume",
     messageTooShort: (min) => `Scrie cel puțin ${min} caractere`,
     sending: "Se trimite…",
@@ -561,6 +573,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
   },
   uk: {
     cancel: "Скасувати",
+    leaveCompose: "Скасувати",
+    resetForm: "Очистити все",
     retry: "Спробувати знову",
     errorNetwork: "Немає зʼєднання. Перевір інтернет і спробуй знову.",
     loadingSlow: "Ще пробуємо. Зʼєднання, схоже, повільне.",
@@ -675,6 +689,8 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
   },
   ru: {
     cancel: "Отмена",
+    leaveCompose: "Отмена",
+    resetForm: "Очистить всё",
     retry: "Повторить",
     errorNetwork: "Нет соединения. Проверь интернет и попробуй снова.",
     loadingSlow: "Всё ещё пробуем. Соединение, похоже, медленное.",

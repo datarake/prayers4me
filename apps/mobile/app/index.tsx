@@ -109,7 +109,7 @@ function WelcomeScreen() {
               onPress={() => {
               telemetry.track("welcome_choice", { choice: "ask" });
               router.replace("/mine");
-              router.push("/for-me/compose");
+              router.push("/mine/compose");
             }}
             />
             <PathButton

@@ -146,7 +146,7 @@ describe("helpers", () => {
   it.each([
     ["/pray", "pray"],
     ["/mine", "mine"],
-    ["/for-me/compose", "for-me/compose"],
+    ["/mine/compose", "mine/compose"],
     ["/", "welcome"],
     ["/pray?filter=waiting", "pray"],
   ])("names the screen for %s", (path, name) => {

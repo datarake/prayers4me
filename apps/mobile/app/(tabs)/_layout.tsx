@@ -27,6 +27,7 @@ export default function TabsLayout() {
           backgroundColor: colors.mist,
           borderTopColor: colors.border,
         },
+        tabBarHideOnKeyboard: true,
         tabBarLabelStyle: { fontFamily: fonts.bodyMedium, fontSize: 12 },
       }}
     >
@@ -40,6 +41,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="mine"
         options={{
+          headerShown: false,
           tabBarLabel: copy.forMeTitle,
           tabBarIcon: ({ color }) => <Icon name="user" size={24} color={String(color)} />,
         }}

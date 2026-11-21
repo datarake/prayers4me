@@ -10,7 +10,8 @@ export type IconName =
   | "user"
   | "settings"
   | "chevronRight"
-  | "share";
+  | "share"
+  | "close";
 
 /**
  * Small drawn icon set. Emoji look different on every device and cannot take the app's
@@ -54,6 +55,7 @@ export function Icon({
         </>
       ) : null}
       {name === "chevronDown" ? <Path d="M6 9l6 6 6-6" {...stroke} /> : null}
+      {name === "close" ? <Path d="M6 6l12 12M18 6L6 18" {...stroke} /> : null}
       {name === "check" ? <Path d="M5 12.5l4.5 4.5L19 7.5" {...stroke} /> : null}
       {name === "lock" ? (
         <>

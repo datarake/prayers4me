@@ -109,7 +109,7 @@ Configured in `@prayers4me/shared` (`RATE_LIMITS`) and enforced in the API:
 - **Modals and pushes:** compose and edit form, language picker, community guidelines
 - Device id stored locally for stable dev sessions
 
-Routes live in `apps/mobile/app`: `index` (welcome screen), `(tabs)/pray`, `(tabs)/mine`, `(tabs)/settings`, `for-me/compose`, `languages`, `guidelines`.
+Routes live in `apps/mobile/app`: `index` (welcome screen), `(tabs)/pray`, `(tabs)/mine` (a stack: the list and `compose`, so the tab bar stays visible), `(tabs)/settings`, `languages`, `guidelines`.
 
 ### Web (planned)
 
