@@ -23,7 +23,7 @@
     },
     "android": {
       "package": "app.stillflame.mobile",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "backgroundColor": "#0F3D3A",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
