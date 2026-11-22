@@ -31,7 +31,9 @@ Before each upload to Play, raise `versionCode`: add `"versionCode": N` under `e
 
 **No advertising ID (2026-11-13):** the app shows no ads, but Firebase Analytics adds the `AD_ID` permission, which forces Google Play's advertising ID declaration to say "Yes". `plugins/withoutAdId.js` removes `com.google.android.gms.permission.AD_ID` and the ad-services permissions at prebuild and sets `google_analytics_adid_collection_enabled` to false, so the declaration says "No". Check the built bundle after a dependency change: `unzip -p dist/<file>.aab base/manifest/AndroidManifest.xml | strings | grep -i AD_ID` must print nothing. Build 1.0.0 (3) is the first one without it, and the closed-test release uses it.
 
-**Build 1.0.0 (4) (2026-11-22)** adds the compose form rework (draft, reset, tab bar), more reliable loading on weak connections, analytics always on, and the welcome screen on every launch. Its bundle has no AD_ID permission.
+**Build 1.0.0 (4) (2026-11-22)** adds the compose form rework (draft, reset, tab bar), more reliable loading on weak connections, analytics always on, and the welcome screen on every launch. Its bundle has no AD_ID permission. It was never uploaded: build 5 replaced it.
+
+**Build 1.0.0 (5) (2026-11-22)** is build 4 plus the push notification fixes (offline turn-off is sent later, a link to the phone's settings when the system will not ask again, re-registering a changed token). Upload this one. No AD_ID permission.
 
 Kotlin is pinned to 2.4.0 (`expo-build-properties` in `app.json`), because the Firebase Auth library is built with it. Remove the pin when Expo's default catches up.
 

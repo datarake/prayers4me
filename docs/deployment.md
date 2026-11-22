@@ -1,6 +1,6 @@
 # Deployment (Google Cloud)
 
-**Status (2026-11-10):** running image `v8` (revision `stillflame-api-00006-2f9`) in `europe-west1` (Belgium), with migrations up to 010 (scheduled starter posts); the 60 starter requests were added with the `stillflame-seed` job, and the `stillflame-autopost` job runs every 30 minutes (all languages are switched off until an admin turns them on) and the admin page's `ADMIN_EMAILS` set. The API answers at `https://api.stillflame.app` (also `https://stillflame-api-799342684788.europe-west1.run.app`). Real phones cannot use it yet, because App Check is enforced and needs the Apple and Google developer accounts.
+**Status (2026-11-22):** running image `v9` (revision `stillflame-api-00007-jhh`) in `europe-west1` (Belgium), with migrations up to 011 (push receipts); the 60 starter requests were added with the `stillflame-seed` job, and the `stillflame-autopost` job runs every 30 minutes (all languages are switched off until an admin turns them on) and the admin page's `ADMIN_EMAILS` set. The API answers at `https://api.stillflame.app` (also `https://stillflame-api-799342684788.europe-west1.run.app`). Real phones cannot use it yet, because App Check is enforced and needs the Apple and Google developer accounts.
 
 ## What exists
 
@@ -8,7 +8,7 @@
 |----------|------|
 | Cloud Run service | `stillflame-api` (public invoker, max 3 instances, scales to zero, 512 MiB) |
 | Cloud Run jobs | `stillflame-migrate`, `stillflame-maintain`, `stillflame-autopost` (runs `node apps/api/dist/seed/autopostRun.js`, started by the scheduler), `stillflame-seed` (runs `node apps/api/dist/seed/run.js`; add `--remove` as an argument to delete the starter requests) |
-| Cloud Scheduler | `stillflame-maintain-every-6h`, `stillflame-autopost-every-30m` (europe-west1; the scheduler account has invoker rights on both jobs) |
+| Cloud Scheduler | `stillflame-maintain-every-6h` (runs every 30 minutes since 2026-11-22, despite its name), `stillflame-autopost-every-30m` (europe-west1; the scheduler account has invoker rights on both jobs) |
 | Cloud SQL | `stillflame-db`, Postgres 16, `db-f1-micro`, 10 GB SSD, daily backup 03:00, deletion protection on; database and user `stillflame` |
 | Secrets | `database-url`, `ip-hash-secret` (Secret Manager) |
 | Service accounts | `stillflame-api` (Cloud SQL client, secret reader), `stillflame-scheduler` (invokes the maintain job) |
@@ -24,7 +24,7 @@ Use the account `burdibox@gmail.com` and the project `prayers4me` explicitly (th
 
 ```bash
 export CLOUDSDK_CORE_ACCOUNT=burdibox@gmail.com CLOUDSDK_CORE_PROJECT=prayers4me
-TAG=v9   # a new tag each time (v8 is live)
+TAG=v10   # a new tag each time (v9 is live)
 IMG=europe-west1-docker.pkg.dev/prayers4me/stillflame/api:$TAG
 gcloud builds submit . --tag $IMG --region=europe-west1
 gcloud run jobs update stillflame-migrate --image=$IMG --region=europe-west1
@@ -107,3 +107,5 @@ gcloud scheduler jobs update http stillflame-maintain-every-6h --location=europe
 ```
 
 The scheduler keeps its old name (`-every-6h`); renaming means creating a new one.
+
+**Done (2026-11-22):** image `v9` deployed (revision `stillflame-api-00007-jhh`), migration 011 applied, `PUSH_MODE=expo` set on `stillflame-maintain` and its schedule changed to every 30 minutes. A manual run of the job succeeded.
