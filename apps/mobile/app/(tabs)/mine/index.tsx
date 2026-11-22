@@ -17,7 +17,7 @@ import { EmptyState } from "@/src/components/EmptyState";
 import { RequestCard } from "@/src/components/RequestCard";
 import { NotifyPrompt } from "@/src/components/NotifyPrompt";
 import { WaitCard } from "@/src/components/WaitCard";
-import { clearJustSent, hasJustSent } from "@/src/session";
+import { clearJustSent, hasJustSent, markHasSent } from "@/src/session";
 import { SkeletonList } from "@/src/components/Skeleton";
 import { useToast } from "@/src/components/Toast";
 import {
@@ -58,6 +58,7 @@ export default function ForMeScreen() {
       const page = await api.myRequests();
       setItems(page.items);
       hasLoaded.current = true;
+      if (page.items.length > 0) markHasSent();
     } catch {
       // Keep whatever we already show; only a first load becomes an error state.
       if (!hasLoaded.current) setFailed(true);

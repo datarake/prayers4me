@@ -108,8 +108,8 @@ function WelcomeScreen() {
               emphasis="primary"
               onPress={() => {
               telemetry.track("welcome_choice", { choice: "ask" });
-              router.replace("/mine");
-              router.push("/mine/compose");
+              // The list goes under the form (see mine/_layout), so sending lands on it.
+              router.replace("/mine/compose", { withAnchor: true });
             }}
             />
             <PathButton

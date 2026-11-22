@@ -30,7 +30,14 @@ import { Icon } from "@/src/components/Icon";
 import { api, errorMessage } from "@/src/api";
 import { useToast } from "@/src/components/Toast";
 import { HELPLINE_URL, looksLikeCrisis } from "@/src/safety";
-import { clearDraft, loadDraft, markJustSent, saveDraft } from "@/src/session";
+import {
+  clearDraft,
+  hasSentBefore,
+  loadDraft,
+  markHasSent,
+  markJustSent,
+  saveDraft,
+} from "@/src/session";
 import { telemetry } from "@/src/telemetry";
 import { PrimaryButton, Screen } from "@/src/components/ui";
 import { type FontSet, type Palette } from "@/src/theme";
@@ -70,6 +77,14 @@ export default function ComposeScreen() {
   const nameRef = useRef<ElementRef<typeof TextInput>>(null);
   const done = useRef(false);
   const draftReady = useRef(false);
+  // Examples help a first request. Someone who has sent one already knows how; until the
+  // answer is read they stay hidden, so they never flash in and disappear.
+  const [showExamples, setShowExamples] = useState(false);
+
+  useEffect(() => {
+    if (isEditing) return;
+    hasSentBefore().then((sent) => setShowExamples(!sent));
+  }, [isEditing]);
 
   // A new request starts from the saved draft, so leaving the form never loses what was typed.
   useEffect(() => {
@@ -89,7 +104,8 @@ export default function ComposeScreen() {
   }, [isEditing]);
 
   useEffect(() => {
-    if (isEditing || !draftReady.current || done.current) return;
+    if (isEditing || !draftReady.current) return;
+    // Saving an empty form removes the draft, so this also runs after a send.
     saveDraft({ name: displayName, message });
   }, [isEditing, displayName, message]);
 
@@ -112,6 +128,11 @@ export default function ComposeScreen() {
   const show = (key: string) => attempted || touched[key];
   const touch = (key: string) => setTouched((t) => ({ ...t, [key]: true }));
 
+  // Leaving always lands on "My requests" in this tab. A plain back could leave the tab (when
+  // the form was opened from the welcome screen) and keep this form on top of the list.
+  // dismissTo goes back to the list when it is underneath, and replaces the form with it when not.
+  const leave = () => router.dismissTo("/mine");
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isEditing ? copy.editTitle : copy.composeTitle,
@@ -119,7 +140,7 @@ export default function ComposeScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={copy.leaveCompose}
-          onPress={() => router.back()}
+          onPress={() => leave()}
           hitSlop={12}
           style={styles.headerBtn}
         >
@@ -160,7 +181,7 @@ export default function ComposeScreen() {
     if (isEditing && !changed) {
       // Nothing to save: leave quietly, without spending one of the limited edits.
       done.current = true;
-      router.back();
+      leave();
       return;
     }
     setSubmitting(true);
@@ -176,7 +197,7 @@ export default function ComposeScreen() {
         );
         telemetry.track("request_edited");
         toast.show(copy.updated);
-        router.back();
+        leave();
         return;
       }
       await api.createRequest({
@@ -184,8 +205,16 @@ export default function ComposeScreen() {
         displayName: name,
         message: body,
       });
+      // A sent request starts the next one from an empty form. The screen can stay
+      // mounted in the stack, so its fields are emptied as well as the saved draft.
       done.current = true;
       await clearDraft();
+      setDisplayName("");
+      setMessage("");
+      setAttempted(false);
+      setTouched({});
+      setShowExamples(false);
+      await markHasSent();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
         () => undefined,
       );
@@ -196,7 +225,7 @@ export default function ComposeScreen() {
         support_card: showSupport ? "yes" : "no",
       });
       toast.show(copy.requestSent);
-      router.back();
+      leave();
     } catch (err) {
       toast.show(errorMessage(err, copy.errorNetwork), "error");
     } finally {
@@ -296,7 +325,7 @@ export default function ComposeScreen() {
             </View>
           </Field>
 
-          {isEditing || body.length > 0 ? null : (
+          {isEditing || !showExamples || body.length > 0 ? null : (
             <View style={styles.examples}>
               <Text style={styles.examplesTitle}>{copy.examplesTitle}</Text>
               <Text style={styles.help}>{copy.examplesHint}</Text>
@@ -358,7 +387,7 @@ export default function ComposeScreen() {
           <PrimaryButton
             label={copy.leaveCompose}
             variant="ghost"
-            onPress={() => router.back()}
+            onPress={() => leave()}
             disabled={submitting}
           />
         </ScrollView>

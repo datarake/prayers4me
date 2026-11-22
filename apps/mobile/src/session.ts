@@ -75,6 +75,25 @@ export async function clearJustSent(): Promise<void> {
   }
 }
 
+const HAS_SENT_KEY = "prayers4me.hasSent";
+
+/** Remember that this person has written a request before, so the examples can step aside. */
+export async function markHasSent(): Promise<void> {
+  try {
+    await AsyncStorage.setItem(HAS_SENT_KEY, "1");
+  } catch {
+    // Not critical.
+  }
+}
+
+export async function hasSentBefore(): Promise<boolean> {
+  try {
+    return (await AsyncStorage.getItem(HAS_SENT_KEY)) === "1";
+  } catch {
+    return false;
+  }
+}
+
 const DRAFT_KEY = "prayers4me.draft";
 
 export type Draft = { name: string; message: string };
@@ -118,6 +137,7 @@ export async function resetLocalData(): Promise<void> {
       DEVICE_KEY,
       WELCOME_KEY,
       JUST_SENT_KEY,
+      HAS_SENT_KEY,
       DRAFT_KEY,
       "prayers4me.notifications",
     ]);
