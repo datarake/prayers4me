@@ -24,7 +24,7 @@ Use the account `burdibox@gmail.com` and the project `prayers4me` explicitly (th
 
 ```bash
 export CLOUDSDK_CORE_ACCOUNT=burdibox@gmail.com CLOUDSDK_CORE_PROJECT=prayers4me
-TAG=v10   # a new tag each time (v9 is live)
+TAG=v11   # a new tag each time (v10 is live)
 IMG=europe-west1-docker.pkg.dev/prayers4me/stillflame/api:$TAG
 gcloud builds submit . --tag $IMG --region=europe-west1
 gcloud run jobs update stillflame-migrate --image=$IMG --region=europe-west1
@@ -117,3 +117,5 @@ The scheduler keeps its old name (`-every-6h`); renaming means creating a new on
 - New endpoint `PUT /v1/session/digest` (`{ language | null, utcOffsetMinutes }`); `GET /v1/session` returns `digestLanguage`.
 - The `stillflame-maintain` job sends it (`sendDailyDigests` in `apps/api/src/notifications/digest.ts`). It already runs every 30 minutes with `PUSH_MODE=expo`, which reaches every time zone; nothing to change in the scheduler.
 - It counts every visible request, including the automatic starter posts (`is_seed`), because those are what the Pray list shows.
+
+**Done (2026-11-22):** image `v10` deployed (revision `stillflame-api-00008-bt4`), migration 012 applied in production, all jobs on `v10`. A manual run of `stillflame-maintain` logged `sent 0 daily reminders (expo)`.
