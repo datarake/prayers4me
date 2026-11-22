@@ -22,6 +22,8 @@ Default language of the listing: English (United States). Add the other five as 
 
 ## Data safety answers (Google Play)
 
+Updated in Play Console on 2026-11-22: crash logs, diagnostics and approximate location changed from optional to required, now that analytics has no opt-out.
+
 | Question | Answer |
 |----------|--------|
 | Does the app collect data? | Yes |
@@ -32,8 +34,9 @@ Default language of the listing: English (United States). Add the other five as 
 | Messages / user content | Request text. Collected and shared, for app functionality. |
 | App activity | Prayer actions and reports. Collected, not shared, for app functionality and safety. |
 | Device or other IDs | Anonymous Firebase user ID and an App Check attestation. Collected, not shared, for security and fraud prevention. |
-| Crash logs and diagnostics | Collected only if the person opts in (Crashlytics). Not shared. |
-| App interactions (analytics) | Collected only if the person opts in (Firebase Analytics). Not shared. |
+| Crash logs and diagnostics | Collected for everyone, required (Crashlytics). Not shared. Purpose: analytics. |
+| App interactions (analytics) | Collected for everyone, required (Firebase Analytics). Not shared. |
+| Approximate location | Derived by Firebase Analytics from the network address. Collected, required, not shared. Purpose: analytics. |
 | Location, contacts, photos, financial info | Not collected |
 | Data sold or used for ads | No |
 
@@ -75,7 +78,7 @@ WHAT YOU CAN DO
 
 KEPT SIMPLE AND SAFE
 • No account, no email, no phone number, no contact details.
-• No ads and no tracking of what you write. Usage statistics and crash reports are off until you allow them.
+• No ads and no tracking of what you write. Anonymous usage statistics and crash reports help us fix problems. They never include your requests or your name.
 • No comments, no chat, no followers. Just requests and prayers.
 • Every request can be reported. Reports are reviewed, and harmful content is removed.
 • Delete everything you shared from Settings, at any time.
@@ -115,7 +118,7 @@ QUÉ PUEDES HACER
 
 SENCILLO Y SEGURO
 • Sin cuenta, sin correo, sin teléfono, sin datos de contacto.
-• Sin anuncios y sin rastrear lo que escribes. Las estadísticas de uso y los informes de fallos están desactivados hasta que los permitas.
+• Sin anuncios y sin rastrear lo que escribes. Las estadísticas de uso anónimas y los informes de fallos nos ayudan a corregir errores. Nunca incluyen tus peticiones ni tu nombre.
 • Sin comentarios, sin chat, sin seguidores. Solo peticiones y oraciones.
 • Cualquier petición se puede denunciar. Las denuncias se revisan y el contenido dañino se elimina.
 • Elimina todo lo que compartiste desde Ajustes, cuando quieras.
@@ -155,7 +158,7 @@ CE QUE VOUS POUVEZ FAIRE
 
 SIMPLE ET SÛR
 • Pas de compte, pas d'e-mail, pas de téléphone, pas de coordonnées.
-• Pas de publicité et aucun suivi de ce que vous écrivez. Les statistiques d'usage et les rapports de plantage sont désactivés tant que vous ne les autorisez pas.
+• Pas de publicité et aucun suivi de ce que vous écrivez. Des statistiques d'usage anonymes et des rapports de plantage nous aident à corriger les problèmes. Ils ne contiennent jamais vos demandes ni votre nom.
 • Pas de commentaires, pas de messagerie, pas d'abonnés. Seulement des demandes et des prières.
 • Chaque demande peut être signalée. Les signalements sont examinés et les contenus nuisibles sont retirés.
 • Supprimez tout ce que vous avez partagé depuis les Réglages, à tout moment.
@@ -195,7 +198,7 @@ CE POȚI FACE
 
 SIMPLU ȘI SIGUR
 • Fără cont, fără e-mail, fără telefon, fără date de contact.
-• Fără reclame și fără urmărirea a ceea ce scrii. Statisticile de utilizare și rapoartele de erori sunt dezactivate până când le permiți.
+• Fără reclame și fără urmărirea a ceea ce scrii. Statisticile anonime de utilizare și rapoartele de erori ne ajută să reparăm problemele. Nu conțin niciodată cererile sau numele tău.
 • Fără comentarii, fără chat, fără urmăritori. Doar cereri și rugăciuni.
 • Orice cerere poate fi raportată. Rapoartele sunt verificate, iar conținutul dăunător este eliminat.
 • Șterge tot ce ai distribuit din Setări, oricând.
@@ -235,7 +238,7 @@ Stillflame — тихе місце, де можна попросити моли�
 
 ПРОСТО І БЕЗПЕЧНО
 • Без облікового запису, без електронної пошти, без телефону, без контактних даних.
-• Без реклами і без стеження за тим, що ви пишете. Статистика використання та звіти про збої вимкнені, доки ви їх не дозволите.
+• Без реклами і без стеження за тим, що ви пишете. Анонімна статистика використання та звіти про збої допомагають нам виправляти помилки. Вони ніколи не містять ваших прохань чи імені.
 • Без коментарів, без чату, без підписників. Лише прохання та молитви.
 • На кожне прохання можна поскаржитися. Скарги розглядаються, а шкідливий вміст видаляється.
 • Видаліть усе, чим ви поділилися, у Налаштуваннях у будь-який час.
@@ -275,7 +278,7 @@ Stillflame — тихое место, где можно попросить мо�
 
 ПРОСТО И БЕЗОПАСНО
 • Без учётной записи, без электронной почты, без телефона, без контактных данных.
-• Без рекламы и без слежки за тем, что вы пишете. Статистика использования и отчёты о сбоях выключены, пока вы их не разрешите.
+• Без рекламы и без слежки за тем, что вы пишете. Анонимная статистика использования и отчёты о сбоях помогают нам исправлять ошибки. Они никогда не содержат ваших просьб или имени.
 • Без комментариев, без чата, без подписчиков. Только просьбы и молитвы.
 • На любую просьбу можно пожаловаться. Жалобы рассматриваются, а вредный контент удаляется.
 • Удалите всё, чем вы поделились, в Настройках в любой момент.
