@@ -109,3 +109,11 @@ gcloud scheduler jobs update http stillflame-maintain-every-6h --location=europe
 The scheduler keeps its old name (`-every-6h`); renaming means creating a new one.
 
 **Done (2026-11-22):** image `v9` deployed (revision `stillflame-api-00007-jhh`), migration 011 applied, `PUSH_MODE=expo` set on `stillflame-maintain` and its schedule changed to every 30 minutes. A manual run of the job succeeded.
+
+## Evening reminder of new requests (2026-11-22)
+
+- People can turn on one notification a day, around 19:00 on their phone, when new requests they have not prayed for are waiting in their language (Settings, or the offer shown once after a prayer). It needs notifications on; tapping it opens Pray.
+- Migration `012_daily_digest.sql` adds `digest_language`, `digest_utc_offset` and `last_digest_at` to `users`. Run `stillflame-migrate` before deploying the new image.
+- New endpoint `PUT /v1/session/digest` (`{ language | null, utcOffsetMinutes }`); `GET /v1/session` returns `digestLanguage`.
+- The `stillflame-maintain` job sends it (`sendDailyDigests` in `apps/api/src/notifications/digest.ts`). It already runs every 30 minutes with `PUSH_MODE=expo`, which reaches every time zone; nothing to change in the scheduler.
+- It counts every visible request, including the automatic starter posts (`is_seed`), because those are what the Pray list shows.

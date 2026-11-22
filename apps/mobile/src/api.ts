@@ -199,6 +199,13 @@ export const api = {
       body: JSON.stringify({ token }),
     }),
 
+  /** The evening reminder of new requests, in one language; null turns it off. */
+  setDigest: (language: LanguageCode | null, utcOffsetMinutes: number) =>
+    request<{ language: LanguageCode | null }>("/v1/session/digest", {
+      method: "PUT",
+      body: JSON.stringify({ language, utcOffsetMinutes }),
+    }),
+
   deleteRequest: (id: string) =>
     request<{ id: string; deleted: boolean }>(`/v1/requests/${id}`, {
       method: "DELETE",

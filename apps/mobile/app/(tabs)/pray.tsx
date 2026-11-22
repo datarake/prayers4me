@@ -23,6 +23,9 @@ import { telemetry } from "@/src/telemetry";
 import { api, errorMessage } from "@/src/api";
 import { EmptyState } from "@/src/components/EmptyState";
 import { FilterPills, type FeedFilter } from "@/src/components/FilterPills";
+import { NotifyPrompt } from "@/src/components/NotifyPrompt";
+import { explainEnableResult } from "@/src/notifyFeedback";
+import { enableDigest, markDigestOffered, shouldOfferDigest } from "@/src/notifications";
 import { ReportSheet } from "@/src/components/ReportSheet";
 import { RequestCard } from "@/src/components/RequestCard";
 import { SkeletonList } from "@/src/components/Skeleton";
@@ -48,6 +51,9 @@ export default function ForOthersScreen() {
   const [failed, setFailed] = useState(false);
   const [reportId, setReportId] = useState<string | null>(null);
   const [filter, setFilter] = useState<FeedFilter>("newest");
+  // The evening reminder, offered once, right after a prayer: the moment it makes sense.
+  const [offerDigest, setOfferDigest] = useState(false);
+  const [enablingDigest, setEnablingDigest] = useState(false);
 
   // Ignore responses that arrive after the language changed or a newer load started.
   const generation = useRef(0);
@@ -157,6 +163,10 @@ export default function ForOthersScreen() {
       if (!result.alreadyPrayed) {
         telemetry.track("prayed", { filter });
         toast.show(copy.prayerSent);
+        // After the "Prayer sent" toast (2.8 s) has gone, so the two never overlap.
+        shouldOfferDigest().then((yes) => {
+          if (yes) setTimeout(() => setOfferDigest(true), 3200);
+        });
       }
       if (filter === "waiting") {
         // Give the confirmation a moment to be seen, then let the request leave this list.
@@ -213,6 +223,29 @@ export default function ForOthersScreen() {
         },
       },
     ]);
+  };
+
+  const closeDigestOffer = async () => {
+    setOfferDigest(false);
+    await markDigestOffered();
+  };
+
+  const onEnableDigest = async () => {
+    setEnablingDigest(true);
+    const result = await enableDigest(language);
+    setEnablingDigest(false);
+    if (result === "enabled") {
+      telemetry.track("digest_changed", { enabled: "yes", source: "offer" });
+      toast.show(copy.digestOn);
+    } else {
+      explainEnableResult(result, copy, toast.show);
+      // Offline is worth offering again after another prayer.
+      if (result === "offline") {
+        setOfferDigest(false);
+        return;
+      }
+    }
+    await closeDigestOffer();
   };
 
   const retry = () => {
@@ -310,6 +343,19 @@ export default function ForOthersScreen() {
         )}
       />
 
+      {offerDigest ? (
+        <View style={styles.offer} pointerEvents="box-none">
+          <NotifyPrompt
+            copy={copy}
+            title={copy.digestOfferTitle}
+            body={copy.digestOfferBody}
+            busy={enablingDigest}
+            onEnable={onEnableDigest}
+            onLater={closeDigestOffer}
+          />
+        </View>
+      ) : null}
+
       <ReportSheet
         visible={reportId !== null}
         copy={copy}
@@ -323,6 +369,18 @@ export default function ForOthersScreen() {
 
 const createStyles = (fonts: FontSet, colors: Palette) =>
   StyleSheet.create({
+    offer: {
+      position: "absolute",
+      left: 16,
+      right: 16,
+      bottom: 16,
+      borderRadius: 18,
+      shadowColor: "#000",
+      shadowOpacity: 0.12,
+      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 6 },
+      elevation: 6,
+    },
     list: {
       paddingHorizontal: 22,
       paddingBottom: 56,

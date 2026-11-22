@@ -2,11 +2,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
+import type { LanguageCode } from "@prayers4me/shared";
 import { api } from "./api";
 
 const STATE_KEY = "prayers4me.notifications";
 /** Set when turning notifications off could not reach the server; the next launch retries. */
 const CLEAR_PENDING_KEY = "prayers4me.notifications.clearPending";
+/** The language of the evening reminder of new requests, when it is on. */
+export const DIGEST_KEY = "prayers4me.digest";
+/** Set once the reminder was offered after a prayer, so it is offered only once. */
+export const DIGEST_OFFERED_KEY = "prayers4me.digest.offered";
 
 /** Banner while the app is open too, but silent: this is a quiet app. */
 Notifications.setNotificationHandler({
@@ -131,8 +136,11 @@ export async function syncPushRegistration() {
     if ((await getPromptState()) !== "enabled") return;
     await ensureAndroidChannel();
     const { granted } = await Notifications.getPermissionsAsync();
-    if (granted) await registerToken();
-    else await api.registerPushToken(null);
+    if (granted) {
+      await registerToken();
+      // Keeps the server's copy right, and moves the evening with the phone's time zone.
+      await api.setDigest(await getDigestLanguage(), utcOffsetMinutes());
+    } else await api.registerPushToken(null);
   } catch {
     // Offline or unsupported: nothing to do.
   }
@@ -151,6 +159,9 @@ export async function isNotificationsOn(): Promise<boolean> {
 /** Stops "someone prayed" pushes: the server forgets this device's token. */
 export async function disableNotifications(): Promise<void> {
   await setPromptState("dismissed");
+  // Without notifications there is no evening reminder either. Turning them back on later
+  // should not bring it back by surprise.
+  await removeKey(DIGEST_KEY);
   try {
     await api.registerPushToken(null);
     await clearPendingClear();
@@ -178,4 +189,91 @@ export function watchPushToken(): () => void {
     syncPushRegistration();
   });
   return () => subscription.remove();
+}
+
+async function removeKey(key: string) {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch {
+    // Not critical.
+  }
+}
+
+/** Minutes ahead of UTC, as the server expects (Bucharest in winter: 120). */
+function utcOffsetMinutes(): number {
+  return -new Date().getTimezoneOffset();
+}
+
+export async function getDigestLanguage(): Promise<LanguageCode | null> {
+  try {
+    return ((await AsyncStorage.getItem(DIGEST_KEY)) as LanguageCode | null) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** True when the evening reminder is on and the phone still allows notifications. */
+export async function isDigestOn(): Promise<boolean> {
+  return (await getDigestLanguage()) !== null && (await isNotificationsOn());
+}
+
+/**
+ * Turns on the evening reminder of new requests in `language`. Notifications are turned on
+ * first when they are not (the system asks for permission then), since the reminder needs them.
+ */
+export async function enableDigest(language: LanguageCode): Promise<EnableResult> {
+  if (!(await isNotificationsOn())) {
+    const result = await enableNotifications();
+    if (result !== "enabled") return result;
+  }
+  try {
+    await api.setDigest(language, utcOffsetMinutes());
+  } catch {
+    return "offline";
+  }
+  try {
+    await AsyncStorage.setItem(DIGEST_KEY, language);
+  } catch {
+    // The server has it; the next launch would only send it again.
+  }
+  return "enabled";
+}
+
+/** Turns the evening reminder off. Offline, the next launch tells the server. */
+export async function disableDigest(): Promise<void> {
+  await removeKey(DIGEST_KEY);
+  try {
+    await api.setDigest(null, utcOffsetMinutes());
+  } catch {
+    // syncPushRegistration sends the local state at the next launch.
+  }
+}
+
+/** The reminder follows the language of the Pray list, so a tap opens the requests it counted. */
+export async function followLanguageForDigest(language: LanguageCode): Promise<void> {
+  if ((await getDigestLanguage()) === null) return;
+  try {
+    await AsyncStorage.setItem(DIGEST_KEY, language);
+    await api.setDigest(language, utcOffsetMinutes());
+  } catch {
+    // Sent again at the next launch.
+  }
+}
+
+/** Offer the reminder once, after a prayer, to someone who does not have it yet. */
+export async function shouldOfferDigest(): Promise<boolean> {
+  try {
+    if (await AsyncStorage.getItem(DIGEST_OFFERED_KEY)) return false;
+    return (await getDigestLanguage()) === null;
+  } catch {
+    return false;
+  }
+}
+
+export async function markDigestOffered(): Promise<void> {
+  try {
+    await AsyncStorage.setItem(DIGEST_OFFERED_KEY, "1");
+  } catch {
+    // Not critical.
+  }
 }

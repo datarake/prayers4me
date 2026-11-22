@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "app.stillflame.mobile",
       "appleTeamId": "HM348ZXGU4",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -23,7 +23,7 @@
     },
     "android": {
       "package": "app.stillflame.mobile",
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "backgroundColor": "#0F3D3A",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

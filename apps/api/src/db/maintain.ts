@@ -1,6 +1,7 @@
 import { connect } from "./client.js";
 import { pruneRateLimitBuckets, purgeExpiredData } from "../maintenance.js";
 import { checkPushReceipts, flushHeldNotifications } from "../notifications/push.js";
+import { sendDailyDigests } from "../notifications/digest.js";
 
 /**
  * One-shot housekeeping for a scheduler (Cloud Run Job + Cloud Scheduler). On a service that
@@ -19,6 +20,12 @@ async function main() {
     const mode = process.env.PUSH_MODE === "expo" ? "expo" : "log";
     const flushed = await flushHeldNotifications(sql, mode);
     console.log(`maintenance: sent ${flushed} held notifications (${mode})`);
+    // The evening reminder goes out at 19:00 local time; a run every 30 minutes reaches every zone.
+    const digests = await sendDailyDigests(sql, mode).catch((err: unknown) => {
+      console.error("daily digests failed", err);
+      return 0;
+    });
+    console.log(`maintenance: sent ${digests} daily reminders (${mode})`);
     const dropped = await checkPushReceipts(sql, mode).catch((err: unknown) => {
       console.error("push receipts failed", err);
       return 0;

@@ -95,15 +95,19 @@ function RootStack() {
     telemetry.setLanguage(language);
   }, [language]);
 
-  // Tapping "someone prayed for you" opens the person's own requests, including from a cold start.
+  // Tapping a notification opens its screen, including from a cold start.
   const lastResponse = Notifications.useLastNotificationResponse();
   useEffect(() => {
     if (
-      lastResponse &&
-      lastResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER &&
-      lastResponse.notification.request.content.data?.screen === "for-me"
+      !lastResponse ||
+      lastResponse.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER
     ) {
-      router.push("/mine");
+      return;
+    }
+    // "for-me": someone prayed. "pray": the evening reminder of new requests.
+    const screen = lastResponse.notification.request.content.data?.screen;
+    if (screen === "for-me" || screen === "pray") {
+      router.push(screen === "pray" ? "/pray" : "/mine");
       Notifications.clearLastNotificationResponseAsync().catch(() => undefined);
     }
   }, [lastResponse, router]);

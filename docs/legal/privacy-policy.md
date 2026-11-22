@@ -1,7 +1,7 @@
 # Privacy policy
 
 **Who is responsible:** Stillflame is run by its developer. **Contact for anything about your data:** {{supportEmail}}
-**Last updated:** 9 November 2026
+**Last updated:** 22 November 2026
 
 ## What Stillflame is
 
@@ -17,7 +17,8 @@ A place to ask for prayer and to pray for others, anonymously. People who pray s
 | Which device prayed for which request | To count prayers once per person | Only the server. You see counts, never who |
 | People you block (which anonymous account you blocked, never shown to anyone) | So you stop seeing their requests | Only the server. Deleted when you unblock or delete your data |
 | Reports you make about a request | Moderation | Moderators |
-| Your push notification token, only if you turn notifications on | To tell you when someone prays | Only the server and the push service |
+| Your push notification token, only if you turn notifications on | To tell you when someone prays, and, if you ask for it, that new requests are waiting | Only the server and the push service |
+| If you turn on the evening reminder: its language and your phone's offset from UTC (for example +2 hours), never your location | To send it around 7 pm your time, at most once a day. Turning it off, or turning notifications off, stops it | Only the server |
 | Your language | To show you the right requests | Only the server |
 | A fingerprint of your network address, salted and changed every day | To stop one person flooding the app with many accounts. It cannot be used to follow you across days. | Only the server |
 

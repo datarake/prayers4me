@@ -140,6 +140,8 @@ export async function resetLocalData(): Promise<void> {
       HAS_SENT_KEY,
       DRAFT_KEY,
       "prayers4me.notifications",
+      "prayers4me.digest",
+      "prayers4me.digest.offered",
     ]);
   } catch {
     // Not critical.

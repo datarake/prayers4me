@@ -14,6 +14,7 @@ import { z } from "zod";
 import { ApiError, jsonError } from "./errors.js";
 import { readJson } from "./validation.js";
 import { EXPO_TOKEN_RE } from "./notifications/push.js";
+import { languageSchema } from "@prayers4me/shared";
 import { adminRoutes } from "./routes/admin.js";
 import { blocksRoutes } from "./routes/blocks.js";
 import { requestsRoutes } from "./routes/requests.js";
@@ -72,12 +73,37 @@ export function createApp(env: Env, sql: Sql, verifiers?: Verifiers) {
 
   app.get("/v1/session", async (c) => {
     const user = c.get("user");
+    const rows = await sql<{ digest_language: string | null }[]>`
+      SELECT digest_language FROM users WHERE id = ${user.id}
+    `;
     return c.json({
       id: user.id,
       language: user.language,
       role: user.role,
       banned: user.banned,
+      digestLanguage: rows[0]?.digest_language ?? null,
     });
+  });
+
+  // The evening reminder of new requests: on in one language (null turns it off). The phone's
+  // offset from UTC places the evening in the person's time zone; the app sends it at each launch.
+  app.put("/v1/session/digest", async (c) => {
+    const user = c.get("user");
+    const body = z
+      .object({
+        language: languageSchema.nullable(),
+        utcOffsetMinutes: z.number().int().min(-840).max(840),
+      })
+      .parse(await readJson(c));
+
+    await sql`
+      UPDATE users
+      SET digest_language = ${body.language},
+          digest_utc_offset = ${body.utcOffsetMinutes},
+          updated_at = now()
+      WHERE id = ${user.id}
+    `;
+    return c.json({ language: body.language });
   });
 
   // The device registers (or clears, with null) the token used for "someone prayed" pushes.

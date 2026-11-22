@@ -76,6 +76,12 @@ export type ExtraDictionary = {
   tabSettings: string;
   settingsNotifications: string;
   settingsNotificationsHint: string;
+  /** The evening reminder of new requests. */
+  digestLabel: string;
+  digestHint: (languageName: string) => string;
+  digestOfferTitle: string;
+  digestOfferBody: string;
+  digestOn: string;
   settingsVersion: string;
   appearanceLabel: string;
   appearanceSystem: string;
@@ -188,6 +194,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     tabSettings: "Settings",
     settingsNotifications: "Prayer notifications",
     settingsNotificationsHint: "One quiet notification when someone prays for you.",
+    digestLabel: "Evening reminder",
+    digestHint: (name) => `Once a day, around 7 pm, when new requests are waiting. Language: ${name}`,
+    digestOfferTitle: "A reminder in the evening?",
+    digestOfferBody: "When new people ask for prayer, we can send one quiet notification around 7 pm. Never more than once a day.",
+    digestOn: "You will get an evening reminder",
     settingsVersion: "Version",
     appearanceLabel: "Appearance",
     appearanceSystem: "Automatic",
@@ -305,6 +316,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     tabSettings: "Ajustes",
     settingsNotifications: "Notificaciones de oración",
     settingsNotificationsHint: "Una notificación discreta cuando alguien ore por ti.",
+    digestLabel: "Recordatorio por la tarde",
+    digestHint: (name) => `Una vez al día, hacia las 19:00, si hay peticiones nuevas. Idioma: ${name}`,
+    digestOfferTitle: "¿Un recordatorio por la tarde?",
+    digestOfferBody: "Cuando alguien nuevo pida oración, podemos enviarte una notificación discreta hacia las 19:00. Nunca más de una al día.",
+    digestOn: "Recibirás un recordatorio por la tarde",
     settingsVersion: "Versión",
     appearanceLabel: "Apariencia",
     appearanceSystem: "Automático",
@@ -422,6 +438,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     tabSettings: "Réglages",
     settingsNotifications: "Notifications de prière",
     settingsNotificationsHint: "Une notification discrète quand quelqu’un prie pour toi.",
+    digestLabel: "Rappel du soir",
+    digestHint: (name) => `Une fois par jour, vers 19 h, s’il y a de nouvelles demandes. Langue : ${name}`,
+    digestOfferTitle: "Un rappel le soir ?",
+    digestOfferBody: "Quand de nouvelles personnes demandent une prière, nous pouvons envoyer une notification discrète vers 19 h. Jamais plus d’une par jour.",
+    digestOn: "Tu recevras un rappel le soir",
     settingsVersion: "Version",
     appearanceLabel: "Apparence",
     appearanceSystem: "Automatique",
@@ -539,6 +560,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     tabSettings: "Setări",
     settingsNotifications: "Notificări de rugăciune",
     settingsNotificationsHint: "O notificare discretă când cineva se roagă pentru tine.",
+    digestLabel: "Memento de seară",
+    digestHint: (name) => `O dată pe zi, în jur de 19:00, dacă au apărut cereri noi. Limba: ${name}`,
+    digestOfferTitle: "Un memento seara?",
+    digestOfferBody: "Când oameni noi cer rugăciune, îți putem trimite o notificare discretă în jur de ora 19:00. Niciodată mai mult de una pe zi.",
+    digestOn: "Vei primi un memento seara",
     settingsVersion: "Versiune",
     appearanceLabel: "Aspect",
     appearanceSystem: "Automat",
@@ -656,6 +682,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     tabSettings: "Налаштування",
     settingsNotifications: "Сповіщення про молитву",
     settingsNotificationsHint: "Одне тихе сповіщення, коли хтось помолиться за тебе.",
+    digestLabel: "Вечірнє нагадування",
+    digestHint: (name) => `Раз на день, близько 19:00, якщо є нові прохання. Мова: ${name}`,
+    digestOfferTitle: "Нагадування ввечері?",
+    digestOfferBody: "Коли нові люди просять про молитву, ми можемо надіслати одне тихе сповіщення близько 19:00. Не частіше ніж раз на день.",
+    digestOn: "Ти отримуватимеш вечірнє нагадування",
     settingsVersion: "Версія",
     appearanceLabel: "Вигляд",
     appearanceSystem: "Автоматично",
@@ -773,6 +804,11 @@ export const extraDictionaries: Record<LanguageCode, ExtraDictionary> = {
     tabSettings: "Настройки",
     settingsNotifications: "Уведомления о молитве",
     settingsNotificationsHint: "Одно тихое уведомление, когда кто-то помолится за тебя.",
+    digestLabel: "Вечернее напоминание",
+    digestHint: (name) => `Раз в день, около 19:00, если есть новые просьбы. Язык: ${name}`,
+    digestOfferTitle: "Напоминание вечером?",
+    digestOfferBody: "Когда новые люди просят о молитве, мы можем прислать одно тихое уведомление около 19:00. Не чаще раза в день.",
+    digestOn: "Ты будешь получать вечернее напоминание",
     settingsVersion: "Версия",
     appearanceLabel: "Оформление",
     appearanceSystem: "Автоматически",

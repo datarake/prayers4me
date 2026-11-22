@@ -62,12 +62,18 @@ const RECEIPT_MAX_AGE_HOURS = 24;
 
 type Ticket = { status: "ok" | "error"; id?: string; details?: { error?: string } };
 type Receipt = { status: "ok" | "error"; details?: { error?: string } };
-type SendResult =
+export type SendResult =
   | { kind: "sent"; ticketId?: string }
   | { kind: "invalid_token" }
   | { kind: "failed" };
 
-async function send(mode: PushMode, token: string, title: string, body: string): Promise<SendResult> {
+export async function send(
+  mode: PushMode,
+  token: string,
+  title: string,
+  body: string,
+  data: Record<string, string> = { screen: "for-me" },
+): Promise<SendResult> {
   const message = {
     to: token,
     title,
@@ -76,7 +82,7 @@ async function send(mode: PushMode, token: string, title: string, body: string):
     // Android: the channel the app creates, and delivered even when the phone is dozing.
     channelId: "default",
     priority: "high",
-    data: { screen: "for-me" },
+    data,
   };
 
   if (mode === "log") {
@@ -145,7 +151,7 @@ async function deliver(sql: Sql, mode: PushMode, claimed: Claimed): Promise<void
   }
 }
 
-async function forgetToken(sql: Sql, token: string): Promise<void> {
+export async function forgetToken(sql: Sql, token: string): Promise<void> {
   await sql`UPDATE users SET push_token = NULL, updated_at = now() WHERE push_token = ${token}`;
 }
 

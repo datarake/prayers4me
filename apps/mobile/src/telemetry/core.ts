@@ -37,6 +37,7 @@ export const EVENTS = {
   report_sent: { reason: ["spam", "scripture_dump", "harassment", "off_topic", "other"] },
   language_changed: { language: LANGUAGES },
   notifications_changed: { enabled: YES_NO },
+  digest_changed: { enabled: YES_NO, source: ["settings", "offer"] },
   account_deleted: {},
   app_shared: { outcome: ["shared", "dismissed"] },
   theme_changed: { theme: ["system", "light", "dark"] },

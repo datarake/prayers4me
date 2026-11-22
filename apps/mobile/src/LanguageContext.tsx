@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { LanguageCode } from "@prayers4me/shared";
 import { t } from "./i18n";
+import { followLanguageForDigest } from "./notifications";
 import { getStoredLanguage, setStoredLanguage } from "./session";
 
 type LanguageContextValue = {
@@ -33,6 +34,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLanguage = useCallback(async (next: LanguageCode) => {
     setLanguageState(next);
     await setStoredLanguage(next);
+    followLanguageForDigest(next);
   }, []);
 
   const value = useMemo(

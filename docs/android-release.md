@@ -37,6 +37,8 @@ Before each upload to Play, raise `versionCode`: add `"versionCode": N` under `e
 
 **Build 1.0.0 (6) (2026-11-22)** is build 5 plus `plugins/withOptionalPortrait.js`: the portrait and landscape screen features are declared `required="false"`, so Play no longer flags the portrait lock as limiting devices. No AD_ID permission.
 
+**Build 1.0.0 (7) (2026-11-22)** is build 6 plus the My requests fixes (sending lands on the list, the form starts empty, the examples step aside after the first request) and the evening reminder of new requests. It needs the API with migration 012. No AD_ID permission.
+
 Kotlin is pinned to 2.4.0 (`expo-build-properties` in `app.json`), because the Firebase Auth library is built with it. Remove the pin when Expo's default catches up.
 
 ## Put the app on your own phone

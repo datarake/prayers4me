@@ -11,11 +11,16 @@ import { PrimaryButton } from "./ui";
  */
 export function NotifyPrompt({
   copy,
+  title,
+  body,
   busy,
   onEnable,
   onLater,
 }: {
   copy: Copy;
+  /** Other wording for the same card (the evening reminder uses it). */
+  title?: string;
+  body?: string;
   busy?: boolean;
   onEnable: () => void;
   onLater: () => void;
@@ -25,9 +30,9 @@ export function NotifyPrompt({
   return (
     <View style={styles.card}>
       <Text style={styles.title} accessibilityRole="header">
-        {copy.notifyTitle}
+        {title ?? copy.notifyTitle}
       </Text>
-      <Text style={styles.body}>{copy.notifyBody}</Text>
+      <Text style={styles.body}>{body ?? copy.notifyBody}</Text>
       <View style={styles.actions}>
         <View style={{ flex: 1 }}>
           <PrimaryButton

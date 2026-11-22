@@ -14,8 +14,11 @@ import { forgetIdentity } from "@/src/identity";
 import { resetLocalData } from "@/src/session";
 import { Screen } from "@/src/components/ui";
 import {
+  disableDigest,
   disableNotifications,
+  enableDigest,
   enableNotifications,
+  isDigestOn,
   isNotificationsOn,
 } from "@/src/notifications";
 import { fontsFor, type FontSet, type Palette } from "@/src/theme";
@@ -32,6 +35,7 @@ export default function SettingsScreen() {
   const toast = useToast();
   const { language, copy } = useLanguage();
   const [notifications, setNotifications] = useState(false);
+  const [digest, setDigest] = useState(false);
   const [busy, setBusy] = useState(false);
   const [blocked, setBlocked] = useState(0);
 
@@ -42,6 +46,7 @@ export default function SettingsScreen() {
   useFocusEffect(
     useCallback(() => {
       isNotificationsOn().then(setNotifications);
+      isDigestOn().then(setDigest);
       api.blockedCount().then((r) => setBlocked(r.count)).catch(() => undefined);
     }, []),
   );
@@ -70,6 +75,7 @@ export default function SettingsScreen() {
     if (!next) {
       await disableNotifications();
       setNotifications(false);
+      setDigest(false);
       telemetry.track("notifications_changed", { enabled: "no" });
     } else {
       const result = await enableNotifications();
@@ -77,6 +83,26 @@ export default function SettingsScreen() {
         setNotifications(true);
         telemetry.track("notifications_changed", { enabled: "yes" });
         toast.show(copy.notifyOn);
+      } else {
+        explainEnableResult(result, copy, toast.show);
+      }
+    }
+    setBusy(false);
+  };
+
+  const onToggleDigest = async (next: boolean) => {
+    setBusy(true);
+    if (!next) {
+      await disableDigest();
+      setDigest(false);
+      telemetry.track("digest_changed", { enabled: "no", source: "settings" });
+    } else {
+      const result = await enableDigest(language);
+      if (result === "enabled") {
+        setDigest(true);
+        setNotifications(true);
+        telemetry.track("digest_changed", { enabled: "yes", source: "settings" });
+        toast.show(copy.digestOn);
       } else {
         explainEnableResult(result, copy, toast.show);
       }
@@ -177,6 +203,20 @@ export default function SettingsScreen() {
               onValueChange={onToggleNotifications}
               trackColor={{ true: colors.tealBright, false: colors.mistDeep }}
               accessibilityLabel={copy.settingsNotifications}
+            />
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.row}>
+            <View style={styles.textBlock}>
+              <Text style={styles.label}>{copy.digestLabel}</Text>
+              <Text style={styles.hint}>{copy.digestHint(current?.nativeName ?? "")}</Text>
+            </View>
+            <Switch
+              value={digest}
+              disabled={busy}
+              onValueChange={onToggleDigest}
+              trackColor={{ true: colors.tealBright, false: colors.mistDeep }}
+              accessibilityLabel={copy.digestLabel}
             />
           </View>
         </View>
